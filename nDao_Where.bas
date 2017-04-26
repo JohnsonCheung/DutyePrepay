@@ -102,8 +102,8 @@ Dim OWhere$
 If pLp = "" Then Exit Function
 Dim mAn$(): mAn = Split(pLp$, CtComma)
 Dim mAv$(): mAv = pVayv
-Dim N1%: N1 = Siz_Ay(mAn)
-Dim N2%: N2 = Siz_Ay(mAv)
+Dim N1%: N1 = Sz(mAn)
+Dim N2%: N2 = Sz(mAv)
 If N1 <> N2 Then Er "Count in pLp & pVayv mismatch", "Cnt in pLp, Cnt in pVayv", N1, N2
 Dim J%: For J = 0 To N1 - 1
     Dim mA$: mA = mAn(J) & " in (" & mAv(J) & ")"

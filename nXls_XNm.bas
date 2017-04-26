@@ -24,16 +24,16 @@ If XNmCpyToCell(mWbSrc, "DefTbl", mWsTar) Then Stop
 mWbTar.Application.Visible = True
 End Function
 
-Function XNmCpyToFx(pWbSrc As Workbook, pXlsNmSrc$, pFxTar$, Optional pNmWsTar$ = "", Optional OvrWrt As Boolean = False) As Boolean
+Function XNmCpyToFx(pWbSrc As Workbook, pXlsNmSrc$, pFxTar$, Optional pWsNmTar$ = "", Optional OvrWrt As Boolean = False) As Boolean
 Const cSub$ = "XNmCpyToFx"
-'Aim: Copy the range as defined in {pXlsNmSrc} in {pWbSrc} to of {pNmWsTar} in {pFxTar}.  If {pNmWsTar} is '', use {pXlsNmSrc}
+'Aim: Copy the range as defined in {pXlsNmSrc} in {pWbSrc} to of {pWsNmTar} in {pFxTar}.  If {pWsNmTar} is '', use {pXlsNmSrc}
 On Error GoTo R
 Dim mWbTar As Workbook: If Crt_Wb(mWbTar, pFxTar, OvrWrt) Then ss.A 1: GoTo E
 If Dlt_AllWs_Except1(mWbTar) Then ss.A 2: GoTo E
 
-If pNmWsTar = "" Then pNmWsTar = pXlsNmSrc
+If pWsNmTar = "" Then pWsNmTar = pXlsNmSrc
 Dim mWsTar As Worksheet: Set mWsTar = mWbTar.Sheets(1)
-mWsTar.Name = pNmWsTar
+mWsTar.Name = pWsNmTar
 If XNmCpyToCell(pWbSrc, pXlsNmSrc, mWsTar) Then ss.A 3: GoTo E
 If Cls_Wb(mWbTar, True) Then ss.A 1: GoTo E
 Exit Function

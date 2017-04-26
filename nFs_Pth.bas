@@ -53,9 +53,27 @@ R: ss.R
 E: PthCpyFilUp1Dir = True: ss.B cSub, cMod, "pDir,pFSpc"
 End Function
 
-Function PthCur$()
-PthCur = CurDir
-End Function
+Sub PthDltFil(Pth$, Optional FnSpec$ = "*.*")
+If Not PthIsExist(Pth) Then Exit Sub
+Dim FnAy$(): FnAy = PthFnAy(Pth, FnSpec)
+If AyIsEmpty(FnAy) Then Exit Sub
+Dim I
+For Each I In FnAy
+    FfnDlt Pth & I
+Next
+End Sub
+
+Sub PthDltFnAy(Pth$, FnAy$())
+Dim I
+For Each I In FnAy
+    FfnDlt Pth & I
+Next
+End Sub
+
+Sub PthDltFnBySfx(Pth$, Sfx)
+Dim F$(): F = PthFnAyBySfx(Pth, Sfx)
+PthDltFnAy Pth, F
+End Sub
 
 Sub PthEns(Pth$)
 If Not PthIsExist(Pth) Then MkDir Pth
@@ -96,6 +114,10 @@ End Function
 Sub PthFnAy__Tst()
 AyDmp PthFnAy("C:\Tmp\")
 End Sub
+
+Function PthFnAyBySfx(Pth$, Sfx, Optional Atr As VbFileAttribute = vbNormal) As String()
+PthFnAyBySfx = AySel(PthFnAy(Pth, , Atr), "FfnHasSfx", Sfx)
+End Function
 
 Function PthFnnAy(Pth$, Optional FSpec$ = "*.*") As String()
 Dim O$()

@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 
 Function LyJn$(Ay)
-Dim A(): A = AyExpandAy(Ay)
+Dim A(): A = AyExpdAy(Ay)
 LyJn = AyJn(Ay, vbCrLf)
 End Function
 

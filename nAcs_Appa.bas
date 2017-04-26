@@ -53,8 +53,8 @@ End If
 On Error GoTo R
 Dim mAnObj_Tar$(): mAnObj_Tar = Split(pLnObj_Tar, CtComma)
 Dim mAnObj_Src$(): mAnObj_Src = Split(Fct.NonBlank(pLnObj_Src, pLnObj_Tar), CtComma)
-Dim N%: N = Siz_Ay(mAnObj_Src)
-If Siz_Ay(mAnObj_Tar) <> N Then ss.A 1, "# of object names in Src & Tar are diff", , "Src,Tar", N, Siz_Ay(mAnObj_Tar): GoTo E
+Dim N%: N = Sz(mAnObj_Src)
+If Sz(mAnObj_Tar) <> N Then ss.A 1, "# of object names in Src & Tar are diff", , "Src,Tar", N, Sz(mAnObj_Tar): GoTo E
 Dim J%
 If pFb_Src = "" Then
     For J = 0 To N - 1
@@ -97,8 +97,8 @@ If pFb_Src = "" And pPfx_Src = "" Then ss.A 1, "Cannot both pFb_Src & pPfx_Src b
 
 Dim mAyTar$(): If Fnd_AnObj_ByPfx_InMdb(mAyTar$, pFb_Src, pPfx_Tar, pTypObj) Then ss.A 2: GoTo E
 Dim mAySrc$(): If Repl_Pfx_InAy(mAySrc, pPfx_Src, mAyTar, pPfx_Tar) Then ss.A 2: GoTo E
-Dim N%: N = Siz_Ay(mAySrc)
-If Siz_Ay(mAyTar) <> N Then ss.A 1, "# of object names in Src & Tar are diff", , "Src,Tar", N, Siz_Ay(mAyTar): GoTo E
+Dim N%: N = Sz(mAySrc)
+If Sz(mAyTar) <> N Then ss.A 1, "# of object names in Src & Tar are diff", , "Src,Tar", N, Sz(mAyTar): GoTo E
 
 Dim mAccess As Access.Application
 If pFb_Src <> "" Then

@@ -38,7 +38,7 @@ End Sub
 Function ResLy(ResMthNm$, Optional ResMdNm$, Optional PjNm$) As String()
 Dim M As CodeModule
     Set M = Md(ResMdNm, Pj(PjNm))
-ResLy = AyRmvFstChr(AyRmvLasEle(AyRmvAt(MthLy(ResMthNm, M), 0)))
+ResLy = AyRmvFstChr(AyRmvLasEle(AyRmvAt(MthLy(ResMthNm, , M), 0)))
 End Function
 
 Sub ResLy__Tst()

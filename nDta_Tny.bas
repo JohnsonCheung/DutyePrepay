@@ -12,7 +12,7 @@ Dim O As New Dictionary
     ElseIf TypeName(TnyOpt) = "Dictionary" Then
         Set O = TnyOpt
     ElseIf VarIsStr(TnyOpt) Then
-        Set O = FnStrIdxDic(TnyOpt)
+        Set O = FnStrPkDic(TnyOpt)
     ElseIf VarIsSy(TnyOpt) Then
         Dim Tn, I&
         For Each Tn In TnyOpt

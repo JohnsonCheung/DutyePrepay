@@ -27,7 +27,7 @@ End With
 End Function
 
 Function MdBdyLinesSorted$(Optional A As CodeModule)
-Dim AMth() As MthStru: AMth = MthStruAy(, , A)
+Dim AMth() As MthStru: AMth = MthStruAy_All(A)
 Dim AIdx&():
     Dim Key$(): Key = MthStruAyKeyAy(AMth)
     AIdx = AySrtIdx(Key)
@@ -145,6 +145,14 @@ Function MdLyByBEIdx(BEIdx&(), Optional A As CodeModule) As String()
 MdLyByBEIdx = LinesSplit(MdLinesByBEIdx(BEIdx, A))
 End Function
 
+Function MdMthLy(Optional A As CodeModule) As String()
+MdMthLy = BdyLyMthLy(MdBdyLy(MdNz(A)))
+End Function
+
+Sub MdMthLy__Tst()
+Pipe "Form_Switchboard", "MdMthLy", "AyBrw"
+End Sub
+
 Function MdNm$(Optional A As CodeModule)
 MdNm = MdNz(A).Parent.Name
 End Function
@@ -166,7 +174,7 @@ Function MdPgmDs(Optional A As CodeModule) As Ds
 'Dim mNmtOldPgm$, mNmtOldArg$
 'Do
 '    Dim mA$(): mA = Split(Replace(pLnt, ":", CtComma), CtComma)
-'    If Siz_Ay(mA) <> 2 Then ss.A 4, "pLnt must have 2 elements": GoTo E
+'    If Sz(mA) <> 2 Then ss.A 4, "pLnt must have 2 elements": GoTo E
 '    mNmtOldPgm = Trim(mA(0))
 '    mNmtOldArg = Trim(mA(1))
 '    Dim mDPgm As New d_Pgm: If mDPgm.CrtTbl(mNmtOldPgm) Then ss.A 5: GoTo E
@@ -182,13 +190,13 @@ Function MdPgmDs(Optional A As CodeModule) As Ds
 '    Dim mAnm$(): If Fnd_Anm_ByPrj(mAnm, mPrj) Then ss.A 9: GoTo E
 '
 '    Dim iMd%
-'    For iMd = 0 To Siz_Ay(mAnm) - 1
+'    For iMd = 0 To Sz(mAnm) - 1
 '        Dim mNmm$: mNmm = mAnm(iMd)
 '        StsShw "Export pgm in module [" & mNmPrj & "." & mNmm & "]...."
 '        Dim mMd As CodeModule: If Fnd_Md(mMd, mPrj, mNmm) Then ss.A 10: GoTo E
 '        Dim mAnPrc$(): If Fnd_AnPrc_ByMd(mAnPrc, mMd, , True) Then ss.A 11: GoTo E
 '        Dim iPrc%
-'        For iPrc = 0 To Siz_Ay(mAnPrc) - 1
+'        For iPrc = 0 To Sz(mAnPrc) - 1
 '            Dim mNmPrc$: mNmPrc = mAnPrc(iPrc):
 '            If mNmPrc = "qBrkRec" And mNmm = "Brk" Then Stop
 '            'Debug.Print "Prj(" & iPrj & ":" & mNmPrj & ") Md(" & iMd & ":" & mNmm & ") Prc(" & iPrc & ":" & mNmPrc & ")"

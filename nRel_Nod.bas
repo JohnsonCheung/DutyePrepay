@@ -6,8 +6,8 @@ Sub NodAsstVdt(Nod())
 ErAsst NodChkVdt(Nod)
 End Sub
 
-Function NodChkVdt(Nod()) As Dt
-Dim O As Dt
+Function NodChkVdt(Nod()) As Variant()
+Dim O()
 If Sz(Nod) <> 2 Then O = ErNew("Given Nod-{Sz} should be 2", Sz(Nod)): Exit Function
 If Not VarIsStr(Nod(0)) Then O = ErNew("Given Nod(0)-{Ty} should be Str", TypeName(Nod(0)))
 If Not VarIsSy(Nod(1)) Then O = ErApd(O, "Given Nod(1)-{Ty} should be StrAy", TypeName(Nod(1)))

@@ -74,10 +74,10 @@ If Not NoIdx Then DrAy = DrAyAddCol_Idx(DrAy)
 AyBrw DrAyLy(DrAy, BrkAtColIdx), Pfx
 End Sub
 
-Function DrAyChkEq(DrAy1(), DrAy2()) As Dt
-Dim Er As Dt 'shared using
+Function DrAyChkEq(DrAy1(), DrAy2()) As Variant()
+Dim Er() 'shared using
 '====
-Dim O As Dt
+Dim O()
 Dim NEr%
     Dim R&, U&, U2&, U1&
     NEr = 0
@@ -89,20 +89,21 @@ Dim NEr%
     U = Min(U1, U2)
     For R = 0 To U
         Er = DrChkEq(DrAy1(R), DrAy2(R))
-        If ErIsSom(Er) Then
-            O = ErApdEr(O, Er)
+        If AyHasEle(Er) Then
+            PushAy O, ErNew("**Row-{R} is different", R)
+            PushAy O, Er
             NEr = NEr + 1
             If NEr = 10 Then DrAyChkEq = O: Exit For
         End If
     Next
 
-If ErIsSom(O) Then
+If AyHasEle(O) Then
     Dim A$:
     Dim M$:
     If NEr = 10 Then A = "at least " Else A = ""
     M = FmtQQ("Given 2 DrAy has ?{NEr} rows are different", A)
     Er = ErNew(M, NEr)
-    O = ErApdEr(Er, O)
+    O = AyAdd(Er, O)
 End If
 DrAyChkEq = O
 End Function
@@ -112,10 +113,10 @@ Dim D1(), D2()
 '=========
 D1 = Array(Array(1, 2, 3, 4), Array(2, 3, 4, 5))
 D2 = Array(Array(1, 2, 3, 4), Array(2, 3, 4, 5))
-Debug.Assert ErIsSom(DrAyChkEq(D1, D2)) = False
+Debug.Assert AyHasEle(DrAyChkEq(D1, D2)) = False
 '=========
 D2 = Array(Array(1, 2, 3, 4), Array(2, 3, 4, 6))
-DtBrw DrAyChkEq(D1, D2)
+ErBrw DrAyChkEq(D1, D2)
 End Sub
 
 Function DrAyCol(DrAy(), Optional ColIdx&, Optional OAy)
@@ -144,7 +145,7 @@ Function DrAyColSz&(DrAy())
 DrAyColSz = DrAyColUB(DrAy) + 1
 End Function
 
-Function DrAyColUB&(DrAy())
+Function DrAyColUB&(DrAy)
 Dim O&, I, U&
 If AyIsEmpty(DrAy) Then Exit Function
 For Each I In DrAy
@@ -179,7 +180,7 @@ DrAyNew_AyAp = O
 End Function
 
 Function DrAyNewKVByFldAp(FnStr$, ParamArray Ap()) As Variant
-Dim F$(): F = FnStrBrk(FnStr)
+Dim F$(): F = NmstrBrk(FnStr)
 Dim J%, O()
 For J = 0 To UB(F)
     Push O, Array(F(J), Ap(J))

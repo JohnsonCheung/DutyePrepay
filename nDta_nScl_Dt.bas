@@ -11,6 +11,7 @@ DtBrw DtNewSclVBar("Tbl;ABC|Fld;A;B;C;D|;1;2;3;4|;4;4;5;1|;SLKF;DKF;SDFLDF;DFDF|
 End Sub
 
 Function DtNewScLy(ScLy) As Dt
+If Sz(ScLy) < 2 Then Er "DtNewScLy: Given ScLy should have {Sz}>=2", Sz(ScLy)
 Dim L0$: L0 = ScLy(0)
 Dim L1$: L1 = ScLy(1)
 

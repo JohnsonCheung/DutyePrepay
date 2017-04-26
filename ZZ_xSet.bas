@@ -7,7 +7,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Dim x_AySilent() As Boolean
 'Dim x_AyNoLog() As Boolean
 'Function Set_Import_AtA1(pFx$) As Boolean
-''Aim: each ws in {pFx} set a1 as "Import:{NmWs}"
+''Aim: each ws in {pFx} set a1 as "Import:{WsNm}"
 'Const cSub$ = "Set_Import_AtA1"
 'On Error GoTo R
 'Dim mWb As Workbook: If Opn_Wb_RW(mWb, pFx) Then ss.A 1: GoTo E
@@ -43,7 +43,7 @@ Attribute VB_Name = "ZZ_xSet"
 ''Aim: Build {oLv} by {FnStr} in {pRs}
 'Stop
 ''Dim mAnFld_Lcl$(), mAnFld_Host$(): If Brk_Lm_To2Ay(mAnFld_Lcl, mAnFld_Host, FnStr) Then ss.A 1: GoTo E
-''Dim N%: N = Siz_Ay(mAnFld_Lcl)
+''Dim N%: N = Sz(mAnFld_Lcl)
 ''With Rs
 ''    Dim J%, mA$
 ''    If pIsNoNm Then
@@ -104,7 +104,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Const cSub$ = "Set_Ws_ByVayv"
 'On Error GoTo R
 'Dim mAyV(): mAyV = pVayv
-'Dim J%, N%: N = Siz_Ay(mAyV)
+'Dim J%, N%: N = Sz(mAyV)
 'With pWs
 '    If pIsDown Then
 '        For J = 0 To N - 1
@@ -193,7 +193,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Const cSub$ = "Set_ChdLnk"
 'On Error GoTo R
 'Dim mAnChd$(): mAnChd = Split(pLnChd, CtComma)
-'Dim J%: For J = 0 To Siz_Ay(mAnChd) - 1
+'Dim J%: For J = 0 To Sz(mAnChd) - 1
 '    Dim mSubFrm As SubForm: If Fnd_Ctl(mSubFrm, pFrm, mAnChd(J)) Then GoTo Nxt
 '    With mSubFrm
 '        .LinkMasterFields = pMst
@@ -247,7 +247,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Dim mAnBtn$(): mAnBtn = Split(pLnBtn, CtComma)
 'Dim mEnabled As Boolean: mEnabled = (pBtnSte <> msoButtonDown)
 'With mCmdBar
-'    Dim J%: For J = 0 To Siz_Ay(mAnBtn) - 1
+'    Dim J%: For J = 0 To Sz(mAnBtn) - 1
 '        With .Controls(mAnBtn(J))
 '            .State = pBtnSte
 '            .Enabled = mEnabled
@@ -340,7 +340,7 @@ Attribute VB_Name = "ZZ_xSet"
 '''- VFld  = "Qty"
 '''- pSetFld  = RunningQty
 'Dim mAnFldKey$(): mAnFldKey = Split(pLoKey, CtComma)
-'Dim NKey%: NKey = Siz_Ay(mAnFldKey)
+'Dim NKey%: NKey = Sz(mAnFldKey)
 'ReDim mAyLasKeyVal(NKey - 1)
 'Dim J As Byte: For J = 0 To NKey - 1
 '    mAyLasKeyVal(J) = "xxxx"
@@ -475,7 +475,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Dim mWs As Worksheet: Set mWs = Rg.Worksheet
 'Dim mWb As Workbook: Set mWb = mWs.Parent
 'Dim mAnWs$(): If Fnd_AnWs_ByWb(mAnWs, mWb) Then GoTo E
-'Dim N%: N = Siz_Ay(mAnWs)
+'Dim N%: N = Sz(mAnWs)
 'Dim iCell As Range, V, J%
 'For Each iCell In Rg
 '    V = iCell.Value
@@ -594,7 +594,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Function Set_LstCtlLayout(pFrm As Access.Form, pLnCtl$, Optional pLeft! = -1, Optional pTop! = -1, Optional pWdt! = -1, Optional pHgt! = -1) As Boolean
 'Const cSub$ = "Set_LstCtlLayout"
 'Dim mAnCtl$(): mAnCtl = Split(pLnCtl, CtComma)
-'Dim J%: For J = 0 To Siz_Ay(mAnCtl) - 1
+'Dim J%: For J = 0 To Sz(mAnCtl) - 1
 '    Dim iCtl As Access.Control: If Fnd_Ctl(iCtl, pFrm, mAnCtl(J)) Then GoTo Nxt
 '    Set_CtlLayout iCtl, pLeft, pTop, pWdt, pHgt
 'Nxt:
@@ -698,7 +698,7 @@ Attribute VB_Name = "ZZ_xSet"
 ''-- Fill in <<pNmSeqFld>> starting from 1 by using PrimaryKey as the key
 'On Error GoTo R
 'Dim mNmt$: mNmt = Q_S(pNmt, "[]")
-'Dim mRs As DAO.Recordset: If Opn_Rs(mRs, Fmt_Str("Select {0} from {1}{2}", pNmFldSno, mNmt, SqlStrOrdBy(pOrdBy))) Then ss.A 1: GoTo E
+'Dim mRs As DAO.Recordset: If Opn_Rs(mRs, Fmt_Str("Select {0} from {1}{2}", pNmFldSno, mNmt, SqsOrdBy(pOrdBy))) Then ss.A 1: GoTo E
 'Set_Sno = Set_Sno_ByRs(mRs, pNmFldSno$)
 'Exit Function
 'R: ss.R
@@ -741,7 +741,7 @@ Attribute VB_Name = "ZZ_xSet"
 ''Aim: Set first N fields value of {pRs} to {oAyKv}
 'Const cSub$ = "Set_AyKv_ByRs"
 'On Error GoTo R
-'Dim J%, mN%: mN = Siz_Ay(oAyKv)
+'Dim J%, mN%: mN = Sz(oAyKv)
 'For J = 0 To mN - 1
 '    oAyKv(J) = pRs.Fields(J).Value
 'Next
@@ -756,7 +756,7 @@ Attribute VB_Name = "ZZ_xSet"
 'Dim mSql$: mSql = Fmt_Str("Select {2},{0} from {1} Order by {2}{3}", pNmFldSeq, mNmt, FnStrGp, Cv_Str(pOrdBy, ","))
 'Dim mRs As DAO.Recordset: If Opn_Rs(mRs, mSql) Then ss.A 1: GoTo E
 'Dim mAnFldGp$(): mAnFldGp = Split(FnStrGp, ",")
-'Dim NGp%: NGp = Siz_Ay(mAnFldGp)
+'Dim NGp%: NGp = Sz(mAnFldGp)
 'ReDim mAyKvLas(NGp - 1)
 'Dim mSno%: mSno = 0
 'With mRs
@@ -885,7 +885,7 @@ Attribute VB_Name = "ZZ_xSet"
 '        pWs.Cells(1, mCno_Empty).Value = pRow1Val
 '        'Set Lv to empty column
 '        Dim mAy$(): mAy = Split(pLv, CtComma)
-'        Dim J%, N%: N = Siz_Ay(mAy)
+'        Dim J%, N%: N = Sz(mAy)
 '        For J = 0 To N - 1
 '            .Cells(2 + J, mCno_Empty).Value = mAy(J)
 '        Next

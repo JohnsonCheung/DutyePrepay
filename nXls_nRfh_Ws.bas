@@ -18,10 +18,10 @@ Next
 End Sub
 
 Sub WsRfhLo(A As Worksheet)
-Dim Lo As ListObject
+Dim LO As ListObject
 WsRfhMsgShw A, "ListObjects"
-For Each Lo In A.ListObjects
-    LoRfh Lo
+For Each LO In A.ListObjects
+    LoRfh LO
 Next
 StsClr
 End Sub

@@ -2,15 +2,15 @@ Attribute VB_Name = "nStr_StrBrk"
 Option Compare Database
 Option Explicit
 
-Function Brk_Brk_Cmd(oBrk$, oSplit$, oInto$, oTo$, oKeep$, oSetSno$, oBeg%, oStp%, pBrkCmd$) As Boolean
+Function Brk_Brk_Cmd(oBrk$, oSplit$, OInto$, oTo$, oKeep$, oSetSno$, oBeg%, oStp%, pBrkCmd$) As Boolean
 'Aim: Break {pBrkCmd} into: Brk Split [To] [Into] [Keep] [SetSno] [Beg] [Stp]
 '     Assume no space with the elements
 Const cSub$ = "Brk_Brk_Cmd"
 Dim mBrkCmd$: mBrkCmd = Replace(Replace(Replace(pBrkCmd, vbLf, " "), vbCr, " "), "  ", " ")
 Dim mA$(): mA = Split(mBrkCmd)
 Dim J%
-oBrk = "": oSplit = "": oTo = "": oInto = "": oKeep = "": oSetSno = "": oStp = 0
-For J = 0 To Siz_Ay(mA) - 1 Step 2
+oBrk = "": oSplit = "": oTo = "": OInto = "": oKeep = "": oSetSno = "": oStp = 0
+For J = 0 To Sz(mA) - 1 Step 2
     Select Case mA(J)
     Case "Brk":     If oBrk <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oBrk = mA(J + 1)
@@ -18,8 +18,8 @@ For J = 0 To Siz_Ay(mA) - 1 Step 2
                        oSplit = mA(J + 1)
     Case "To":      If oTo <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oTo = mA(J + 1)
-    Case "Into":    If oInto <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
-                       oInto = mA(J + 1)
+    Case "Into":    If OInto <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
+                       OInto = mA(J + 1)
     Case "Keep":    If oKeep <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oKeep = mA(J + 1)
     Case "SetSno":  If oSetSno <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
@@ -36,15 +36,15 @@ Exit Function
 E: Brk_Brk_Cmd = True: ss.B cSub, cMod, "pBrkCmd", pBrkCmd
 End Function
 
-Function Brk_Cmb_Cmd(oCmb$, oJoin$, oInto$, oTo$, oKeep$, oOrd$, oStp%, pCmbCmd$) As Boolean
+Function Brk_Cmb_Cmd(oCmb$, oJoin$, OInto$, oTo$, oKeep$, oOrd$, oStp%, pCmbCmd$) As Boolean
 'Aim: Break {pJnCmd} into: Cmb Jn [To] [Into] [Keep] [Ord] [Stp]
 '     Assume no space with the elements
 Const cSub$ = "Brk_Cmb_Cmd"
 Dim mCmbCmd$: mCmbCmd = Replace(Replace(Replace(pCmbCmd, vbLf, " "), vbCr, " "), "  ", " ")
 Dim mA$(): mA = Split(mCmbCmd)
 Dim J%
-oCmb = "": oJoin = "": oTo = "": oInto = "": oKeep = "": oOrd = "": oStp = 0
-For J = 0 To Siz_Ay(mA) - 1 Step 2
+oCmb = "": oJoin = "": oTo = "": OInto = "": oKeep = "": oOrd = "": oStp = 0
+For J = 0 To Sz(mA) - 1 Step 2
     Select Case mA(J)
     Case "Cmb":     If oCmb <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oCmb = mA(J + 1)
@@ -52,8 +52,8 @@ For J = 0 To Siz_Ay(mA) - 1 Step 2
                        oJoin = mA(J + 1)
     Case "To":      If oTo <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oTo = mA(J + 1)
-    Case "Into":    If oInto <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
-                       oInto = mA(J + 1)
+    Case "Into":    If OInto <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
+                       OInto = mA(J + 1)
     Case "Keep":    If oKeep <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
                        oKeep = mA(J + 1)
     Case "Ord":     If oOrd <> "" Then ss.A 1, mA(J) & " is more than one": GoTo E
@@ -80,7 +80,7 @@ End Function
 Function Brk_ColonAs_ToCaptionNm__Tst()
 Const cSub$ = "Brk_ColonAs_ToCaptionNm_Tst"
 Shw_Dbg cSub, cMod
-Dim mColonAsStr$, mNm$, mCaption$, mCase As Byte
+Dim mColonAsStr$, MNm$, mCaption$, mCase As Byte
 For mCase = 1 To 2
     Select Case mCase
     Case 1
@@ -88,9 +88,9 @@ For mCase = 1 To 2
     Case 2
         mColonAsStr = "xx"
     End Select
-    If Brk_ColonAs_ToCaptionNm(mCaption, mNm, mColonAsStr) Then Stop
+    If Brk_ColonAs_ToCaptionNm(mCaption, MNm, mColonAsStr) Then Stop
     Debug.Print mCase
-    Debug.Print ToStr_LpAp(vbLf, "mColonAsStr, mNm, mCaption", mColonAsStr, mNm, mCaption)
+    Debug.Print ToStr_LpAp(vbLf, "mColonAsStr, mNm, mCaption", mColonAsStr, MNm, mCaption)
     Debug.Print "-----------"
 Next
 End Function
@@ -165,7 +165,7 @@ For J = 1 To Len(pNm)
     mA = mA & Chr(mS)
 Next
 If Len(mA) > 0 Then If Add_AyEle(OAy, mA) Then ss.A 2: GoTo E
-Dim N%: N = Siz_Ay(OAy)
+Dim N%: N = Sz(OAy)
 If N > pMax Then
     mA = ""
     For J = pMax - 1 To N - 1

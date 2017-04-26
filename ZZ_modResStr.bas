@@ -15,8 +15,8 @@ Attribute VB_Name = "ZZ_modResStr"
 ''Sub Shw_MnuWs()
 ''Const cSub$ = "Shw_MnuWs"
 ''On Error GoTo R
-''Dim mNmWs$: mNmWs = Excel.Application.ActiveSheet.CodeName
-''Select Case mNmWs
+''Dim mWsNm$: mWsNm = Excel.Application.ActiveSheet.CodeName
+''Select Case mWsNm
 ''Case "Ws{N}": MnuWs{N}.Show
 ''End Select
 ''R: ss.R

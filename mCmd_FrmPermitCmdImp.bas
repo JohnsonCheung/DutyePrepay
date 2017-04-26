@@ -4,8 +4,8 @@ Option Explicit
 
 Sub FrmPermitCmdImp(PermitNo$)
                           ZLnk PermitNo
-Dim Er As Dt:        Er = ZChk
-                          If ErIsSom(Er) Then DtBrw Er, "ImpErr": Exit Sub
+Dim Er():            Er = ZChk
+                          If AyHasEle(Er) Then ErBrw ErApd(Er, "ImpErr"): Exit Sub
 Dim W$:               W = FmtQQ("PermitNo='?'", PermitNo)
 Dim PermitId&: PermitId = TblFldToLng("Permit", "Permit", W)
                           ZInsPermitD PermitId
@@ -18,17 +18,15 @@ Sub FrmPermitCmdImp__Tst()
 FrmPermitCmdImp ImpPermitFstNo
 End Sub
 
-Private Function ZChk() As Dt
-Dim A1 As Dt: A1 = ZChk_FldTy
-Dim A2 As Dt: A2 = ZChk_EmptyRec
-ZChk = DtUnion(A1, A2)
+Private Function ZChk() As Variant()
+ZChk = AyAdd(ZChk_FldTy, ZChk_EmptyRec)
 End Function
 
-Private Function ZChk_EmptyRec() As Dt
-ZChk_EmptyRec = TblChk(">Permit")
+Private Function ZChk_EmptyRec() As Variant()
+ZChk_EmptyRec = TblChkEmptyRec(">Permit")
 End Function
 
-Private Function ZChk_FldTy() As Dt
+Private Function ZChk_FldTy() As Variant()
 Const C = "TXT : [Batch Number] | DBL : SKU [Order Qty#]"
 'Const C = _
 '"TXT : [Material Description] Warehouse [Age Certificate] [Com# Code] [Permit Number] [Batch Number] [Customer / Duty Paid] | " & _
@@ -48,7 +46,7 @@ For J = 0 To UB(S.DrAy)
     Dr = S.DrAy(J)
     AyAsg Dr, Sku, BchNo, Qty
     SeqNo = SeqNo + 10
-    SqlRun SqlStrOfIns("PermitD", F, ApAv(PermitId, Sku, SeqNo, Qty, BchNo))
+    SqlRun SqsOfIns("PermitD", F, ApAv(PermitId, Sku, SeqNo, Qty, BchNo))
 Next
 End Sub
 

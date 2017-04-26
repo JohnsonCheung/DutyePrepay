@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 
 Sub TblCrt(T, SqlFldLst$, Optional A As database)
-DbRunSql SqlStrOfCrt(T, SqlFldLst), A
+DbRunSql SqsOfCrt(T, SqlFldLst), A
 End Sub
 
 Sub TblCrt_ByFldAy(T, FldAy() As DAO.Field _
@@ -109,7 +109,7 @@ End Sub
 Sub TblCrt_FmDSN_Nmt(T$, Dsn$, Optional SrcTn$, Optional A As database)
 Dim Src$
     Src = IIf(SrcTn = "", T, SrcTn)
-TblCrt_FmDSN_Sql T, Dsn, SqlStrOfSel(Src)
+TblCrt_FmDSN_Sql T, Dsn, SqsOfSel(Src)
 End Sub
 
 Function TblCrt_FmDSN_Nmt__Tst()
@@ -151,7 +151,7 @@ Sub TblCrt_FmDTF_Nmt(T, IP$, Lib$ _
     , Optional ONrec& _
     , Optional A As database)
 'Aim: Create {TarTn} in {TarFb} from {pIP},{pLib},{T} by meaning DTF download through {pIsByXls} or by Text
-Dim S$: S = SqlStrOfSel(IIf(SrcT = "", T, SrcT))
+Dim S$: S = SqsOfSel(IIf(SrcT = "", T, SrcT))
 TblCrt_FmDTF_Sql T, IP, S, Lib, IsByXls, IsKeepDownloadFfn, ONrec, A
 End Sub
 
@@ -418,7 +418,7 @@ Const cSub$ = "TblCrt_FmLnkLnt"
 On Error GoTo R
 Dim mAnt$():      If Brk_Ln2Ay(mAnt, pLnt) Then ss.A 1: GoTo E
 Dim mAntNew$():   If Brk_Ln2Ay(mAntNew, Fct.NonBlank(pLntNew, pLnt)) Then ss.A 2: GoTo E
-Dim N%: N = Siz_Ay(mAnt)
+Dim N%: N = Sz(mAnt)
 Dim J%
 For J = 0 To N - 1
     If TblCrt_FmLnkNmt(SrcFb, mAnt(J), mAntNew(J), pInDb) Then ss.A 3: GoTo E
@@ -485,7 +485,7 @@ Dim mWb As Workbook: If Opn_Wb_R(mWb, Pfx) Then ss.A 1: GoTo E
 Dim mAnWs$(): If Fnd_AnWs_BySetWs(mAnWs, mWb, pSetWs) Then ss.A 2: GoTo E
 Dim mCnn$: mCnn = CnnStr_Xls(Pfx)
 Dim J%
-For J = 0 To Siz_Ay(mAnWs) - 1
+For J = 0 To Sz(mAnWs) - 1
     Dim mNmtSrc$: mNmtSrc = mAnWs(J) & "$"
     Dim mNmt$: mNmt = pPfxNmt & mAnWs(J)
     If TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb) Then ss.A 3: GoTo E
@@ -498,29 +498,29 @@ X:
     Cls_Wb mWb, False, True
 End Function
 
-Function TblCrt_FmLnkWs(Pfx$, Optional pNmWs$ = "", Optional TNew$ = "", Optional pInDb As database) As Boolean
-'Aim: Create NonBlank({TNew},{pNmWs}) in {pInDb} by linking {pFx}!{pNmWs}.  If {pNmWs} is not given, use FileName(pFx).
+Function TblCrt_FmLnkWs(Pfx$, Optional pWsNm$ = "", Optional TNew$ = "", Optional pInDb As database) As Boolean
+'Aim: Create NonBlank({TNew},{pWsNm}) in {pInDb} by linking {pFx}!{pWsNm}.  If {pWsNm} is not given, use FileName(pFx).
 Const cSub$ = "TblCrt_FmLnkWs"
-If pNmWs = "" Then pNmWs = Cut_Ext(Fct.Nam_FilNam(Pfx))
-Dim mNmt$: mNmt = NonBlank(TNew, pNmWs)
+If pWsNm = "" Then pWsNm = Cut_Ext(Fct.Nam_FilNam(Pfx))
+Dim mNmt$: mNmt = NonBlank(TNew, pWsNm)
 Dim mCnn$: mCnn = CnnStr_Xls(Pfx)
-Dim mNmtSrc$: mNmtSrc = pNmWs & "$"
+Dim mNmtSrc$: mNmtSrc = pWsNm & "$"
 TblCrt_FmLnkWs = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkWs = True: ss.B cSub, cMod, "pFx,pNmWs,TNew,pInDb", Pfx, pNmWs, TNew, ToStr_Db(pInDb)
+E: TblCrt_FmLnkWs = True: ss.B cSub, cMod, "pFx,pWsNm,TNew,pInDb", Pfx, pWsNm, TNew, ToStr_Db(pInDb)
 'Excel 8.0;HDR=YES;IMEX=2;DATABASE=D:\Data\MyDoc\Development\ISS\Imports\PO\PUR904 (On-Line).xls;TABLE='PUR904 (On-Line)'
 End Function
 
 Function TblCrt_FmLnkWs__Tst()
 Const cSub$ = "TblCrt_FmLnkWs_Tst"
 Const cFx$ = "c:\tmp\aa.xls"
-Const cNmWs$ = "aa"
-Dim mWb As Workbook: If Crt_Wb(mWb, cFx, True, cNmWs) Then Stop
+Const cWsNm$ = "aa"
+Dim mWb As Workbook: If Crt_Wb(mWb, cFx, True, cWsNm) Then Stop
 Dim mWs As Worksheet: Set mWs = mWb.Sheets(1)
 If Set_Ws_ByLpAp(mWs, 1, "abc,def,xyz", 1, "a123", Now) Then Stop
 If Cls_Wb(mWb, True) Then Stop
-If TblCrt_FmLnkWs(cFx, cNmWs) Then Stop
+If TblCrt_FmLnkWs(cFx, cWsNm) Then Stop
 End Function
 
 Function TblCrt_FmLnkXls(Pfx$, Optional pPfx$ = "", Optional A As database) As Boolean
@@ -528,10 +528,10 @@ Function TblCrt_FmLnkXls(Pfx$, Optional pPfx$ = "", Optional A As database) As B
 Const cSub$ = "TblCrt_FmLnkXls"
 StsShw "Create tables by linking [" & Pfx & "]...."
 Dim AnWs$():  If Fnd_AnWs(AnWs, Pfx) Then ss.A 1: GoTo E
-Dim iNmWs, mA$
-For Each iNmWs In AnWs
-    Dim mNmWs$: mNmWs = iNmWs
-    If TblCrt_FmLnkWs(Pfx, mNmWs, pPfx & mNmWs, A) Then mA = Add_Str(mA, mNmWs)
+Dim iWsNm, mA$
+For Each iWsNm In AnWs
+    Dim mWsNm$: mWsNm = iWsNm
+    If TblCrt_FmLnkWs(Pfx, mWsNm, pPfx & mWsNm, A) Then mA = Add_Str(mA, mWsNm)
 Next
 If Len(mA) <> 0 Then ss.A 1, "Some ws {mA} in xls file cannot be linked", "mA", mA: GoTo E
 GoTo X
@@ -672,7 +672,7 @@ TblCrt_ByFldDclStr mNmtTar, "Sno Long, Par Long, Chd Long, Lvl Byte", 1, , A
 Dim mRsTar As DAO.Recordset: If Opn_Rs(mRsTar, "Select * from [" & mNmtTar & "]") Then ss.A 5: GoTo E
 Dim mSno&, mLvl As Byte: mSno = 0: mLvl = 0
 Dim J%
-Dim mAyPth&(), N%: N = Siz_Ay(mAyRoot)
+Dim mAyPth&(), N%: N = Sz(mAyRoot)
 For J = 0 To N - 1
     If J Mod 50 = 0 Then StsShw J & "(" & N & ") ..."
     TblCrt_ParChd_OneRec mRsTar, 0, mAyRoot(J), mLvl
@@ -685,59 +685,59 @@ End Function
 
 Function TblCrt_ParChd__Tst()
 'If TblCrt_FmLnkLnt("p:\workingdir\MetaDb.mdb", "$Tbl,$TblR") Then Stop: GoTo E
-Dim mFx$, mWb1 As Workbook, mWb2 As Workbook, mWs As Worksheet
-If True Then
-    mFx = "c:\tmp\aa.xls"
-    If True Then
-        If TblCrt_FmLnkLnt("P:\WorkingDir\MetaAll.mdb", "$Tbl,$TblR") Then Stop: GoTo E
-        If Run_Qry("qryTstCrtTblParChd") Then Stop: GoTo E
-        If Exp_SetNmtq2Xls("[#]Lst", mFx, True) Then Stop: GoTo E
-    End If
-    If Opn_Wb_RW(mWb1, mFx) Then Stop: GoTo E
-    Set mWs = mWb1.Sheets(1)
-    If WsFmtOL_ByCol(mWs.Range("A2"), 5, 6) Then Stop: GoTo E
-    mWb1.Save
-    mWb1.Application.Visible = True
-    Stop
-End If
-If True Then
-    mFx = "c:\tmp\bb.xls"
-    If TblCrt_ParChd("#Tmp", "$TblR", "TblTo", "Tbl") Then Stop: GoTo E
-
-    If Run_Sql("Alter table [#Tmp] Add NmPar Text(50), L Long, NmChd Text(50)") Then Stop: GoTo E
-    If Run_Sql("Update [#Tmp] m inner join [$Tbl] s" & _
-        " On m.Par=s.Tbl" & _
-        " Set m.NmPar=s.NmTbl" & _
-        " Where Par<>0") Then Stop: GoTo E
-    If Run_Sql("Update [#Tmp] set NmPar='Root' where Par=0") Then Stop: GoTo E
-    If Run_Sql("Update [#Tmp] set L=Lvl+1") Then Stop: GoTo E
-    If Run_Sql("Alter Table [#Tmp] Drop Column Lvl") Then Stop: GoTo E
-    If Run_Sql("Update [#Tmp] m inner join [$Tbl] s" & _
-        " On m.Chd=s.Tbl" & _
-        " Set m.NmChd=s.NmTbl") Then Stop: GoTo E
-
-    If Exp_SetNmtq2Xls("[#]Tmp", mFx, True) Then Stop: GoTo E
-    If Opn_Wb_RW(mWb2, mFx) Then Stop: GoTo E
-    Set mWs = mWb2.Sheets(1)
-    If WsFmtOL_ByCol(mWs.Range("A2"), 5, 6) Then Stop: GoTo E
-    mWb2.Save
-End If
-mWs.Application.Visible = True
-Stop
-GoTo X
-Exit Function
-E:
-X:
-    Cls_Wb mWb1, False, True
-    Cls_Wb mWb2, False, True
+'Dim mFx$, mWb1 As Workbook, mWb2 As Workbook, mWs As Worksheet
+'If True Then
+'    mFx = "c:\tmp\aa.xls"
+'    If True Then
+'        If TblCrt_FmLnkLnt("P:\WorkingDir\MetaAll.mdb", "$Tbl,$TblR") Then Stop: GoTo E
+'        If Run_Qry("qryTstCrtTblParChd") Then Stop: GoTo E
+'        If Exp_SetNmtq2Xls("[#]Lst", mFx, True) Then Stop: GoTo E
+'    End If
+'    If Opn_Wb_RW(mWb1, mFx) Then Stop: GoTo E
+'    Set mWs = mWb1.Sheets(1)
+'    If WsFmtOL_ByCol(mWs.Range("A2"), 5, 6) Then Stop: GoTo E
+'    mWb1.Save
+'    mWb1.Application.Visible = True
+'    Stop
+'End If
+'If True Then
+'    mFx = "c:\tmp\bb.xls"
+'    If TblCrt_ParChd("#Tmp", "$TblR", "TblTo", "Tbl") Then Stop: GoTo E
+'
+'    If Run_Sql("Alter table [#Tmp] Add NmPar Text(50), L Long, NmChd Text(50)") Then Stop: GoTo E
+'    If Run_Sql("Update [#Tmp] m inner join [$Tbl] s" & _
+'        " On m.Par=s.Tbl" & _
+'        " Set m.NmPar=s.NmTbl" & _
+'        " Where Par<>0") Then Stop: GoTo E
+'    If Run_Sql("Update [#Tmp] set NmPar='Root' where Par=0") Then Stop: GoTo E
+'    If Run_Sql("Update [#Tmp] set L=Lvl+1") Then Stop: GoTo E
+'    If Run_Sql("Alter Table [#Tmp] Drop Column Lvl") Then Stop: GoTo E
+'    If Run_Sql("Update [#Tmp] m inner join [$Tbl] s" & _
+'        " On m.Chd=s.Tbl" & _
+'        " Set m.NmChd=s.NmTbl") Then Stop: GoTo E
+'
+'    If Exp_SetNmtq2Xls("[#]Tmp", mFx, True) Then Stop: GoTo E
+'    If Opn_Wb_RW(mWb2, mFx) Then Stop: GoTo E
+'    Set mWs = mWb2.Sheets(1)
+'    If WsFmtOL_ByCol(mWs.Range("A2"), 5, 6) Then Stop: GoTo E
+'    mWb2.Save
+'End If
+'mWs.Application.Visible = True
+'Stop
+'GoTo X
+'Exit Function
+'E:
+'X:
+'    Cls_Wb mWb1, False, True
+'    Cls_Wb mWb2, False, True
 End Function
 
 Function TblCrt_tmpXXX_Prm_By_qryOdbcXXX_0(QryNmsns$, Optional pLm$ = "") As Boolean
 Const cSub$ = "Crt_"
-Dim mNmtPrm$: mNmtPrm = "tmpOdbc" & QryNmsns & "_Prm"
+Dim mNmPrm$: mNmPrm = "tmpOdbc" & QryNmsns & "_Prm"
 Dim mAnq$(): If Fnd_Anq_ByPfx(mAnq, "qryOdbc" & QryNmsns & "_0") Then ss.A 3: GoTo E
 If Run_Qry_ByAnq(mAnq, pLm) Then ss.A 4: GoTo E
-If Not IsTbl(mNmtPrm) Then ss.A 1, "Table mNmtPrm not exist", eRunTimErr, "mNmtPrm", mNmtPrm: GoTo E
+If Not IsTbl(mNmPrm) Then ss.A 1, "Table mNmPrm not exist", eRunTimErr, "mNmPrm", mNmPrm: GoTo E
 Exit Function
 R: ss.R
 E: TblCrt_tmpXXX_Prm_By_qryOdbcXXX_0 = True: ss.B cSub, cMod, "QryNmsns,pLm", QryNmsns, pLm
@@ -808,13 +808,13 @@ If Chk_Struct_Tbl(TTblF, "Pth,NmMdb,NPk,StopAutoInc,TblAtr,NmTbl,SnoTblF,NmFld,T
 Dim mNmtTblF$: mNmtTblF = Q_S(TTblF, "[]")
 Dim mAyFb$(): mAyFb = SqlSy("Select Distinct Pth & NmMdb from " & mNmtTblF)
 Dim iFb%
-For iFb = 0 To Siz_Ay(mAyFb) - 1
+For iFb = 0 To Sz(mAyFb) - 1
     Dim mDb As database: If Opn_Db_RW(mDb, mAyFb(iFb)) Then ss.A 2: GoTo E
     Dim mAyNPk() As Byte, mAyStopAutoInc() As Boolean, mAyTblAtr&(), mAnt$()
     Dim mSql$: mSql = Fmt_Str("Select Distinct NPk,StopAutoInc,TblAtr,NmTbl from {0} where Pth & NmMdb='{1}' order by NmTbl", mNmtTblF, mAyFb(iFb))
     If Fnd_LoAyV_FmSql(mSql, "NPk,StopAutoInc,TblAtr,NmTbl", mAyNPk, mAyStopAutoInc, mAyTblAtr, mAnt) Then ss.A 2: GoTo E
     Dim iNmt%
-    For iNmt = 0 To Siz_Ay(mAnt) - 1
+    For iNmt = 0 To Sz(mAnt) - 1
         StsShw "Creating Table " & mAnt(iNmt) & " ..."
         mSql = Fmt_Str("Select NmFld,TypDao,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal from {0} where NmTbl='{1}' order by SnoTblF", mNmtTblF, mAnt(iNmt))
         Dim mRs As DAO.Recordset: If Opn_Rs(mRs, mSql) Then ss.A 3: GoTo E
@@ -836,7 +836,7 @@ For iFb = 0 To Siz_Ay(mAyFb) - 1
                 Dim mAnFld$(): If Fnd_AnFld_ReqTxt(mAnFld, mAnt(iNmt), mDb) Then ss.A 3: GoTo E
                 Dim mLnFld$, mLnVal$
                 mLnFld = "": mLnVal = ""
-                Dim I%, NFld%: NFld = Siz_Ay(mAnFld)
+                Dim I%, NFld%: NFld = Sz(mAnFld)
                 For I = 0 To NFld - 1
                     mLnFld = mLnFld & "," & mAnFld(I)
                     mLnVal = mLnVal & ",'-'"
@@ -879,10 +879,10 @@ End Function
 Sub TblCrtSubDtaSheet(MstTn$, ChdTn$, MstFnStr$, Optional ChdFnStr$, Optional A As database)
 Dim O As TableDef: Set O = DbNz(A).TableDefs(MstTn)
 Dim OMst$
-    OMst = AyJnComma(FnStrBrk(MstFnStr))
+    OMst = AyJnComma(NmstrBrk(MstFnStr))
 Dim OChd$
     OChd = IIf(ChdFnStr = "", MstFnStr, ChdFnStr)
-    OChd = AyJnComma(FnStrBrk(OChd))
+    OChd = AyJnComma(NmstrBrk(OChd))
 TblSetPrp O, "SubdatasheetName", ChdTn
 TblSetPrp O, "LinkChildFields", OChd
 TblSetPrp O, "LinkMasterFields", OMst
@@ -930,14 +930,14 @@ Dim mSql$: mSql = Fmt_Str("Select {0} from [{1}] where {2}={3} order by {0}", pC
 Dim mAyId&(): mAyId = SqlIntoAy(mSql, mAyId)
 
 Dim J%
-For J = 0 To Siz_Ay(mAyId) - 1
+For J = 0 To Sz(mAyId) - 1
     TblCrt_ParChd_OneRec pRsTar, pRoot, mAyId(J), oLvl
 
     Dim mIdx%: If Fnd_IdxLng(mIdx, oAyPth, mAyId(J)) Then ss.A 3:
     
     If mIdx < 0 Then
         Dim N%
-        N = Siz_Ay(oAyPth)
+        N = Sz(oAyPth)
         ReDim Preserve oAyPth(N): oAyPth(N) = mAyId(J)
         If TblCrt_ParChd_OneRoot(mAyId(J), oAyPth, oLvl, pRsTar, TSrc, pPar, pChd) Then ss.A 4:
         

@@ -69,7 +69,7 @@ Dim C&: C = TthFstBIdx(B): If C = -1 Then Exit Function
 End Function
 
 Function TthIsInAnyMd(Optional A As CodeModule) As Boolean
-Dim B$(): B = MdBdyLy(A)
+Dim B$(): B = MdMthLy(A)
 If AyIsEmpty(B) Then Exit Function
 Dim I, C As MthBrk
 For Each I In B

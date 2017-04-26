@@ -7,9 +7,9 @@ Dim P As vbproject: Set P = PjNz(Pj)
 End Function
 
 Sub TjCrt(Optional P As vbproject)
-Dim p1 As vbproject: Set p1 = PjNz(P):            If PjIsTj(p1) Then Exit Sub
-Dim pFil$:             pFil = p1.FileName
-Dim TFil$:             TFil = TjFfn(p1)
+Dim P1 As vbproject: Set P1 = PjNz(P):            If PjIsTj(P1) Then Exit Sub
+Dim pFil$:             pFil = P1.FileName
+Dim TFil$:             TFil = TjFfn(P1)
 PjCrtFfn TFil, ApSy(pFil)
 End Sub
 

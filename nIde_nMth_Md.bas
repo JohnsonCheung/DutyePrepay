@@ -22,7 +22,17 @@ MdHasNoMth = True
 End Function
 
 Function MdIsEmpty(Optional A As CodeModule) As Boolean
-MdIsEmpty = LinesTrim(MdBdyLines(A)) = ""
+Dim J%, Md As CodeModule
+Dim L$
+Set Md = MdNz(A)
+For J = 1 To Md.CountOfLines
+    L = Trim(Md.Lines(J, 1))
+    If L = "" Then GoTo Nxt
+    If IsPfx(L, "Option ") Then GoTo Nxt
+    Exit Function
+Nxt:
+Next
+MdIsEmpty = True
 End Function
 
 Function MdMthNy(Optional A As CodeModule) As String()
@@ -40,7 +50,7 @@ For J = 0 To UB(B)
         If mFY = "" Then
             Push O, Brk.Nm
         Else
-            IMfy = Brk.mFY
+            IMfy = Brk.Mdfy
             If mFY = "Public" Then
                 If IMfy = "" Or IMfy = "Public" Then Push O, Brk.Nm
             Else

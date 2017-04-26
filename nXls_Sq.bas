@@ -31,6 +31,17 @@ Next
 SqDrAy = O
 End Function
 
+Function SqDrAy_FmTo(Sq, FmIdx&, ToIdx&) As Variant()
+Dim O()
+Dim U&: U = UBound(Sq, 1) - 2
+ReSz O, U
+Dim J&
+For J = FmIdx To ToIdx
+    O(J - FmIdx) = SqDr(Sq, J)
+Next
+SqDrAy_FmTo = O
+End Function
+
 Function SqIsEmpty(Sq) As Boolean
 If IsEmpty(Sq) Then SqIsEmpty = True: Exit Function
 VarAsstSq Sq

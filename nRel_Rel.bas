@@ -23,7 +23,7 @@ Next
 RelChd = O
 End Function
 
-Function RelChkVdt(A As Dictionary) As Dt
+Function RelChkVdt(A As Dictionary) As Variant()
 
 End Function
 

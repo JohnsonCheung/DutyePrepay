@@ -56,6 +56,18 @@ Debug.Print Application.DBEngine.Workspaces(0).Databases.Count
 Stop
 End Function
 
+Function DbOfTxtPth(TxtPth$) As database
+'Aim: Open {pDir} as a database by referring all *.txt as table
+'Note: Schema.ini in {pDir} will be used if exist.  See Fdf2Schema() about Schema.ini
+Dim Fb$
+Stop
+Set DbOfTxtPth = DBEngine.OpenDatabase(Fb, False, False, "Text;Database=" & TxtPth)
+End Function
+
+Function DbPth$(Optional A As database)
+DbPth = FfnPth(DbNz(A).Name)
+End Function
+
 Function DbQny(Optional A As database) As String()
 Dim O$(), Q As QueryDef, Nm$
 For Each Q In DbNz(A).QueryDefs
@@ -105,7 +117,7 @@ On Error GoTo R
 Dim mNmt$: mNmt = Q_SqBkt(T)
 Dim mAyFb$(): mAyFb = SqlSy("Select Distinct Fb from " & mNmt)
 Dim J%
-For J = 0 To Siz_Ay(mAyFb) - 1
+For J = 0 To Sz(mAyFb) - 1
     Dim mDb As database: If Opn_Db_RW(mDb, mAyFb(J)) Then ss.A 3: GoTo E
     Dim mRs As DAO.Recordset, mSql$
     mSql = Bld_SqlSel( _
@@ -176,11 +188,34 @@ Next
 DbTny = O
 End Function
 
-Function DbTxt(Pth$) As database
-'Aim: Open {pDir} as a database by referring all *.txt as table
-'Note: Schema.ini in {pDir} will be used if exist.  See Fdf2Schema() about Schema.ini
-Dim Fb$
-Stop
-Set DbTxt = G.gDbEng.OpenDatabase(Fb, False, False, "Text;Database=" & Pth)
-End Function
+Sub DbWrtFx_wTp(Tvnstr, Fx$, FxTp$, _
+    Optional WsNmPfx$, _
+    Optional WsNmSfx$, _
+    Optional NoExpTim As Boolean, _
+    Optional A As database)
+'Aim: Export all tables/queries in {TqnStr} to {Fx} with {pWsNmPfx/pWsNmSfx} added to each Ws (ie ws name will be pPfx + Nmtq + pSfx}.
+'     "Note to Nmtq": if Nmtq is in format of xxx_Oup_yyy or #@yyy, yyy will be use
+'FfnAsstExist FxTp
+'FfnAsstNotExist Fx
+'FfnCpy FxTp, Fx
+'Dim Db As database: Set Db = DbNz(A)
+'Dim Ny$(): Ny = NmstrBrk(Tvnstr)
+'Dim OWb As Workbook, mToBeDelete$: mToBeDelete = ""
+'Set OWb = FxWb(Fx)
+'Dim I
+'For Each I In Ny
+'    Dim Ws As Worksheet
+'    Dim mWsNmTar$: mWsNmTar = WsNmPfx & Cut_Aft(Cut_Aft(Cut_Aft(mAntq(I), "_Oup_"), "#@"), "@") & pWsNmSfx
+'    If Fnd_Ws(mWs, mWb, mWsNmTar, True) Then
+'        If Add_Ws(mWs, mWb, mWsNmTar) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
+'        If Exp_Nmtq2Ws(mAntq(I), mWs, SrcFb) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
+'    Else
+'        If Exp_Nmtq2Ws_wFmt_ByCpyRs(mAntq(I), mWs.Range("A5"), SrcFb, pNoExpTim) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
+'    End If
+'Nxt:
+'Next
+'If mToBeDelete$ <> "" Then Dlt_Ws_InWb mWb, mToBeDelete
+'If Sz(mAntqErr) > 0 Then ss.A 3, "These tables cannot be exported: " & Join(mAntqErr, ","): GoTo E
+'WbCls OWb
+End Sub
 

@@ -6,15 +6,15 @@ Sub DrAsstEq(Dr1, Dr2)
 ErAsst DrChkEq(Dr1, Dr2)
 End Sub
 
-Function DrChkEq(Dr1, Dr2) As Dt
+Function DrChkEq(Dr1, Dr2) As Variant()
 Dim S1$, S2$
 S1 = DrScl(Dr1)
 S2 = DrScl(Dr2)
-Dim Er As Dt, Er1 As Dt
+Dim Er(), Er1()
 Er = StrChkEq(S1, S2)
-If ErIsSom(Er) Then
+If AyHasEle(Er) Then
     Er1 = ErNew("Two given Dr of {U1} {U2} are different at {FldIdx}:", UB(Dr1), UB(Dr2), DrDifAt(Dr1, Dr2))
-    DrChkEq = ErApdEr(Er1, Er)
+    DrChkEq = AyAdd(Er1, Er)
 End If
 End Function
 

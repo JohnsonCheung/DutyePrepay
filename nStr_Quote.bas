@@ -39,3 +39,7 @@ End Function
 Function QuoteRmv__Tst()
 Debug.Assert QuoteRmv("[aaaa]", "[]") = "aaaa"
 End Function
+
+Function QuoteSqBkt$(S)
+QuoteSqBkt = Quote(S, "[]")
+End Function

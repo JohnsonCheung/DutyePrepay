@@ -10,7 +10,7 @@ Const cSub$ = "Q_Ln"
 If pLn$ = "" Then oLn_wQuote = "": Exit Function
 Dim An$(): An = Split(pLn, CtComma)
 Dim A$: A = Q_S(Rmv_Q(Trim(An(0)), pQ), pQ)
-Dim J%: For J = 1 To Siz_Ay(An) - 1
+Dim J%: For J = 1 To Sz(An) - 1
     A = A & CtComma & Q_S(Trim(An(J)), pQ)
 Next
 oLn_wQuote = A$

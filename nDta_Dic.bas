@@ -20,7 +20,7 @@ Sub DicAsg(A As Dictionary, FnStr$, O0 _
     , Optional O15 _
     )
 Dim Fny$()
-    Fny = FnStrBrk(FnStr)
+    Fny = NmstrBrk(FnStr)
 
 Dim K, J%, V
 For Each K In Fny
@@ -50,6 +50,36 @@ Sub DicBrw(A As Dictionary)
 DtBrw DicDt(A), "Dic"
 End Sub
 
+Function DicChkEq(D1 As Dictionary, D2 As Dictionary) As Variant()
+Dim O()
+If D1.Count <> D2.Count Then
+    Push O, FmtQQ("Count is diff: [?] [?]", D1.Count, D2.Count)
+Else
+    O = AyChkSam(D1.Keys, D2.Keys)
+    Dim K
+    If AyIsEmpty(O) Then
+        For Each K In D1.Keys
+            If D1(K) <> D2(K) Then
+                Push O, FmtQQ("Values of Key[?} are dif: [?] / [?]", K, D1(K), D2(K))
+            End If
+        Next
+    End If
+End If
+If Not AyIsEmpty(O) Then
+    Push O, "Two Dic's key not match"
+End If
+DicChkEq = O
+End Function
+
+Sub DicDmp(A As Dictionary)
+Dim J&
+Dim K
+For Each K In A.Keys
+    Debug.Print J & " [" & K & "] = [" & A(K) & "]"
+    J = J + 1
+Next
+End Sub
+
 Function DicDt(A As Dictionary) As Dt
 Dim D()
 If Not DicIsEmpty(A) Then
@@ -67,7 +97,7 @@ DicIsEmpty = A.Count = 0
 End Function
 
 Function DicIsEq(D1 As Dictionary, D2 As Dictionary) As Boolean
-
+DicIsEq = Sz(DicChkEq(D1, D2)) = 0
 End Function
 
 Function DicNew(DicStr$) As Dictionary
@@ -93,8 +123,8 @@ Function DicNewSyAp(OptSy, ParamArray Ap()) As Dictionary
 Dim O As New Dictionary
 'Dim mAn$(): mAn = Split(pLp, CtComma)
 'Dim mAyV(): mAyV = Ay
-'Dim N1%: N1 = Siz_Ay(mAn)
-'Dim N2%: N2 = Siz_Ay(mAyV)
+'Dim N1%: N1 = Sz(mAn)
+'Dim N2%: N2 = Sz(mAyV)
 'If N1 <> N2 Then ss.A 1, "Cnt in pAp & pLp are diff", , "Cnt in pAp,Cnt in pLp", N2, N1: GoTo E
 'ReDim mAm(N1 - 1) As tMap
 'If Set_Am_F1(mAm, mAn) Then ss.A 2: GoTo E
@@ -113,7 +143,7 @@ End Function
 
 Function Get_Am_ByLm(pLm$, Optional pBrkChr$ = "=", Optional pSepChr$ = CtSemiColon) As tMap()
 Dim mAmStr$(): mAmStr = Split(pLm, pSepChr$)
-Dim NMap%: NMap = Siz_Ay(mAmStr)
+Dim NMap%: NMap = Sz(mAmStr)
 If NMap = 0 Then Exit Function
 ReDim mAm(0 To NMap - 1) As tMap
 Dim I%: For I = 0 To NMap - 1

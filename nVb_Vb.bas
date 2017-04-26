@@ -39,6 +39,22 @@ Next
 Min = O
 End Function
 
+Function Pipe(ParamArray Ap())
+Dim Av()
+Av = Ap
+Dim J%
+Dim O
+Dim R
+Dim Mth$
+VarAsg Av(0), O
+For J = 1 To UB(Av)
+    Mth = Av(J)
+    VarAsg Run(Mth, O), R
+    VarAsg R, O
+Next
+Pipe = O
+End Function
+
 Function RunAv(Fn$, Av())
 Dim O
 Select Case Sz(Av)
@@ -67,6 +83,41 @@ Dim A$
 If Pfx <> "" Then A = Pfx & "-"
 TimStmp = A & Format(Now(), "YYYY-MM-DD_HHMMSS-") & I
 I = I + 1
+End Function
+
+Function TryRun(Fct$, ParamArray Ap()) As OptV
+Dim Av(): Av = Ap
+Dim V
+On Error GoTo X
+V = RunAv(Fct, Av)
+TryRun = OptVNew(V)
+X:
+End Function
+
+Sub TryRun__Tst()
+Dim V As OptV: V = TryRun("VarLng", "slfk")
+Stop
+End Sub
+
+Function TryRunAv(Fn$, Av()) As OptV
+On Error GoTo X
+Dim O
+Select Case Sz(Av)
+Case 0: O = Run(Fn)
+Case 1: O = Run(Fn, Av(0))
+Case 2: O = Run(Fn, Av(0), Av(1))
+Case 3: O = Run(Fn, Av(0), Av(1), Av(2))
+Case 4: O = Run(Fn, Av(0), Av(1), Av(2), Av(3))
+Case 5: O = Run(Fn, Av(0), Av(1), Av(2), Av(3), Av(4))
+Case 6: O = Run(Fn, Av(0), Av(1), Av(2), Av(3), Av(4), Av(5))
+Case 7: O = Run(Fn, Av(0), Av(1), Av(2), Av(3), Av(4), Av(5), Av(6))
+Case 8: O = Run(Fn, Av(0), Av(1), Av(2), Av(3), Av(4), Av(5), Av(6), Av(7))
+Case Else: Stop
+End Select
+TryRunAv = OptVNew(O)
+Exit Function
+X:
+
 End Function
 
 Function Version$()

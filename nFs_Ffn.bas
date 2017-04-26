@@ -21,15 +21,15 @@ Dim Av(): Av = MsgAp
 ErAsst FfnChkNotExist(Ffn), Av
 End Sub
 
-Function FfnChkExist(Ffn) As Dt
+Function FfnChkExist(Ffn) As Variant()
 If Not FfnIsExist(Ffn) Then FfnChkExist = ErNew("{Ffn} unexpectedly not exist", Ffn)
 End Function
 
-Function FfnChkExt(Ffn, Ext) As Dt
+Function FfnChkExt(Ffn, Ext) As Variant()
 If FfnExt(Ffn) <> Ext Then FfnChkExt = ErNew("{Ffn} should have {Ext}", Ffn, Ext)
 End Function
 
-Function FfnChkNotExist(Ffn) As Dt
+Function FfnChkNotExist(Ffn) As Variant()
 If FfnIsExist(Ffn) Then FfnChkNotExist = ErNew("{Ffn} unexpectedly exists", Ffn)
 End Function
 
@@ -83,6 +83,10 @@ End Function
 
 Function FfnHasPth(Fil) As Boolean
 FfnHasPth = InStr(Fil, "\") > 0
+End Function
+
+Function FfnHasSfx(Ffn, Sfx) As Boolean
+FfnHasSfx = IsPfx(FfnCutExt(Ffn), Sfx)
 End Function
 
 Function FfnIsExist(Ffn) As Boolean

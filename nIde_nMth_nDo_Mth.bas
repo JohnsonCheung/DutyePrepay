@@ -30,10 +30,10 @@ Dim BLy$()
 '-----
 Dim ANewMthLy$()
 Dim ABIdxAy&()
-    Dim MthLinAy$()
+    Dim MthLy$()
     ABIdxAy = MdLyToMthBIdxAy(BLy, Fm)
-    MthLinAy = AySel_Idx(BLy, ABIdxAy)
-    ANewMthLy = AyMapIntoSy(MthLinAy, "MthLinRen", ToMthNm)
+    MthLy = AySel_Idx(BLy, ABIdxAy)
+    ANewMthLy = AyMapIntoSy(MthLy, "MthLinRen", ToMthNm)
 '-----
 Dim OIdxLinDrAy()
     OIdxLinDrAy = DrAyNew_AyAp(ABIdxAy, ANewMthLy)

@@ -2,21 +2,18 @@ Attribute VB_Name = "nVar_Ap"
 Option Compare Database
 Option Explicit
 
-Function ApAv(ParamArray Ap()) As Variant()
-ApAv = Ap
+Function ApAv(ParamArray Itm_or_Ay_Ap()) As Variant()
+Dim Av(): Av = Itm_or_Ay_Ap
+ApAv = AyExpdAy(Av)
 End Function
 
 Function ApAy(ParamArray Ap()) As Variant()
+ApAy = Ap
+End Function
+
+Function ApAyWithExpd(ParamArray Ap()) As Variant()
 Dim Av(): Av = Ap
-Dim V, O()
-For Each V In Av
-    If IsArray(V) Then
-        PushAy O, V
-    Else
-        Push O, V
-    End If
-Next
-ApAy = O
+ApAyWithExpd = AyExpd(Av)
 End Function
 
 Function ApIntAy(ParamArray Ap()) As Integer()
@@ -64,6 +61,6 @@ End Function
 
 Function ApSy(ParamArray Itm_or_Ay_Ap()) As String()
 Dim Av(): Av = Itm_or_Ay_Ap
-Dim OAy(): OAy = AyExpandAy(Av)
+Dim OAy(): OAy = AyExpdAy(Av)
 ApSy = AySy(OAy)
 End Function

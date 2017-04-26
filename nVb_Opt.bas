@@ -32,7 +32,7 @@ End Type
 
 Function OptSy(SyOpt) As String()
 If VarIsStr(SyOpt) Then
-    OptSy = FnStrBrk(SyOpt)
+    OptSy = NmstrBrk(SyOpt)
 ElseIf VarIsSy(SyOpt) Then
     OptSy = SyOpt
 ElseIf IsMissing(SyOpt) Then
@@ -42,4 +42,9 @@ ElseIf VarIsDic(SyOpt) Then
 Else
     Er "OptSy: Given SyOpt-{Ty} is not [Str StrAy Dic Missing]", TypeName(SyOpt)
 End If
+End Function
+
+Function OptVNew(V) As OptV
+OptVNew.V = V
+OptVNew.Som = True
 End Function

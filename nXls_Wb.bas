@@ -73,9 +73,15 @@ Set WbAddWsBef = O
 End Function
 
 Sub WbCls(W As Workbook, Optional NoSav As Boolean)
+On Error GoTo X
 XlsDspAlertPush W.Application, False
 W.Close Not NoSav
 XlsDspAlertPop
+X:
+End Sub
+
+Sub WbClsNosav(A As Workbook)
+WbCls A, NoSav:=True
 End Sub
 
 Function WbFstWs(A As Workbook) As Worksheet
@@ -97,7 +103,7 @@ Set Wb = WbNew
 Debug.Assert WbHasWs(Wb, WsNm) = False
 WbAddWs Wb, WsNm
 Debug.Assert WbHasWs(Wb, WsNm) = True
-WbCls Wb, NoSav:=True
+WbClsNosav Wb
 End Sub
 
 Function WbHasXNm(A As Workbook, XNm$) As Boolean
@@ -126,6 +132,36 @@ Appx.Visible = Vis
 If Fx <> "" Then WbSavAs O, Fx
 Set WbNew = O
 End Function
+
+Sub WbRmvAllWsExcept__Tst()
+Dim W As Workbook
+Set W = WbNew
+WbAddWs W, "Sheet2"
+WbAddWs W, "Sheet3"
+WbAddWs W, "Sheet4"
+WbRmvAllWsExcp W, "Sheet2"
+WbVis W
+Stop
+WbClsNosav W
+End Sub
+
+Sub WbRmvAllWsExcp(A As Workbook, ExcpNmstr$)
+Dim N$(): N = WbWsNy(A)
+Dim OWsNy$(): OWsNy = NmstrExcp(ExcpNmstr, N)
+WbRmvWsNy A, OWsNy
+End Sub
+
+Sub WbRmvWs(A As Workbook, WsNm)
+WbWs(A, WsNm).Delete
+End Sub
+
+Sub WbRmvWsNy(A As Workbook, WsNy$())
+If AyIsEmpty(WsNy) Then Exit Sub
+Dim I
+For Each I In WsNy
+    WbRmvWs A, I
+Next
+End Sub
 
 Sub WbSav(W As Workbook)
 XlsDspAlertPush W.Application
@@ -180,6 +216,27 @@ Function WbWs(W As Workbook, WsIdx) As Worksheet
 Set WbWs = W.Sheets(WsIdx)
 End Function
 
+Function WbWsAy(A As Workbook) As Worksheet()
+Dim O() As Worksheet
+WbWsAy = ObjCollAy(A.Sheets, O)
+End Function
+
+Function WbWsNy(A As Workbook) As String()
+WbWsNy = ObjAyNy(WbWsAy(A))
+End Function
+
+Sub WbWsNy__Tst()
+Dim Wb As Workbook
+Set Wb = Appx.Workbooks.Add
+AyBrw WbWsNy(Wb)
+Stop
+WbClsNosav Wb
+End Sub
+
 Sub WsCls(A As Worksheet, Optional NoSav As Boolean)
 WbCls WsWb(A), NoSav
+End Sub
+
+Sub WsClsNoSav(A As Worksheet)
+WbClsNosav WsWb(A)
 End Sub

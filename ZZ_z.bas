@@ -22,7 +22,7 @@ Attribute VB_Name = "ZZ_z"
 ''If LExpr_ByLpAp_Tst Then Stop: GoTo E
 ''If Bld_OdbcQs_BySql_Tst Then Stop: GoTo E
 ''If Bld_OdbcQs_Tst Then Stop: GoTo E
-''If SqlStrOfUpd_ByRsUlSrc_Tst Then Stop: GoTo E
+''If SqsOfUpd_ByRsUlSrc_Tst Then Stop: GoTo E
 ''If TblJnRec_Tst Then Stop: GoTo E
 ''If TblCmp_Tst Then Stop: GoTo E
 ''If Compact_Db_Tst Then Stop: GoTo E

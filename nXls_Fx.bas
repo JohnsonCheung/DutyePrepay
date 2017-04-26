@@ -2,7 +2,7 @@ Attribute VB_Name = "nXls_Fx"
 Option Compare Database
 Option Explicit
 
-Function FxCpyAndOpn(oWb As Workbook, pFxFm$, pFxTo$, Optional OvrWrt As Boolean = False) As Boolean
+Function FxCpyAndOpn(OWb As Workbook, pFxFm$, pFxTo$, Optional OvrWrt As Boolean = False) As Boolean
 Const cSub$ = "FxCpyAndOpn"
 If VBA.Dir(pFxFm) = "" Then ss.A 1, "From file not exist": GoTo E
 
@@ -30,7 +30,7 @@ End If
 'Copy <pFxFm> to <pFxTo> and open <pFxTo> in mWb
 If Cpy_Fil(pFxFm, pFxTo) Then ss.A 4: GoTo E
 gXls.AutomationSecurity = msoAutomationSecurityForceDisable
-Set oWb = gXls.Workbooks.Open(pFxTo, UpdateLinks:=False, IgnoreReadOnlyRecommended:=True)
+Set OWb = gXls.Workbooks.Open(pFxTo, UpdateLinks:=False, IgnoreReadOnlyRecommended:=True)
 Exit Function
 R: ss.R
 E: FxCpyAndOpn = True: ss.B cSub, cMod, "pFxFm,pFxTo,OvrWrt", pFxFm, pFxTo, OvrWrt

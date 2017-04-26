@@ -4,6 +4,10 @@ Option Explicit
 
 Private X_CurPth$()
 
+Function CurPth$()
+CurPth = CurDir
+End Function
+
 Sub CurPthPop()
 CurPthSet Pop(X_CurPth)
 End Sub

@@ -4,16 +4,16 @@ Attribute VB_Name = "ZZ_xRepl"
 'Option Explicit
 'Option Base 0
 'Const cMod$ = cLib & ".xRepl"
-'Function Repl_Ws_In2Wb(pWbTar As Workbook, pWbSrc As Workbook, pNmWs$) As Boolean
+'Function Repl_Ws_In2Wb(pWbTar As Workbook, pWbSrc As Workbook, pWsNm$) As Boolean
 ''Aim: replace the {pWs} in {pWbTar} by {WbSrc}
 'Const cSub$ = "Repl_Ws_In2Wb"
 'On Error GoTo R
-'Dim mWsSrc As Worksheet: If Fnd_Ws(mWsSrc, pWbSrc, pNmWs) Then ss.A 1: GoTo E
-'Dim mWsTar As Worksheet: If Fnd_Ws(mWsTar, pWbTar, pNmWs) Then If Add_Ws(mWsTar, pWbTar, pNmWs) Then ss.A 2: GoTo E
+'Dim mWsSrc As Worksheet: If Fnd_Ws(mWsSrc, pWbSrc, pWsNm) Then ss.A 1: GoTo E
+'Dim mWsTar As Worksheet: If Fnd_Ws(mWsTar, pWbTar, pWsNm) Then If Add_Ws(mWsTar, pWbTar, pWsNm) Then ss.A 2: GoTo E
 'If Repl_Ws(mWsTar, mWsSrc) Then ss.A 3: GoTo E
 'Exit Function
 'R: ss.R
-'E: Repl_Ws_In2Wb = True: ss.B cSub, cMod, "pWbTar,pWbSrc,pNmWs", ToStr_Wb(pWbTar), ToStr_Wb(pWbSrc), pNmWs
+'E: Repl_Ws_In2Wb = True: ss.B cSub, cMod, "pWbTar,pWbSrc,pWsNm", ToStr_Wb(pWbTar), ToStr_Wb(pWbSrc), pWsNm
 'End Function
 
 'Function Repl_Ws_In2Wb__Tst()
@@ -36,15 +36,15 @@ Attribute VB_Name = "ZZ_xRepl"
 '   Cls_Wb mWb2
 'End Function
 
-'Function Repl_Ws_InFx(pFx$, pNmWsTar$, pNmWsSrc$) As Boolean
-''Aim: replace the {pNmWsTar} by {pNmWsSrc} in same {pFx} and delete {pNmWsSrc}
+'Function Repl_Ws_InFx(pFx$, pWsNmTar$, pWsNmSrc$) As Boolean
+''Aim: replace the {pWsNmTar} by {pWsNmSrc} in same {pFx} and delete {pWsNmSrc}
 'Const cSub$ = "Repl_Ws_InFx"
 'Dim mWb As Workbook: If Opn_Wb_RW(mWb, pFx) Then ss.A 1: GoTo E
-'If Repl_Ws_InWb(mWb, pNmWsTar, pNmWsSrc) Then ss.A 2: GoTo E
+'If Repl_Ws_InWb(mWb, pWsNmTar, pWsNmSrc) Then ss.A 2: GoTo E
 'If Cls_Wb(mWb, True) Then ss.A 3: GoTo E
 'Exit Function
 'R: ss.R
-'E: Repl_Ws_InFx = True: ss.B cSub, cMod, "pFx,pNmWsTar,pNmWsSrc", pFx, pNmWsTar, pNmWsSrc
+'E: Repl_Ws_InFx = True: ss.B cSub, cMod, "pFx,pWsNmTar,pWsNmSrc", pFx, pWsNmTar, pWsNmSrc
 'End Function
 
 'Function Repl_Ws_InFx__Tst()
@@ -71,7 +71,7 @@ Attribute VB_Name = "ZZ_xRepl"
 'On Error GoTo R
 'Dim mWb As Workbook: Set mWb = pWsSrc.Parent
 'If mWb.Sheets.Count = 1 Then mWb.Sheets.Add
-'Dim mNmWs$: mNmWs = pWsTar.Name
+'Dim mWsNm$: mWsNm = pWsTar.Name
 'pWsTar.Name = Format(Now, "yyyymmdd hhmmss")
 'pWsSrc.Move After:=pWsTar
 'If Dlt_Ws(pWsTar) Then ss.A 1: GoTo E
@@ -79,16 +79,16 @@ Attribute VB_Name = "ZZ_xRepl"
 'R: ss.R
 'E: Repl_Ws = True: ss.B cSub, cMod, "pWsTar,pWsSrc", ToStr_Ws(pWsTar), ToStr_Ws(pWsSrc)
 'End Function
-'Function Repl_Ws_InWb(pWb As Workbook, pNmWsTar$, pNmWsSrc$) As Boolean
-''Aim: replace the {pNmWsTar$} by {pNmWsTar} in {pWb} and delete {pNmWsTar}
+'Function Repl_Ws_InWb(pWb As Workbook, pWsNmTar$, pWsNmSrc$) As Boolean
+''Aim: replace the {pWsNmTar$} by {pWsNmTar} in {pWb} and delete {pWsNmTar}
 'Const cSub$ = "Repl_Ws_InWb"
 'On Error GoTo R
-'Dim mWsTar As Worksheet: If Fnd_Ws(mWsTar, pWb, pNmWsTar) Then ss.A 1: GoTo E
-'Dim mWsSrc As Worksheet: If Fnd_Ws(mWsSrc, pWb, pNmWsSrc) Then ss.A 2: GoTo E
+'Dim mWsTar As Worksheet: If Fnd_Ws(mWsTar, pWb, pWsNmTar) Then ss.A 1: GoTo E
+'Dim mWsSrc As Worksheet: If Fnd_Ws(mWsSrc, pWb, pWsNmSrc) Then ss.A 2: GoTo E
 'If Repl_Ws(mWsTar, mWsSrc) Then ss.A 3: GoTo E
 'Exit Function
 'R: ss.R
-'E: Repl_Ws_InWb = True: ss.B cSub, cMod, "pWb,pNmWsTar,pNmWsTar", ToStr_Wb(pWb), pNmWsTar, pNmWsTar
+'E: Repl_Ws_InWb = True: ss.B cSub, cMod, "pWb,pWsNmTar,pWsNmTar", ToStr_Wb(pWb), pWsNmTar, pWsNmTar
 'End Function
 
 'Function Repl_Ws_InWb__Tst()
@@ -111,11 +111,11 @@ Attribute VB_Name = "ZZ_xRepl"
 ''Aim: replace the {pFmVal} in first cell of {Rg} by {pAyToVal} in either H or V direction
 'Dim J%
 'If pIsHDirection Then
-'    For J = 0 To Siz_Ay(pAyToVal) - 1
+'    For J = 0 To Sz(pAyToVal) - 1
 '        Rg.Cells(1, 1 + J).Value = pAyToVal(J)
 '    Next
 'Else
-'    For J = 0 To Siz_Ay(pAyToVal) - 1
+'    For J = 0 To Sz(pAyToVal) - 1
 '        Rg.Cells(1 + J, 1).Value = pAyToVal(J)
 '    Next
 'End If
@@ -140,7 +140,7 @@ Attribute VB_Name = "ZZ_xRepl"
 'Function Repl_Pfx_InAy(oAyTar$(), pPfxTar$, pAySrc$(), pPfxSrc$) As Boolean
 'Const cSub$ = "Repl_Pfx_InAy"
 'If pPfxTar = "" Then oAyTar = pAySrc: Exit Function
-'Dim N%: N% = Siz_Ay(pAySrc): If N = 0 Then oAyTar = pAySrc: Exit Function
+'Dim N%: N% = Sz(pAySrc): If N = 0 Then oAyTar = pAySrc: Exit Function
 'ReDim oAyTar(N - 1)
 'Dim L%: L = Len(pPfxSrc)
 'Dim J%: For J = 0 To N - 1

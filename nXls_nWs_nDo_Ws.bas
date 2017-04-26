@@ -56,7 +56,7 @@ X:
 End Sub
 
 Sub WsCpy(A As Worksheet, ToWb As Workbook, Optional ToWsNm$)
-'Aim: Copy {pWbFm}!{pNmWsFm$} to {pWbTo}.  If ws exist in {pWbTo}, ws will be replaced and position retended, else copy to end
+'Aim: Copy {pWbFm}!{pWsNmFm$} to {pWbTo}.  If ws exist in {pWbTo}, ws will be replaced and position retended, else copy to end
 Dim OToAftWs As Worksheet
     Dim ToWNm$: ToWNm = StrNz(ToWsNm, A.Name)
 
@@ -80,28 +80,28 @@ WsCpy mWbTo, mWbFm, mWsFm.Name
 MsgBox "Second Time Copy.  Check To ws"
 End Function
 
-Function WsCpy1(oWsTar As Worksheet, pWsFm As Worksheet, Optional pNmWsTo$ = "", Optional pWbTo As Workbook = Nothing) As Boolean
+Function WsCpy1(oWsTar As Worksheet, pWsFm As Worksheet, Optional pWsNmTo$ = "", Optional pWbTo As Workbook = Nothing) As Boolean
 Const cSub$ = "WsCpy"
 'Aim: Copy {pWsFm} to a new {oWsTar}.
 'Note: If {pWbTo} is given, the new Ws will be at end of {pWbTo}.  Otherwise, the oWsTar will be the same workbook as pWsFm.
-'Note: If {pNmWsTo} is not given, the new Ws Name will use the {pWsFm}
-If pNmWsTo = "" And IsNothing(pWbTo) Then ss.A 1, "CpyWs must be given Either or both of {pNmWsTo}, {pWbTo}": GoTo E
+'Note: If {pWsNmTo} is not given, the new Ws Name will use the {pWsFm}
+If pWsNmTo = "" And IsNothing(pWbTo) Then ss.A 1, "CpyWs must be given Either or both of {pWsNmTo}, {pWbTo}": GoTo E
 '==Start
-'Set {mWbTo} & {mNmWsTo}
-Dim mWbTo As Workbook, mNmWsTo$
+'Set {mWbTo} & {mWsNmTo}
+Dim mWbTo As Workbook, mWsNmTo$
 If IsNothing(pWbTo) Then
     Set mWbTo = pWsFm.Parent
 Else
     Set mWbTo = pWbTo
 End If
-If pNmWsTo = "" Then
-    mNmWsTo = pWsFm.Name
+If pWsNmTo = "" Then
+    mWsNmTo = pWsFm.Name
 Else
-    mNmWsTo = pNmWsTo
+    mWsNmTo = pWsNmTo
 End If
 'Copy and Paste
 pWsFm.Cells.Copy
-Dim mNewWs As Worksheet: If Add_Ws(mNewWs, mWbTo, mNmWsTo) Then ss.A 2: GoTo E
+Dim mNewWs As Worksheet: If Add_Ws(mNewWs, mWbTo, mWsNmTo) Then ss.A 2: GoTo E
 mNewWs.Cells.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 mNewWs.Cells.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 Set oWsTar = mNewWs
@@ -143,16 +143,16 @@ With pWs
 End With
 End Function
 
-Function WsCpyVal(OWs As Worksheet, pFmWs As Worksheet, pToNmWs$) As Boolean
+Function WsCpyVal(OWs As Worksheet, pFmWs As Worksheet, pToWsNm$) As Boolean
 Const cSub$ = "WsCpyVal"
-If Add_Ws(OWs, pFmWs.Parent, pToNmWs) Then ss.A 1: GoTo E
+If Add_Ws(OWs, pFmWs.Parent, pToWsNm) Then ss.A 1: GoTo E
 pFmWs.Cells.Copy
 OWs.Select
 OWs.Application.Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 OWs.Application.Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 Exit Function
 R: ss.R
-E: WsCpyVal = True: ss.B cSub, cMod, "pFmWs,pToNmWs", ToStr_Ws(pFmWs), pToNmWs
+E: WsCpyVal = True: ss.B cSub, cMod, "pFmWs,pToWsNm", ToStr_Ws(pFmWs), pToWsNm
 End Function
 
 Sub WsInsCell(A As Worksheet, pLoCol$, pRnoBeg&, pNRow&)

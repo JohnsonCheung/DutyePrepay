@@ -158,7 +158,7 @@ Attribute VB_Name = "ZZ_xToStr"
 'ToStr_DArg = mA
 'End Function
 'Function ToStr_AyDArg$(pAyDArg() As d_Arg, Optional pByEle As Boolean = False)
-'Dim N%: N = Siz_AyDArg(pAyDArg)
+'Dim N%: N = SzDArg(pAyDArg)
 'If N = 0 Then ToStr_AyDArg = "--NoArg--": Exit Function
 'Dim J%, mA$
 'For J = 0 To N - 1
@@ -197,7 +197,7 @@ Attribute VB_Name = "ZZ_xToStr"
 'Const cSub$ = "ToStr_SqlLnt"
 'On Error GoTo R
 'Dim mAnt$()
-'If SqlStrToAnt(mAnt, Sql) Then ss.A 1: GoTo E
+'If SqsToAnt(mAnt, Sql) Then ss.A 1: GoTo E
 'ToStr_SqlLnt = Join(mAnt, CtComma)
 'Exit Function
 'R: ss.R
@@ -253,7 +253,7 @@ Attribute VB_Name = "ZZ_xToStr"
 'ToStr_HostSts = mA
 'End Function
 'Function ToStr_AyLng$(pAyLng&())
-'Dim J%, N%: N = Siz_Ay(pAyLng): If N = 0 Then Exit Function
+'Dim J%, N%: N = Sz(pAyLng): If N = 0 Then Exit Function
 'Dim mS$: mS = pAyLng(0)
 'For J = 1 To N - 1
 '    mS = mS & ", " & pAyLng(J)
@@ -367,7 +367,7 @@ Attribute VB_Name = "ZZ_xToStr"
 'Stop
 'End Function
 'Function ToStr_Ays$(pAys$(), Optional pQ$ = "", Optional pSepChr$ = CtCommaSpc)
-'Dim N%: N = Siz_Ay(pAys): If N% = 0 Then Exit Function
+'Dim N%: N = Sz(pAys): If N% = 0 Then Exit Function
 'Dim A$: A = Q_S(pAys(0), pQ)
 'Dim J%
 'For J = 1 To N - 1
@@ -376,27 +376,27 @@ Attribute VB_Name = "ZZ_xToStr"
 'ToStr_Ays = A
 'End Function
 'Function ToStr_AyBool$(pAyBool() As Boolean, Optional pQ$ = "", Optional pSepChr$ = CtCommaSpc)
-'Dim N%: N = Siz_Ay(pAyBool): If N% = 0 Then Exit Function
+'Dim N%: N = Sz(pAyBool): If N% = 0 Then Exit Function
 'Dim J%: For J = 0 To N - 1
 '    Dim A$: A = Add_Str(A, Q_S(CStr(pAyBool(J)), pQ), pSepChr)
 'Next
 'ToStr_AyBool = A
 'End Function
 'Function ToStr_AyByt$(pAyByt() As Byte, Optional pQ$ = "", Optional pSepChr$ = CtCommaSpc)
-'Dim N%: N = Siz_Ay(pAyByt): If N% = 0 Then Exit Function
+'Dim N%: N = Sz(pAyByt): If N% = 0 Then Exit Function
 'Dim J%: For J = 0 To N - 1
 '    Dim A$: A = Add_Str(A, Q_S(CStr(pAyByt(J)), pQ), pSepChr)
 'Next
 'ToStr_AyByt = A
 'End Function
 'Function ToStr_AyV$(pAyV(), Optional pQ$ = "", Optional pSepChr$ = CtCommaSpc)
-'Dim N%: N = Siz_Ay(pAyV): If N% = 0 Then Exit Function
+'Dim N%: N = Sz(pAyV): If N% = 0 Then Exit Function
 'Dim A$, J%
 'For J = 1 To N - 1
 '    If (VarType(pAyV(J)) And vbArray) = 0 Then
 '        A$ = Add_Str(A$, Q_S(pAyV(J), pQ), pSepChr)
 '    Else
-'        Dim mX$: mX = "Array(" & Siz_Ay(pAyV(J)) & ")"
+'        Dim mX$: mX = "Array(" & Sz(pAyV(J)) & ")"
 '        A$ = Add_Str(A$, Q_S(mX, pQ), pSepChr)
 '    End If
 'Next

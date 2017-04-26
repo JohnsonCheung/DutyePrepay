@@ -42,7 +42,14 @@ TblAsstFnStr T, "AA BB CC"
 TblDrp T
 End Sub
 
-Function TblChk(T$, Optional A As database) As Dt
+Function TblChkDupKey(T, Optional FstNFld% = 1, Optional A As database) As Variant()
+'Aim: Chk if first {NPk} fields in {pNmt} has duplicate.  Return true is there is duplicate
+Dim Sel$: Sel = AyJn(TblFny(T, FstNFld, A), ",")
+Dim Sql$: Sql = FmtQQ("Select Distinct ?, Count(*) as Cnt from [?] group by {0} having Count(*)>1", Sel, T)
+TblChkDupKey = SqlDr(Sql, A)
+End Function
+
+Function TblChkEmptyRec(T$, Optional A As database) As Variant()
 Dim D As database: Set D = DbNz(A)
 Dim Rs As Recordset: Set Rs = TblRs(T, D)
 Dim R&: R = 0
@@ -58,18 +65,7 @@ With Rs
 End With
 If AyIsEmpty(RR) Then Exit Function
 Dim O$()
-TblChk = ErNew("{Table} has {Rec#-List} being empty record, where Rec# starts counting from 1", T, AyJn(RR, " "))
-End Function
-
-Function TblChkDupKey(T, Optional FstNFld% = 1, Optional A As database) As Dt
-'Aim: Chk if first {NPk} fields in {pNmt} has duplicate.  Return true is there is duplicate
-Dim Sel$: Sel = AyJn(TblFny(T, FstNFld, A), ",")
-Dim Sql$: Sql = FmtQQ("Select Distinct ?, Count(*) as Cnt from [?] group by {0} having Count(*)>1", Sel, T)
-TblChkDupKey = SqlDt(Sql, A)
-End Function
-
-Function TblChkEmptyRec(T$, Optional A As database) As Dt
-
+TblChkEmptyRec = ErNew("{Table} has {Rec#-List} being empty record, where Rec# starts counting from 1", T, AyJn(RR, " "))
 End Function
 
 Sub TblFldAsstFldTyMulStr(T$, FldTyAllStr$, Optional A As database)
@@ -89,7 +85,7 @@ Sub TblFldAsstFldTySngStr(T$, FldTySngStr$, Optional A As database)
 ErAsst TblFldChkFldSngStr(T, FldTySngStr, A)
 End Sub
 
-Function TblFldChkFldSngStr(T$, FldTySngStr$, Optional A As database) As Dt
+Function TblFldChkFldSngStr(T$, FldTySngStr$, Optional A As database) As Variant()
 Dim D As database:         Set D = DbNz(A)
 Dim A1 As FldTySng:        A1 = FldTySngBrk(FldTySngStr)
 Dim Ty As DAO.DataTypeEnum:     Ty = A1.Ty
@@ -108,21 +104,21 @@ Dim O$(), O1() As DataTypeEnum
     Next
 
 If AyIsEmpty(O1) Then Exit Function
-Dim ODt As Dt: ODt = ErNew("Following fields of {Table} should have this {DtaTy}", T, DaoTyToStr(Ty))
+Dim OEr(): OEr = ErNew("Following fields of {Table} should have this {DtaTy}", T, DaoTyToStr(Ty))
 For J = 0 To UB(O)
-    ODt = ErApd(ODt, "." & J, O(J), DaoTyToStr(O1(J)))
+    OEr = ErApd(OEr, "." & J, O(J), DaoTyToStr(O1(J)))
 Next
-TblFldChkFldSngStr = ODt
+TblFldChkFldSngStr = OEr
 End Function
 
-Function TblFldChkFldTyMulStr(T$, FldTyMulStr$, Optional A As database) As Dt
+Function TblFldChkFldTyMulStr(T$, FldTyMulStr$, Optional A As database) As Variant()
 Dim F As FldTyMul:   F = FldTyMulBrk(FldTyMulStr)
 Dim Fny$():        Fny = FldTyMulFny(F)
 Dim Fs$:            Fs = FnyToStr(Fny)
-Dim O As Dt:         O = TblFldChkFnStr(T, Fs, A)
+Dim O():             O = TblFldChkFnStr(T, Fs, A)
 Dim J%
 For J = 0 To UBound(F.TyAy)
-    O = DtUnion(O, TblFldChkFldSngStr(T, FldTySngToStr(F.TyAy(J)), A))
+    O = AyAdd(O, TblFldChkFldSngStr(T, FldTySngToStr(F.TyAy(J)), A))
 Next
 TblFldChkFldTyMulStr = O
 End Function
@@ -131,17 +127,17 @@ Sub TblFldChkFldTyMulStr__Tst()
 Const T$ = "#Tmp"
 TblDrp T
 TblCrt T, "AA TEXT(10),BB SHORT"
-Dim Act As Dt: Act = TblFldChkFldTyMulStr(T, "TXT : AA | INT : BB")
-Debug.Assert Not ErIsSom(Act)
+Dim Act(): Act = TblFldChkFldTyMulStr(T, "TXT : AA | INT : BB")
+Debug.Assert Not AyHasEle(Act)
 TblDrp T
 End Sub
 
-Function TblFldChkFnStr(T$, FnStr$, Optional D As database) As Dt
-Dim F$(): F = FnStrBrk(FnStr)
+Function TblFldChkFnStr(T$, FnStr$, Optional D As database) As Variant()
+Dim F$(): F = NmstrBrk(FnStr)
 TblFldChkFnStr = TblFldChkFny(T, F, D)
 End Function
 
-Function TblFldChkFny(T$, Fny$(), Optional D As database) As Dt
+Function TblFldChkFny(T$, Fny$(), Optional D As database) As Variant()
 Dim A$(): A = Fny
 Dim B$(): B = TblFny(T, , D)
 Dim C$(): C = AyMinus(A, B)

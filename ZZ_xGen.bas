@@ -22,7 +22,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim mAyFn$(): If Fnd_AyFn(mAyFn, mDir, "*.bas,*.cls,*.Reference.Txt") Then ss.A 2: GoTo E
 'Dim mNmPrjLas$
 'Dim J%, mA$
-'For J = 0 To Siz_Ay(mAyFn) - 1
+'For J = 0 To Sz(mAyFn) - 1
 '    StsShw "Building module " & mAyFn(J) & " ..."
 '    Dim mNmPrj$, mNmm$, mExt$
 '    If Brk_Str_To3Seg(mNmPrj, mNmm, mExt, mAyFn(J), ".") Then ss.A 3: GoTo E
@@ -68,7 +68,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim mNmPrjLas$
 'Dim J%, mA$
 'Dim mAcs As Access.Application: Set mAcs = G.gAcs
-'For J = 0 To Siz_Ay(mAyFn) - 1
+'For J = 0 To Sz(mAyFn) - 1
 '    StsShw "Building module " & mAyFn(J) & " ..."
 '    Dim mNmPrj$, mNmm$, mExt$
 '    If Brk_Str_To3Seg(mNmPrj, mNmm, mExt, mAyFn(J), ".") Then ss.A 3: GoTo E
@@ -133,7 +133,7 @@ Attribute VB_Name = "ZZ_xGen"
 '
 '    '''Put all Modules of given prefix {p.PfxMod} in a Collection {mColl} and sort it
 '    If Fnd_Anm_ByPrj(mAnm, mPrj, True) Then ss.A 2: GoTo E
-'    For J = 0 To Siz_Ay(mAnm) - 1
+'    For J = 0 To Sz(mAnm) - 1
 '        If Fnd_Md(mMd, mPrj, mAnm(J)) Then ss.A 3: GoTo E
 '        If Gen_Doc_For1Mod(mF, mMd, pLikNmPrc) Then ss.A 4: GoTo E
 '    Next
@@ -151,7 +151,7 @@ Attribute VB_Name = "ZZ_xGen"
 '
 '    '''Put all Forms of given prefix {p.PfxFrm} in a Collection {mColl} and sort it
 '    If Fnd_Anm_ByPrj(mAnm, mPrj, , True) Then ss.A 2: GoTo E
-'    For J = 0 To Siz_Ay(mAnm) - 1
+'    For J = 0 To Sz(mAnm) - 1
 '        If Fnd_Md(mMd, mPrj, mAnm(J)) Then ss.A 3: GoTo E
 '        If Gen_Doc_For1Mod(mF, mMd, pLikNmPrc) Then ss.A 4: GoTo E
 '    Next
@@ -169,7 +169,7 @@ Attribute VB_Name = "ZZ_xGen"
 '    If Fnd_AnQs(mAnQs, pLikNmq) Then ss.A 2: GoTo E
 '
 '    '''Loop the Collection and call <zzGenDoc_For1QrySet>
-'    For J = 0 To Siz_Ay(mAnQs) - 1
+'    For J = 0 To Sz(mAnQs) - 1
 '        If Gen_Doc_For1QrySet(mF, mAnQs(J)) Then ss.A 3: GoTo E
 '    Next
 '    Close #mF
@@ -220,12 +220,12 @@ Attribute VB_Name = "ZZ_xGen"
 'Write #mFno, "Nmq", "Typ", "DependOn"
 'Dim J%, N%, I%
 'Dim mAnt$()
-'N% = Siz_Ay(mAnq)
+'N% = Sz(mAnq)
 'For J = 0 To N - 1
 '    Set iQry = mDb.QueryDefs(mAnq(J))
 '    Dim mSql$: mSql = iQry.Sql
-'    If SqlStrToAnt(mAnt, mSql) Then ss.A 3: GoTo E
-'    For I = 0 To Siz_Ay(mAnt) - 1
+'    If SqsToAnt(mAnt, mSql) Then ss.A 3: GoTo E
+'    For I = 0 To Sz(mAnt) - 1
 '        Write #mFno, mAnq(J), ToStr_TypQry(iQry.Type), mAnt(I)
 '    Next
 'Next
@@ -466,7 +466,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim iPrc, mCurLvl As Byte, mTyp&, iLinNo
 'Dim mAnPrc$(): If Fnd_AnPrc_ByMd(mAnPrc, pMd, pLikNmPrc) Then ss.A 1: GoTo E
 'Dim J%
-'For J = 0 To Siz_Ay(mAnPrc) - 1
+'For J = 0 To Sz(mAnPrc) - 1
 '    Dim iNmPrc$, iPrcBeg$, iPrcEnd$
 '
 '    If Brk_Str_To3Seg(iNmPrc, iPrcBeg, iPrcEnd, mAnPrc(J), ":") Then ss.xx 1, cSub, cMod: Exit Function
@@ -519,7 +519,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim mAnq$(): If Fnd_Anq_ByNmQs(mAnq, QryNms) Then ss.A 1: GoTo E
 'Dim mDQry As New d_Qry
 'With mDQry
-'    Dim J%: For J = 0 To Siz_Ay(mAnq) - 1
+'    Dim J%: For J = 0 To Sz(mAnq) - 1
 '        Dim iNmq$: iNmq = mAnq(J)
 '        Set iQry = CurrentDb.QueryDefs(iNmq)
 '        If mDQry.Brk_Nmqs(iQry.Name) Then ss.A 1: GoTo E
@@ -554,7 +554,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim mFfnCsv$:  mFfnCsv = Sdir_Doc & Sffn_Cur & "_Doc(ForTemplate).csv"
 'Dim mDirTp$:   mDirTp = Sdir_Tp
 'Dim mAyFn$(): If Fnd_AyFn(mAyFn, mDirTp) Then ss.A 1: GoTo E
-'If Siz_Ay(mAyFn) = 0 Then ss.A 1, "There is not Xls file in Template Dir", , "mDirTp", mDirTp: GoTo E
+'If Sz(mAyFn) = 0 Then ss.A 1, "There is not Xls file in Template Dir", , "mDirTp", mDirTp: GoTo E
 'Open mFfnCsv For Output As #mFno
 'Dim iFn
 'For Each iFn In mAyFn
@@ -962,19 +962,19 @@ Attribute VB_Name = "ZZ_xGen"
 ''Create pivot table
 'On Error GoTo R
 'Dim mNmPt$: mNmPt = IIf(p.Pt_Nam = "", "PivotTable1", p.Pt_Nam)
-'Dim mWs As Worksheet: If Add_Ws(mWs, pWb, p.NmWsNew) Then ss.A 1: GoTo E
-'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] Cache[{2}]", pWb.Name, p.NmWsNew, p.Pt_SqlStr)
+'Dim mWs As Worksheet: If Add_Ws(mWs, pWb, p.WsNmNew) Then ss.A 1: GoTo E
+'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] Cache[{2}]", pWb.Name, p.WsNmNew, p.Pt_Sqs)
 'With pWb.PivotCaches.Add(SourceType:=xlExternal)
 '    .Connection = CnnStr_Mdb(CurrentDb.Name)
 '    .CtCommandType = xlCmdSql
-'    .CtCommandText = p.Pt_SqlStr
+'    .CtCommandText = p.Pt_Sqs
 '    .MaintainConnection = True
 '    .CreatePivotTable _
-'        TableDestination:=Fmt_Str("'[{0}]{1}'!R1C1", pWb.Name, p.NmWsNew), _
+'        TableDestination:=Fmt_Str("'[{0}]{1}'!R1C1", pWb.Name, p.WsNmNew), _
 '        TableName:=mNmPt, _
 '        DefaultVersion:=xlPivotTableVersion10
 'End With
-'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] PivotTable[{2}]", pWb.Name, p.NmWsNew, mNmPt)
+'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] PivotTable[{2}]", pWb.Name, p.WsNmNew, mNmPt)
 '
 'Dim mPivotRows$(): mPivotRows = Split(p.PivotRows, CtComma)
 'Dim mPivotColumns$(): mPivotColumns = Split(p.PivotColumns, CtComma)
@@ -982,7 +982,7 @@ Attribute VB_Name = "ZZ_xGen"
 'Dim J%, mPt As Excel.PivotTable, mPf As Excel.PivotField
 'Set mPt = mWs.PivotTables(mNmPt)
 'With mPt
-'    For J = Siz_Ay(mPivotColumns) - 1 To 0 Step -1
+'    For J = Sz(mPivotColumns) - 1 To 0 Step -1
 '        Set mPf = .PivotFields(mPivotColumns(J))
 '        With mPf
 '            .Subtotals = Array(False, False, False, False, False, False, False, False, False, False, False, False)
@@ -991,7 +991,7 @@ Attribute VB_Name = "ZZ_xGen"
 '            .AutoSort xlAscending, mPivotColumns(J)
 '        End With
 '    Next
-'    For J = Siz_Ay(mPivotColumns) - 1 To 0 Step -1
+'    For J = Sz(mPivotColumns) - 1 To 0 Step -1
 '        Set mPf = .PivotFields(mPivotRows(J))
 '        With mPf
 '            .Subtotals = Array(False, False, False, False, False, False, False, False, False, False, False, False)
@@ -1000,7 +1000,7 @@ Attribute VB_Name = "ZZ_xGen"
 '            .AutoSort xlAscending, mPivotRows(J)
 '        End With
 '    Next
-'    For J = 0 To Siz_Ay(mPivotData)
+'    For J = 0 To Sz(mPivotData)
 '        Call .AddDataField( _
 '            .PivotFields(mPivotData(J)), _
 '            " " & mPivotData(J), _
@@ -1011,7 +1011,7 @@ Attribute VB_Name = "ZZ_xGen"
 'End With
 ''Format it
 '''ColWidth_Default & ColWidth
-'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] Formatting .....", pWb.Name, p.NmWsNew)
+'StsShw Fmt_Str("Build Wb[{0}] Ws[{1}] Formatting .....", pWb.Name, p.WsNmNew)
 'mWs.Columns.ColumnWidth = p.ColWidth_Default
 'Dim mColWidth$(): mColWidth = Split(p.ColWidth, CtComma)
 'Dim iCno As Byte

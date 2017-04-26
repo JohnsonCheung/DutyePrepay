@@ -19,7 +19,7 @@ Dim Des() As Boolean: Des = GetDesAy(IsDesAy, UC)
 Dim CIdx&():         CIdx = Prm_CIdx(ColIdxAy)
 Dim ColP():          ColP = DrAyCol(DrAy, CIdx(0), ColP) ' First Column of DrAy
 Dim O&():               O = AySrtIdx(ColP, Des(0))
-Dim GpAyP():        GpAyP = ApAv(ApLngAy(0, UB(DrAy)))
+Dim GpAyP():        GpAyP = Array(ApLngAy(0, UB(DrAy)))
 Dim ColPS():        ColPS = Fnd_Col(ColP, O, GpAyP)      ' P=Prv S=Sorted
 Dim ICol%
 Dim GpAy()

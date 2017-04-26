@@ -216,7 +216,7 @@ Const cSub$ = "RsCpyToFrm"
 On Error GoTo R
 Dim mAn_Frm$(), mAn_Rs$(): If Brk_Lm_To2Ay(mAn_Frm, mAn_Rs, FnStr) Then ss.A 1: GoTo E
 Dim mIsEq As Boolean, mEr$, mV_Rs, mV_FrmNew
-Dim J%: For J = 0 To Siz_Ay(mAn_Frm) - 1
+Dim J%: For J = 0 To Sz(mAn_Frm) - 1
     With pFrm.Controls(mAn_Frm(J))
         mV_Rs = pRs.Fields(mAn_Rs(J)).Value
         mV_FrmNew = .Value

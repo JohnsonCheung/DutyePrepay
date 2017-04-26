@@ -6,11 +6,11 @@ Function IsNothing(V) As Boolean
 IsNothing = TypeName(V) = "Nothing"
 End Function
 
-Sub VarAsg(A, oA)
+Sub VarAsg(A, OA)
 If IsObject(A) Then
-    Set oA = A
+    Set OA = A
 Else
-    oA = A
+    OA = A
 End If
 End Sub
 
@@ -37,23 +37,28 @@ VarAsstSy "sfsdf"
 
 End Sub
 
-Function VarChkEq(V1, V2) As Dt
+Function VarBool(V) As Boolean
+VarBool = V
+End Function
+
+Function VarChkEq(V1, V2) As Variant()
+
 If VarType(V1) <> VarType(V2) Then
-    Dim O As Dt:
+    Dim O()
     O = ErNew("Two V are dif VbTy", VarVbTyStr(V1), VarVbTyStr(V2))
-    O = ErApd(O, ".TypeName", TypeName(V1), TypeName(V2))
+    Push O, ErNew(".TypeName", TypeName(V1), TypeName(V2))
     VarChkEq = O
 End If
 If V1 = V2 Then Exit Function
 VarChkEq = ErNew("Two V of same {VbTy} with Dif Val of {V1} and {V2}", VarVbTyStr(V1), V1, V2)
 End Function
 
-Function VarChkSq(V) As Dt
+Function VarChkSq(V) As Variant()
 If VarIsSq(V) Then Exit Function
 VarChkSq = ErNew("Given V-{Type} is not a Sq", TypeName(V))
 End Function
 
-Function VarChkSy(V) As Dt
+Function VarChkSy(V) As Variant()
 If Not VarIsSy(V) Then
     VarChkSy = ErNew("Given V of {Ty} is not string array", TypeName(V))
 End If
@@ -82,12 +87,20 @@ Function VarDaoTy(V) As DataTypeEnum
 VarDaoTy = DaoTyNewByVbTy(VarType(V))
 End Function
 
+Function VarDte(V) As Date
+VarDte = V
+End Function
+
 Function VarFmSemiColonFld(SemiColFld$, Optional Ty As VbVarType)
 
 End Function
 
 Function VarFmStr(Str$, Optional Ty As VbVarType)
 
+End Function
+
+Function VarInt%(V)
+VarInt = V
 End Function
 
 Function VarIsBlank(V) As Boolean
@@ -230,6 +243,10 @@ Debug.Assert VarIsSy(Ay) = True
 Debug.Assert VarIsSy(B) = False
 End Sub
 
+Function VarLng&(V)
+VarLng = V
+End Function
+
 Function VarOPtr(Obj) As LongPtr
 VarOPtr = ObjPtr(Obj)
 End Function
@@ -246,6 +263,10 @@ End Function
 
 Function VarSimTy(V) As eTypSim
 Stop
+End Function
+
+Function VarStr&(V)
+VarStr = V
 End Function
 
 Function VarToStr$(V)

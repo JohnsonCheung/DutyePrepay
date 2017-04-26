@@ -103,9 +103,10 @@ Dim Md As CodeModule: Set Md = MdNz(A)
 MdRpl LyJn(AyAddPfx(MdLy(Md), "'")), Md
 End Sub
 
-Sub MdRmv(MdNm$, Optional A As vbproject)
-Dim B As vbproject: Set B = PjNz(A)
-B.VBComponents.Remove B.VBComponents(MdNm)
+Sub MdRmv(A As CodeModule)
+Dim Pj As vbproject
+Set Pj = MdPj(A)
+Pj.VBComponents.Remove MdCmp(A)
 End Sub
 
 Sub MdRmvBdy(A As CodeModule)
@@ -189,6 +190,10 @@ Sub MdSelTxt(P As LCLC, Optional A As CodeModule)
 With P
     MdNz(A).CodePane.SetSelection .L1, .C1, .L2, .C2
 End With
+End Sub
+
+Sub MdShw(A As CodeModule)
+A.CodePane.Show
 End Sub
 
 Sub MdShwLno(Lno&, Optional A As CodeModule)

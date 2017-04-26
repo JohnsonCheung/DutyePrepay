@@ -2,6 +2,14 @@ Attribute VB_Name = "nXls_nDo_Cell"
 Option Compare Database
 Option Explicit
 
+Sub CellAct(Cell As Range)
+RgWs(Cell).Activate
+With RgRC(Cell, 1, 1)
+    .Activate
+    .Select
+End With
+End Sub
+
 Sub CellCrtPt(Cell As Range, RgNam$, _
     RowFnStr$, ColFnStr$, DtaFnStr$, _
     Optional RowTotFnStr$ = "", Optional ColTotFnStr$ = "")
@@ -16,7 +24,7 @@ O.PivotCache.MissingItemsLimit = xlMissingItemsNone
 Dim Ay$(), J%, mNmF$, mFCaption$
 With O
     'Set F col
-    Ay = FnStrBrk(ColFnStr)
+    Ay = NmstrBrk(ColFnStr)
     Dim F As PivotField
     For J = UBound(Ay) To 0 Step -1
         If Brk_ColonAs_ToCaptionNm(mFCaption, mNmF, Ay(J)) Then ss.A 1:
@@ -31,7 +39,7 @@ With O
     Next
 
     'Set F Row
-    Ay = FnStrBrk(RowFnStr)
+    Ay = NmstrBrk(RowFnStr)
     For J = UBound(Ay) To LBound(Ay) Step -1
         If Brk_ColonAs_ToCaptionNm(mFCaption, mNmF, Ay(J)) Then ss.A 2:
         
@@ -45,7 +53,7 @@ With O
     Next
 
     'Set F Data
-    Ay = FnStrBrk(DtaFnStr)
+    Ay = NmstrBrk(DtaFnStr)
     For J = UBound(Ay) To LBound(Ay) Step -1
         If Brk_Str_Both(mNmF, mFCaption, Ay(J), ":") Then ss.A 1:
         Set F = .PivotFields(mNmF)
@@ -64,6 +72,12 @@ With O
     End With
 End With
 PtSrt O
+End Sub
+
+Sub CellDrpCmt(A As Range)
+Dim C As Comment: Set C = A.Comment
+If TypeName(C) = "Nothing" Then Exit Sub
+C.Delete
 End Sub
 
 Sub CellInsRowAbove(Cell As Range)

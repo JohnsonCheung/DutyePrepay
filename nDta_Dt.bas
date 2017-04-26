@@ -52,7 +52,12 @@ End Sub
 
 Sub DtAsstEq(D1 As Dt, D2 As Dt, ParamArray MsgAp())
 Dim Av(): Av = MsgAp
-ErAsst DtChkEq(D1, D2), Av
+Dim Er(): Er = DtChkEq(D1, D2)
+If AyHasEle(Er) Then
+    DtBrw D1, "Dt1-of-Cmp-2-Dt"
+    DtBrw D2, "Dt2-of-Cmp-2-Dt"
+End If
+ErAsst Er, Av
 End Sub
 
 Sub DtAsstEq__Tst()
@@ -97,41 +102,43 @@ Sub DtBrw1(Dt As Dt, Optional TmpFilPfx$ = "Dt", Optional NoIdx As Boolean, Opti
 HtmBrw DtHtm(Dt, NoIdx, BrkLinFld), TmpFilPfx, TmpSubFdr
 End Sub
 
-Function DtChkEq(D1 As Dt, D2 As Dt) As Dt
-Dim Er As Dt
+Function DtChkEq(D1 As Dt, D2 As Dt, ParamArray MsgAp()) As Variant()
+Dim Er()
 '===============
-Dim A_Er_DifFny As Dt
-    Er = AyChkSamSet(D1.Fny, D2.Fny)
-    If ErIsSom(Er) Then
-        A_Er_DifFny = ErApdEr(ErNew("Fields are diff:"), Er)
+Dim A_Er_DifFny()
+    Er = AyChkSam(D1.Fny, D2.Fny)
+    If AyHasEle(Er) Then
+        A_Er_DifFny = AyAdd(ErNew("Fields are diff:"), Er)
     End If
 
-Dim A_Er_DifNRow As Dt
+Dim A_Er_DifNRow()
     If DtNRec(D1) <> DtNRec(D2) Then
         A_Er_DifNRow = ErNew("NRec are diff {N1} and {N2}", D1.Tn, DtNRec(D1), DtNRec(D2))
     End If
 
-Dim A_Er_DifRow As Dt
-    If ErIsNone(A_Er_DifFny) Then
+Dim A_Er_DifRow()
+    If AyIsEmpty(A_Er_DifFny) Then
         '-------
         Dim D2DrAy()
             D2DrAy = DtSel(D2, FnyToStr(D1.Fny)).DrAy
 
         Er = DrAyChkEq(D1.DrAy, D2DrAy)
-        If ErIsSom(Er) Then
-            A_Er_DifRow = ErApdEr(ErNew("Some rows are diff:"), Er)
+        If AyHasEle(Er) Then
+            A_Er_DifRow = AyAdd(ErNew("Some rows are diff:"), Er)
         End If
     End If
 '===============
-Dim O As Dt
-    O = ErApdEr(A_Er_DifFny, A_Er_DifNRow)
-    O = ErApdEr(O, A_Er_DifRow)
+Dim O()
+    O = AyAdd(A_Er_DifFny, A_Er_DifNRow)
+    O = AyAdd(O, A_Er_DifRow)
     
-If ErIsSom(O) Then
+If AyHasEle(O) Then
     Er = ErNew("Given 2 Dt are different {Tn1} {Tn2}:", D1.Tn, D2.Tn)
     Er = ErApd(Er, "{NRec1} {Fny1}", DtNRec(D1), FnyToStr(D1.Fny))
     Er = ErApd(Er, "{NRec2} {Fny2}", DtNRec(D1), FnyToStr(D2.Fny))
-    O = ErApdEr(Er, O)
+    O = AyAdd(Er, O)
+    Dim Av(): Av = MsgAp
+    O = AyAddItm(O, Av)
 End If
 DtChkEq = O
 End Function
@@ -233,6 +240,24 @@ O.DrAy = DrAy
 DtNew = O
 End Function
 
+Function DtNewSq(DtSq, Optional Tn$ = "Table") As Dt
+Dim OFny$()
+    OFny = AySy(SqDr(DtSq, 1))
+Dim ODrAy()
+    ODrAy = SqDrAy_FmTo(DtSq, 2, UBound(DtSq, 1))
+DtNewSq = DtNew(OFny, ODrAy, Tn)
+End Function
+
+Sub DtNewSq__Tst()
+Dim D1 As Dt
+Dim S
+Dim D2 As Dt
+    D1 = DtSample1
+    S = DtSq(D1)
+    D2 = DtNewSq(S, D1.Tn)
+DtAsstEq D1, D2
+End Sub
+
 Function DtNRec&(A As Dt)
 DtNRec = Sz(A.DrAy)
 End Function
@@ -261,9 +286,9 @@ End If
 '==========================
 Dim I&()
     I = AySubsetIdxAy(A.Fny, OFny)
-    Dim E As Dt
+    Dim E()
     E = AyChkZerOrPos(I)
-    E = ErExplain(E, "DtSel: Given {StarFnStr} has fields not in Dt-{Flds}", StarFnStr, FnyToStr(A.Fny))
+    E = ErApd(E, "DtSel: Given {StarFnStr} has fields not in Dt-{Flds}", StarFnStr, FnyToStr(A.Fny))
     ErAsst E
 '==========================
 Dim ODrAy()
@@ -286,7 +311,7 @@ End Sub
 
 Function DtSrt(Dt As Dt, FnStr$) As Dt
 Dim UR&: UR = DtNRec(Dt) - 1: If UR = 0 Then DtSrt = Dt: Exit Function
-Dim F$(): F = FnStrBrk(FnStr)
+Dim F$(): F = NmstrBrk(FnStr)
 Dim UF%: UF = UB(F)
 Dim IsDesAy() As Boolean
     Dim J%
@@ -342,7 +367,6 @@ Dim A_Fny$()
 Dim A_Idx&()
     A_Idx = AyIdxAy(A_Fny, F2)
 
-
 Dim OFny$()
     OFny = A_Fny
 Dim ODrAy():
@@ -374,9 +398,9 @@ Act = DtUnion(D1, D2)
 If True Then
     DtBrw Act
 Else
-    Dim Chk As Dt
-    Chk = DtChkEq(Act, Exp)
-    ChkBrw Chk
+    Dim Er()
+    Er = DtChkEq(Act, Exp)
+    ErBrw Er
 End If
 End Sub
 
@@ -390,11 +414,13 @@ Act = DtUnion(D1, D2)
 If True Then
     DtBrw Act
 Else
-    Dim Chk As Dt
-    Chk = DtChkEq(Act, Exp)
-    ChkBrw Chk
+    ErBrw DtChkEq(Act, Exp)
 End If
 End Sub
+
+Function DtURec&(A As Dt)
+DtURec = DtNRec(A) - 1
+End Function
 
 Function DtWhere(D As Dt, Fld$, Cndn$, Optional Ty As VbVarType = VbVarType.vbInteger) As Dt
 Dim DrAy(): DrAy = D.DrAy

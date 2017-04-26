@@ -2,6 +2,10 @@ Attribute VB_Name = "nXls_Fcsv"
 Option Compare Database
 Option Explicit
 
+Sub FcsvPt(Fcsv, Cell As Range, RowFnStr$, Col$, Optional Pag$)
+
+End Sub
+
 Function FcsvWrtFx(pFfnCsv$, Optional Pfx$ = "", Optional OvrWrt As Boolean = False, Optional pKeepCsv = False) As Boolean
 Const cSub$ = "Csv2Xls"
 'Aim: Cv {pFfnCsv} to {pFx}

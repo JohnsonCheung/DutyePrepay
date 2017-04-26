@@ -4,7 +4,7 @@ Option Explicit
 
 Sub TblAddFld(T, F$, Ty As DatabaseTypeEnum, Optional A As database)
 If TblHasFld(T, F, A) Then Exit Sub
-Dim B$: B = DaoTySqlStr(Ty)
+Dim B$: B = DaoTySqs(Ty)
 Dim S$: S = FmtQQ("Alter Table [?] Add Column [?] ?", T, F, B)
 DbRunSql S, A
 End Sub
@@ -54,7 +54,8 @@ Function TblApdFmTbl(TarTn$, pNmtSrc$, pNKFld As Byte, Optional pNKFldRmv = 0) A
 '                   1,1,6
 Dim mSqlAdd$, mSqlUpd$, mSqlDlt$
 'mSqlAdd, mSqlUpd, mSqlDlt,
-SqlStr_AddUpdDtl TarTn, pNmtSrc, pNKFld, pNKFldRmv '
+'SqsOfAddUpdDlt TarTn, pNmtSrc, pNKFld, pNKFldRmv '
+Stop
 StsShw Fmt_Str("TblApdFmTbl: Adding [{0}] to [{1}] with pNKFld=[{2}] & pNKFldRmv=[{3}]", pNmtSrc, TarTn, pNKFld, pNKFldRmv)
 Run_Sql mSqlAdd
 Run_Sql mSqlUpd
@@ -147,54 +148,12 @@ Dim S$: S = FmtQQ("Drop Index [{0}] on [{1}]", IdxNm, T)
 DbRunSql S, A
 End Sub
 
-Function TblExpToFx_wFmt(pSetNmtq$, pFxTar$ _
-    , Optional pFxTp$ = "" _
-    , Optional pNmWsPfx$ = "", Optional pNmWsSfx$ = "" _
-    , Optional SrcFb$ = "" _
-    , Optional pNoExpTim As Boolean = False _
-    ) As Boolean
-'Aim: Export all tables/queries in {pSetNmtq} to {pFxTar} with {pNmWsPfx/pNmWsSfx} added to each Ws (ie ws name will be pPfx + Nmtq + pSfx}.
-'     "Note to Nmtq": if Nmtq is in format of xxx_Oup_yyy or #@yyy, yyy will be use
-Const cSub$ = "Exp_SetNmtq2Xls_wFmt"
-If VBA.Dir(pFxTar$) = "" Then
-    If VBA.Dir(pFxTp$) <> "" Then If Cpy_Fil(pFxTp, pFxTar) Then ss.A 1: GoTo E
-End If
-On Error GoTo R
-Dim mAntq$(): If Fnd_Antq_BySetNmtq(mAntq, pSetNmtq) Then ss.A 2: GoTo E
-
-Dim mWb As Workbook, mToBeDelete$: mToBeDelete = ""
-If VBA.Dir(pFxTar) = "" Then
-    mToBeDelete = "ToBeDelete": If Crt_Wb(mWb, pFxTar, , mToBeDelete) Then ss.A 1: GoTo E
-Else
-    If Opn_Wb_RW(mWb, pFxTar) Then ss.A 1: GoTo E
-End If
-
-Dim mAntqErr$()
-Dim I%: For I = 0 To Siz_Ay(mAntq) - 1
-    Dim mWs As Worksheet
-    Dim mNmWsTar$: mNmWsTar = pNmWsPfx & Cut_Aft(Cut_Aft(Cut_Aft(mAntq(I), "_Oup_"), "#@"), "@") & pNmWsSfx
-    If Fnd_Ws(mWs, mWb, mNmWsTar, True) Then
-        If Add_Ws(mWs, mWb, mNmWsTar) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
-        If Exp_Nmtq2Ws(mAntq(I), mWs, SrcFb) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
-    Else
-        If Exp_Nmtq2Ws_wFmt_ByCpyRs(mAntq(I), mWs.Range("A5"), SrcFb, pNoExpTim) Then Add_AyEle mAntqErr, mAntq(I): GoTo Nxt
-    End If
-Nxt:
-Next
-If mToBeDelete$ <> "" Then Dlt_Ws_InWb mWb, mToBeDelete
-If Siz_Ay(mAntqErr) > 0 Then ss.A 3, "These tables cannot be exported: " & Join(mAntqErr, ","): GoTo E
-If Cls_Wb(mWb, True) Then ss.A 4: GoTo E
-Exit Function
-R: ss.R
-E:
-End Function
-
 Function TblHasPrp(T As TableDef, PrpNm$) As Boolean
 TblHasPrp = PrpIsExist(PrpNm, T.Properties)
 End Function
 
 Sub TblIns(T, FnStr$, Av(), Optional A As database)
-DbRunSql SqlStrOfIns(T, FnStr, Av), A
+DbRunSql SqsOfIns(T, FnStr, Av), A
 End Sub
 
 Function TblInsRecBy2Id(pNmt$, pNmFld_Pk1$, pNmFld_Pk2$, pId1&, pId2&, FnStr$, ParamArray pAp()) As Boolean
@@ -289,7 +248,7 @@ mSql = Fmt_Str("Alter table {0} Add COLUMN Lst{1} Memo", pNmtTo, pNmFld_NRec)
 If Run_Sql(mSql) Then ss.A 2: GoTo E
 'Loop {pNmtFmt} having break @ mAnFldKey()
 Dim mAnFldKey$(): mAnFldKey = Split(pLoKey, CtComma)
-Dim NKey%: NKey = Siz_Ay(mAnFldKey)
+Dim NKey%: NKey = Sz(mAnFldKey)
 Dim mRs As DAO.Recordset: Set mRs = CurrentDb.OpenRecordset(Fmt_Str("Select {0},{1} from {2} order by {0},{1}", pLoKey, pNmFld_NRec, pNmtFm))
 With mRs
     If .AbsolutePosition = -1 Then .Close: Exit Function
@@ -459,7 +418,7 @@ If VBA.Dir(TarFb) = "" Then
 End If
 Dim mAnt$(): ' If Fnd_Ant_ByLik(mAnt, pLikNmt) Then ss.A 4: GoTo E
 Dim J%
-For J = 0 To Siz_Ay(mAnt) - 1
+For J = 0 To Sz(mAnt) - 1
     Dim mSql$: mSql = Fmt_Str("Select * into {0} in '{1}' from {0}", mAnt(J), TarFb)
     If Run_Sql(mSql) Then ss.A 5: GoTo E
 Next

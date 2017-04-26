@@ -69,6 +69,10 @@ For Each iWb In Excel.Application.Workbooks
 Next
 End Sub
 
+Sub AppxShw()
+Appx.Visible = True
+End Sub
+
 Function CrtPjx(PjNm$, Optional Pth$) As vbproject
 Dim F$:  F = PjNm_NewFalm(PjNm, Pth)
 Set CrtPjx = FxlamCrt(F)

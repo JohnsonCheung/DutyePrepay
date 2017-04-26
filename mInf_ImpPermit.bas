@@ -6,7 +6,7 @@ Function ImpPermitDt() As Dt
 Dim N As Date:     N = Now
 Const T$ = ">Permit"
 Const F$ = "CSTR(X.SKU) as SKU, [Batch Number] as BchNo, [Order Qty#] as Qty"
-Dim S$: S = SqlStrOfSel(T, F)
+Dim S$: S = SqsOfSel(T, F)
 ImpPermitDt = SqlDt(S)
 End Function
 

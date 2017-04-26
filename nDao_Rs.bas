@@ -16,7 +16,7 @@ On Error GoTo R
 Dim mAn_Frm$(), mAn_Rs$(): If Brk_Lm_To2Ay(mAn_Frm, mAn_Rs, FnStr) Then ss.A 1: GoTo E
 Dim mA$, mNmFld_Frm$, mNmFld_Rs$, mIsEq As Boolean
 Dim J%, N%
-N = Siz_Ay(mAn_Frm)
+N = Sz(mAn_Frm)
 For J = 0 To N - 1
     mNmFld_Frm = mAn_Frm(J)
     mNmFld_Rs = mAn_Rs(J)
@@ -155,11 +155,11 @@ On Error GoTo R
 Dim mIsEq As Boolean
 Dim J%: For J = 0 To pRsSub.Fields.Count - 1
     With pRsSub.Fields(J)
-        Dim mNm$: mNm = .Name
+        Dim MNm$: MNm = .Name
         Dim mV1: mV1 = .Value
         Dim mTyp As DAO.DataTypeEnum: mTyp = .Type
     End With
-    If IfEq(mIsEq, mV1, pRsSuper.Fields(mNm).Value) Then ss.A 1, , , "Field with IsEq err", mNm: GoTo E
+    If IfEq(mIsEq, mV1, pRsSuper.Fields(MNm).Value) Then ss.A 1, , , "Field with IsEq err", MNm: GoTo E
     If Not mIsEq Then GoTo E
 Next
 Exit Function
@@ -193,7 +193,7 @@ Const cSub$ = "Rmv_Cummulation"
 '
 If Trim(FnStrKey) = "" Then ss.A 1, "FnStrKey is empty string": GoTo E
 Dim mAnFldKey$(): mAnFldKey = Split(FnStrKey, CtComma)
-Dim NKey%: NKey = Siz_Ay(mAnFldKey)
+Dim NKey%: NKey = Sz(mAnFldKey)
 ReDim mAyKvLas(NKey - 1)
 Dim mLasRunningQty As Double
 With pRs

@@ -71,7 +71,7 @@ Const cSub$ = "WsFmt_ByColrRow"
 'Dim mAyCno() As Byte, mAyColr&()
 'If Fnd_AyCnoColr(mAyCno, mAyColr, Rg, pRnoColrIdx) Then ss.A 1: GoTo E
 'Dim J%
-'For J = 0 To Siz_Ay(mAyCno) - 1
+'For J = 0 To Sz(mAyCno) - 1
 '    With mSq
 '        .Cno1 = mAyCno(J)
 '        .Cno2 = .Cno1
@@ -157,7 +157,7 @@ On Error GoTo R
 Dim iCno As Byte, J%, mRge As Range
 Dim mXls As Excel.Application: Set mXls = pWs.Application: mXls.ScreenUpdating = False: mXls.DisplayAlerts = False
 On Error GoTo R
-For J = 0 To Siz_Ay(pAyCno) - 1
+For J = 0 To Sz(pAyCno) - 1
     Set mRge = pWs.Range(pWs.Cells(pRnoBeg, pAyCno(J)), pWs.Cells(pRnoEnd, pAyCno(J)))
     With mRge
         .HorizontalAlignment = xlLeft
@@ -200,62 +200,62 @@ With pWs
 End With
 End Function
 
-Function WsFmtOL_ByCol(Rg As Range, Optional pCithOL As Byte = 1, Optional pCithIns As Byte = 0) As Boolean
+Sub WsFmtOL_ByCol(Rg As Range, Optional pCithOL As Byte = 1, Optional pCithIns As Byte = 0)
 'Aim: Set outline level of data at {Rg} by the cells content.  Assume the cell content is outline level
 '     Optionally insert cell and shift right at pCnoIns relative to Rg
-Const cSub$ = "WsFmtOL_ByCol"
-On Error GoTo R
-Dim mWs As Worksheet: Set mWs = Rg.Parent
-Dim iRno&, mLvl As Byte, mV
-
-Dim mRnoLas&: If Fnd_RnoLas(mRnoLas, Rg) Then ss.A 1: GoTo E
-If pCithIns > 0 Then
-    Dim mCnoLas As Byte: mCnoLas = Rg(0, 1).End(xlToRight).Column
-    Dim mRgeBlk As Range: Set mRgeBlk = Rg.Range(Rg(1, 1), mWs.Cells(mRnoLas, mCnoLas))
-    mRgeBlk.Sort Key1:=Rg(1, pCithOL), Order1:=xlAscending, Header:=xlNo _
-        , MatchCase:=False, Orientation:=xlTopToBottom, DataOption1:=xlSortNormal
-
-    Dim mAyRgeRno() As tRgeRno: If Fnd_AyRgeRno(mAyRgeRno, Rg(1, pCithOL)) Then ss.A 3: GoTo E
-    Dim J%
-    Dim mCnoOL As Byte: mCnoOL = Rg.Column + pCithOL - 1
-    Dim mCnoIns As Byte: mCnoIns = Rg.Column + pCithIns - 1
-    For J = 0 To Siz_AyRgeRno(mAyRgeRno) - 1
-        With mAyRgeRno(J)
-            mV = mWs.Cells(.Fm, mCnoOL).Value
-            If VarType(mV) <> vbDouble Then ss.A 4, "The data type of mAyRgeRno(J).Fm content is not Double, which is used as OutLine", , "mAyRgeRno(J).Fm", .Fm: GoTo E
-            If 0 > mV Or mV > 15 Then ss.A 5, "The value of mAyRgeRno(J).Fm content is not between 0 to 15", , "mAyRgeRno(J).Fm,The Val", .Fm, mV: GoTo E
-            mLvl = mV
-            If mLvl >= 1 Then
-                Dim mRge As Range: Set mRge = mWs.Range(mWs.Cells(.Fm, mCnoIns), mWs.Cells(.To, mCnoIns + mLvl - 1))
-                mRge.Insert shift:=Excel.xlShiftToRight
-            End If
-        End With
-    Next
-
-    If Crt_Rge_ExtNCol(mRgeBlk, mRgeBlk, 15) Then ss.A 6: GoTo E
-    mRgeBlk.Sort Key1:=Rg(1, 1), Order1:=xlAscending, Header:=xlNo _
-        , MatchCase:=False, Orientation:=xlTopToBottom, DataOption1:=xlSortNormal
-End If
-
-For iRno = Rg.Row To mRnoLas
-    mLvl = mWs.Cells(iRno, mCnoOL).Value
-    If 1 <= mLvl And mLvl <= 7 Then mWs.Rows(iRno).OutlineLevel = mLvl + 1
-    If 8 <= mLvl And mLvl <= 15 Then mWs.Rows(iRno).OutlineLevel = 8
-Next
-
-With mWs
-    With .Outline
-        .SummaryRow = xlSummaryAbove
-        .ShowLevels 2
-    End With
-    .Activate
-    .Application.ActiveWindow.Zoom = 85
-End With
-Rg(1, pCithOL).EntireColumn.ColumnWidth = 5
-Exit Function
-R: ss.R
-E: WsFmtOL_ByCol = True: ss.B cSub, cMod, "Rg,pCithOL,pCithIns", ToStr_Rge(Rg), pCithOL, pCithIns
-End Function
+'Const cSub$ = "WsFmtOL_ByCol"
+'On Error GoTo R
+'Dim mWs As Worksheet: Set mWs = Rg.Parent
+'Dim iRno&, mLvl As Byte, mV
+'
+'Dim mRnoLas&: If Fnd_RnoLas(mRnoLas, Rg) Then ss.A 1: GoTo E
+'If pCithIns > 0 Then
+'    Dim mCnoLas As Byte: mCnoLas = Rg(0, 1).End(xlToRight).Column
+'    Dim mRgeBlk As Range: Set mRgeBlk = Rg.Range(Rg(1, 1), mWs.Cells(mRnoLas, mCnoLas))
+'    mRgeBlk.Sort Key1:=Rg(1, pCithOL), Order1:=xlAscending, Header:=xlNo _
+'        , MatchCase:=False, Orientation:=xlTopToBottom, DataOption1:=xlSortNormal
+'
+'    Dim mAyRgeRno() As tRgeRno: If Fnd_AyRgeRno(mAyRgeRno, Rg(1, pCithOL)) Then ss.A 3: GoTo E
+'    Dim J%
+'    Dim mCnoOL As Byte: mCnoOL = Rg.Column + pCithOL - 1
+'    Dim mCnoIns As Byte: mCnoIns = Rg.Column + pCithIns - 1
+'    For J = 0 To SzRgeRno(mAyRgeRno) - 1
+'        With mAyRgeRno(J)
+'            mV = mWs.Cells(.Fm, mCnoOL).Value
+'            If VarType(mV) <> vbDouble Then ss.A 4, "The data type of mAyRgeRno(J).Fm content is not Double, which is used as OutLine", , "mAyRgeRno(J).Fm", .Fm: GoTo E
+'            If 0 > mV Or mV > 15 Then ss.A 5, "The value of mAyRgeRno(J).Fm content is not between 0 to 15", , "mAyRgeRno(J).Fm,The Val", .Fm, mV: GoTo E
+'            mLvl = mV
+'            If mLvl >= 1 Then
+'                Dim mRge As Range: Set mRge = mWs.Range(mWs.Cells(.Fm, mCnoIns), mWs.Cells(.To, mCnoIns + mLvl - 1))
+'                mRge.Insert shift:=Excel.xlShiftToRight
+'            End If
+'        End With
+'    Next
+'
+'    If Crt_Rge_ExtNCol(mRgeBlk, mRgeBlk, 15) Then ss.A 6: GoTo E
+'    mRgeBlk.Sort Key1:=Rg(1, 1), Order1:=xlAscending, Header:=xlNo _
+'        , MatchCase:=False, Orientation:=xlTopToBottom, DataOption1:=xlSortNormal
+'End If
+'
+'For iRno = Rg.Row To mRnoLas
+'    mLvl = mWs.Cells(iRno, mCnoOL).Value
+'    If 1 <= mLvl And mLvl <= 7 Then mWs.Rows(iRno).OutlineLevel = mLvl + 1
+'    If 8 <= mLvl And mLvl <= 15 Then mWs.Rows(iRno).OutlineLevel = 8
+'Next
+'
+'With mWs
+'    With .Outline
+'        .SummaryRow = xlSummaryAbove
+'        .ShowLevels 2
+'    End With
+'    .Activate
+'    .Application.ActiveWindow.Zoom = 85
+'End With
+'Rg(1, pCithOL).EntireColumn.ColumnWidth = 5
+'Exit Sub
+'R: ss.R
+'E: WsFmtOL_ByCol = True: ss.B cSub, cMod, "Rg,pCithOL,pCithIns", ToStr_Rge(Rg), pCithOL, pCithIns
+End Sub
 
 Sub WsFmtOutLine(A As Worksheet)  '(P As WsFmtOL)
 'Aim: Color, Outline & Border by {p}
@@ -314,10 +314,8 @@ Const cSub$ = "WsFmtOutLine"
 'E:
 End Sub
 
-Function WsFmtr(A As Worksheet) As ListObjFmtr
-Dim Def As RgFmtDef
-Def = RgFmtDefSqBrk(WsSq(A))
-WsFmtr = ListObjFmtrNew(Def)
+Function WsFmtr(A As Worksheet) As LoFmtr
+WsFmtr = LoFmtr(WsSq(A))
 End Function
 
 Private Function WsFmtOutLine_Fnd2Rge(ByRef oRgeBorder As Range, ByRef oRgeColrCols _

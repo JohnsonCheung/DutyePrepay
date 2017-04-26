@@ -141,7 +141,7 @@ A1 = ToStr_Am(mAm_NmFldVal, ", ", "[A{N}_*]", "[B{N}_*]")
 A2 = ToStr_Am(mAm_NmFldVal, "=", "Nz([A{N}_*],0)", "Nz([B{N}_*],0)", " and ")
 
 ''''A3
-ReDim mAm(0 To Siz_Ay(mAnFld_CmnKey) - 1) As tMap
+ReDim mAm(0 To Sz(mAnFld_CmnKey) - 1) As tMap
 If Set_Am_F1(mAm, mAnFld_CmnKey) Then ss.A 15: GoTo E
 If Set_Am_F2(mAm, mAnFld_CmnKey) Then ss.A 16: GoTo E
 A3 = ToStr_Am(mAm, "=", "(l.*", "a.*)", " and ")

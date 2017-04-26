@@ -22,7 +22,7 @@ Dim iTbl As DAO.TableDef: For Each iTbl In CurrentDb.TableDefs
 Next
 'Loop Template file
 Dim AyFn$(): If Fnd_AyFn(AyFn, mDirTp, "*.xls", False) Then ss.A 1: GoTo E
-If Siz_Ay(AyFn) = 0 Then ss.A 1, "No template files found", eRunTimErr, "DirTp", mDirTp: GoTo E
+If Sz(AyFn) = 0 Then ss.A 1, "No template files found", eRunTimErr, "DirTp", mDirTp: GoTo E
 Dim iFil
 For Each iFil In AyFn
     Debug.Print "******************************"
@@ -75,7 +75,7 @@ Const cSub$ = "TpFxExp_InDir"
 '==Start==
 Dim mAyFn$(): If Fnd_AyFn(mAyFn, pDirTp) Then ss.A 1: GoTo E
 Dim J%
-For J = 0 To Siz_Ay(mAyFn) - 1
+For J = 0 To Sz(mAyFn) - 1
     Dim mWb As Workbook: If Opn_Wb_R(mWb, pDirTp & mAyFn(J)) Then ss.A 1: GoTo E
     With mWb
         Write #pF, mWb.Name, , , , mWb.FullName

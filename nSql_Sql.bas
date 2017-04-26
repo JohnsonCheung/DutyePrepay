@@ -113,10 +113,6 @@ Dim S$: S = FmtQQAv(SqlQQ, Av)
 SqlRun S
 End Sub
 
-Function SqlStr$(Sql$, Optional A As database)
-SqlStr = SqlV(Sql, A)
-End Function
-
 Function SqlSy(Sql$, Optional A As database) As String()
 Dim O$()
 SqlSy = SqlIntoAy(Sql, O, A)
@@ -132,4 +128,8 @@ With SqlRs(Sql, A)
     SqlV = .Fields(0).Value
     .Close
 End With
+End Function
+
+Function Sqs$(Sql$, Optional A As database)
+Sqs = SqlV(Sql, A)
 End Function

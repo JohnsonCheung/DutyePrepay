@@ -2,7 +2,7 @@ Attribute VB_Name = "nIde_nMth_MthBrk"
 Option Compare Database
 Option Explicit
 Type MthBrk
-    mFY As String
+    Mdfy As String
     Ty As String
     PrpTy As String
     Nm As String
@@ -30,7 +30,7 @@ Function MthBrkDr(A As MthBrk) As Variant()
 Dim O()
 With A
     Push O, .Nm
-    Push O, .mFY
+    Push O, .Mdfy
     Push O, .Ty
     Push O, .PrpTy
     Push O, .RetTyChr
@@ -54,6 +54,12 @@ Dim U&: U = UBound(A)
 Exit Function
 X:
 MthBrkIsEmptyAy = True
+End Function
+
+Function MthBrkIsMatch(A As MthBrk, MthNm$, PrpTy$) As Boolean
+If MthNm <> A.Nm Then Exit Function
+If PrpTy = "" Then MthBrkIsMatch = True: Exit Function
+MthBrkIsMatch = A.PrpTy = PrpTy
 End Function
 
 Function MthBrkIsRetObj(A As MthBrk) As Boolean
@@ -80,32 +86,32 @@ End Function
 
 Function MthBrkIsTth_Pri(A As MthBrk) As Boolean
 If Not MthBrkIsTth(A) Then Exit Function
-MthBrkIsTth_Pri = A.mFY = "Private"
+MthBrkIsTth_Pri = A.Mdfy = "Private"
 End Function
 
 Function MthBrkIsTth_PriPfx(A As MthBrk) As Boolean
 If Not MthBrkIsTth_Pfx(A) Then Exit Function
-MthBrkIsTth_PriPfx = (A.mFY = "Prilic" Or A.mFY = "")
+MthBrkIsTth_PriPfx = (A.Mdfy = "Prilic" Or A.Mdfy = "")
 End Function
 
 Function MthBrkIsTth_PriSfx(A As MthBrk) As Boolean
 If Not MthBrkIsTth_Sfx(A) Then Exit Function
-MthBrkIsTth_PriSfx = (A.mFY = "Prilic" Or A.mFY = "")
+MthBrkIsTth_PriSfx = (A.Mdfy = "Prilic" Or A.Mdfy = "")
 End Function
 
 Function MthBrkIsTth_Pub(A As MthBrk) As Boolean
 If Not MthBrkIsTth(A) Then Exit Function
-MthBrkIsTth_Pub = (A.mFY = "Public" Or A.mFY = "")
+MthBrkIsTth_Pub = (A.Mdfy = "Public" Or A.Mdfy = "")
 End Function
 
 Function MthBrkIsTth_PubPfx(A As MthBrk) As Boolean
 If Not MthBrkIsTth_Pfx(A) Then Exit Function
-MthBrkIsTth_PubPfx = (A.mFY = "Public" Or A.mFY = "")
+MthBrkIsTth_PubPfx = (A.Mdfy = "Public" Or A.Mdfy = "")
 End Function
 
 Function MthBrkIsTth_PubSfx(A As MthBrk) As Boolean
 If Not MthBrkIsTth_Sfx(A) Then Exit Function
-MthBrkIsTth_PubSfx = (A.mFY = "Public" Or A.mFY = "")
+MthBrkIsTth_PubSfx = (A.Mdfy = "Public" Or A.Mdfy = "")
 End Function
 
 Function MthBrkIsTth_Sfx(A As MthBrk) As Boolean
@@ -114,32 +120,21 @@ If Not MthBrkIsSubNoPrm(A) Then Exit Function
 MthBrkIsTth_Sfx = True
 End Function
 
-Function MthBrkMatch(A As MthBrk, MthNm$, PrpTy$) As Boolean
-If MthNm = "" Then
-    MthBrkMatch = True
-    Exit Function
-End If
-If MthNm <> A.Nm Then Exit Function
-If PrpTy = "" Then MthBrkMatch = True: Exit Function
-MthBrkMatch = A.PrpTy = PrpTy
-End Function
-
 Function MthBrkNew(MthLin) As MthBrk
 Dim A$: A = MthLin
 Dim B$
 Dim O As MthBrk
 With O
-    .mFY = ParseSy(A, ApSy("Public", "Private", "Friend")):   A = LTrim(A)
+    .Mdfy = ParseSy(A, ApSy("Public", "Private", "Friend")):   A = LTrim(A)
     .Ty = ParseSy(A, ApSy("Function", "Sub", "Property")): A = LTrim(A): If .Ty = "" Then Er "{MthLin} should one of [Function | Sub | Property]", MthLin
     If .Ty = "Property" Then
         .PrpTy = ParseSy(A, ApSy("Get", "Set", "Let")): A = LTrim(A): If .PrpTy = "" Then Er "{MthLin} should one of [Get | Set | Let] after [Property]", MthLin
     End If
     .Nm = ParseNm(A)
     .RetTyChr = ParseSy(A, ApSy("@", "!", "#", "$", "%", "&"))
-    B = ParseStr(A, "("): If B <> "(" Then Er "[(] is missing in {MthLines}", MthLin
+    If Not ParseStr(A, "(") Then Er "[(] is missing in {MthLines}", MthLin
     .PrmStr = ParseTillClsBkt(A)
-    B = ParseStr(A, " As ")
-    .RetAs = A
+    If ParseStr(A, " As ") Then .RetAs = A
 End With
 MthBrkNew = O
 End Function
@@ -152,7 +147,7 @@ End Function
 
 Function MthBrkToStr$(A As MthBrk)
 With A
-Dim M$: M = AddSpcAft(.mFY)
+Dim M$: M = AddSpcAft(.Mdfy)
 Dim T$: T = AddSpcAft(.Ty)
 Dim P$: P = AddSpcAft(.PrpTy)
 Dim N$: N = .Nm

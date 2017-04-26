@@ -58,15 +58,15 @@ Dim xTxAmt@(), xBusArea$()
 
 '' Fill in Ws by Variables
 
-Dim oWb As Workbook
+Dim OWb As Workbook
 Dim OWs As Worksheet
-    Set oWb = FxWb(OFx)
-    Set OWs = oWb.Sheets(1)
+    Set OWb = FxWb(OFx)
+    Set OWs = OWb.Sheets(1)
 
 Dim mRge As Range
 Dim mCnoBusArea ' The column with {BusArea}
 Dim mCnoTxAmt   ' The column with {TxAmt}
-    Set mRge = oWb.Names("PrintArea").RefersToRange
+    Set mRge = OWb.Names("PrintArea").RefersToRange
     Dim mRnoBeg& ' The row with {BusArea}
     Dim iCell As Range
     For Each iCell In mRge
@@ -118,9 +118,9 @@ SqlRun "SELECT x.Sku, qSKU.[SKU Description], x.Amt, x.Rate, x.Qty INTO [@Permit
 " FROM Permit AS a INNER JOIN (PermitD AS x LEFT JOIN qSKU ON x.Sku = qSKU.Sku) ON a.Permit = x.Permit" & _
 " WHERE x.Permit = " & PermitId & _
 " ORDER BY x.SeqNo;"
-WbRfh oWb
-WbSav oWb
-oWb.Application.Visible = True
+WbRfh OWb
+WbSav OWb
+OWb.Application.Visible = True
 End Sub
 
 Sub FrmPermitCmdGenFx__Tst()

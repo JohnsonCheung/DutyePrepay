@@ -2,13 +2,12 @@ Attribute VB_Name = "nDao_Qry"
 Option Compare Database
 Option Explicit
 
-Function Qny(Optional A As database) As String()
-Dim O$()
-Qny = ObjAyPrp(QryAy(A), "Name", O)
+Function Qny(Optional Lik$ = "*", Optional A As database) As String()
+Qny = AyLik(ObjAyNy(QryAy(A)), Lik)
 End Function
 
-Function Qry(QryNm, Optional A As database) As QueryDef
-Set Qry = DbNz(A).QueryDefs(QryNm)
+Function Qry(Qn, Optional A As database) As QueryDef
+Set Qry = DbNz(A).QueryDefs(Qn)
 End Function
 
 Function QryAy(Optional A As database) As QueryDef()
@@ -125,10 +124,10 @@ End Function
 Sub QryCrtSubDtaSheet(MstQn$, ChdQn$, MstFnStr$, Optional ChdFnStr$, Optional A As database)
 Dim O As QueryDef: Set O = DbNz(A).QueryDefs(MstQn)
 Dim OMst$
-    OMst = AyJnComma(FnStrBrk(MstFnStr))
+    OMst = AyJnComma(NmstrBrk(MstFnStr))
 Dim OChd$
     OChd = IIf(ChdFnStr = "", MstFnStr, ChdFnStr)
-    OChd = AyJnComma(FnStrBrk(OChd))
+    OChd = AyJnComma(NmstrBrk(OChd))
 QrySetPrp O, "SubdatasheeQname", ChdQn
 QrySetPrp O, "LinkChildFields", OChd
 QrySetPrp O, "LinkMasterFields", OMst
@@ -146,18 +145,25 @@ For J = 0 To CurrentDb.QueryDefs.Count - 1
 Next
 End Sub
 
-Function QryDrp(QryNm$, Optional pDb As DAO.database = Nothing) As Boolean
-Const cSub$ = "QryDrp"
-On Error GoTo R
-Dim mDb As DAO.database: Set mDb = jj.Cv_Db(pDb)
-mDb.QueryDefs.Delete QryNm
-Exit Function
-R: ss.R
-E: QryDrp = True: ss.B cSub, cMod, "QryNm,pDb", QryNm, jj.ToStr_Db(pDb)
+Sub QryDrp(Qn, Optional A As DAO.database)
+DbNz(A).QueryDefs.Delete Qn
+End Sub
+
+Sub QryDrp_ByLik(Lik$, Optional A As database)
+Dim Q$(): Q = Qny(Lik, A)
+QryDrp_ByQny Q, A
+End Sub
+
+Function QryDrp_ByPfx(Pfx, Optional A As database) As Boolean
+QryDrp_ByQny Qny(Pfx & "*", A)
 End Function
 
-Sub QryDrp_ByPfx(Pfx$, Optional A As database)
-Stop
+Sub QryDrp_ByQny(Qny$(), Optional A As database)
+If AyIsEmpty(Qny) Then Exit Sub
+Dim I
+For Each I In Qny
+    QryDrp I, A
+Next
 End Sub
 
 Sub QryDrpPrp(Q As QueryDef, PrpNm$)

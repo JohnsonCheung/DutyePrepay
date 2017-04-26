@@ -6,7 +6,7 @@ Attribute VB_Name = "ZZ_xWsD"
 'Const cMod$ = cLib & ".xWsD"
 'Dim xFbDelta$, xAyWsD() As tWsD, xNWsD As Byte
 'Type tWsD
-'    NmWs As String
+'    WsNm As String
 '    AyCno() As Byte
 '    AmFld() As tMap
 '    VayvDta As Variant '
@@ -61,7 +61,7 @@ Attribute VB_Name = "ZZ_xWsD"
 'Function WsD_Init_ByWb(pWb As Workbook, Optional pFbDelta$ = "") As Boolean
 ''Aim: create delta table & xAyWsD for each worksheet (A1=Import:...} of {pWb}
 ''     delta tables to be create in pFbDelta are
-''             each ws:   [>>{NmWs}] & [>#{NmWs}]
+''             each ws:   [>>{WsNm}] & [>#{WsNm}]
 ''             one delta: [>>delta]
 'Const cSub$ = "WsD_Init_ByWb"
 'On Error GoTo R
@@ -85,7 +85,7 @@ Attribute VB_Name = "ZZ_xWsD"
 '    If Fnd_AyCnoImpFld(mAyCno, mAmFld, mRge) Then ss.A 4: GoTo E
 '    ReDim Preserve xAyWsD(xNWsD)
 '    With xAyWsD(xNWsD)
-'        .NmWs = iWs.Name
+'        .WsNm = iWs.Name
 '        .AyCno = mAyCno
 '        .AmFld = mAmFld
 '    End With
@@ -118,19 +118,19 @@ Attribute VB_Name = "ZZ_xWsD"
 '   mAcs.Quit
 'End Function
 '
-'Function WsD_Fnd_iWsD(oWsD%, pNmWs$, Optional pAddIfNotFound As Boolean = False) As Boolean
+'Function WsD_Fnd_iWsD(oWsD%, pWsNm$, Optional pAddIfNotFound As Boolean = False) As Boolean
 ''Aim: Find oWsD% in xAyWsD, if not found create one
 'Const cSub$ = "WsD_Fnd_iWsD"
 'For oWsD = 0 To xNWsD - 1
-'    If xAyWsD(oWsD).NmWs = pNmWs Then Exit Function
+'    If xAyWsD(oWsD).WsNm = pWsNm Then Exit Function
 'Next
-'If Not pAddIfNotFound Then ss.A 1, "Given pNmWs is not rec in xAyWsD": GoTo E
+'If Not pAddIfNotFound Then ss.A 1, "Given pWsNm is not rec in xAyWsD": GoTo E
 'ReDim Preserve xAyWsD(xNWsD)
-'xAyWsD(xNWsD).NmWs = pNmWs
+'xAyWsD(xNWsD).WsNm = pWsNm
 'oWsD = xNWsD
 'xNWsD = xNWsD + 1
 'Exit Function
-'E: WsD_Fnd_iWsD = True: oWsD = -1: ss.B cSub, cMod, "pNmWs,pAddIfNotFound", pNmWs, pAddIfNotFound
+'E: WsD_Fnd_iWsD = True: oWsD = -1: ss.B cSub, cMod, "pWsNm,pAddIfNotFound", pWsNm, pAddIfNotFound
 'End Function
 'Function WsD_Crt_Delta_FmRge(Rg As Range) As Boolean
 ''Aim: Write the delta change @ {Rg} to a Delta Csv file and import in delta tables.
@@ -186,13 +186,13 @@ Attribute VB_Name = "ZZ_xWsD"
 'End If
 '
 'Dim mAyCno() As Byte: mAyCno = xAyWsD(mWsD).AyCno
-'Dim mNFld As Byte: mNFld = Siz_Ay(mAyCno): If mNFld = 0 Then ss.A 1, "pAyCno cannot be empty": GoTo E
+'Dim mNFld As Byte: mNFld = Sz(mAyCno): If mNFld = 0 Then ss.A 1, "pAyCno cannot be empty": GoTo E
 '
 'Shw_AllDta mWs
 'Dim mRnoBeg&: mRnoBeg = Rg.Row
 'Dim mRnoEnd&: mRnoEnd = Rg(1, pCithKey).End(xlDown).Row
 '
-'Dim mNRow%: mNRow = Siz_Ay(xAyWsD(mWsD).VayvDta)
+'Dim mNRow%: mNRow = Sz(xAyWsD(mWsD).VayvDta)
 'If mNRow = 0 Then
 '    ReDim xAyWsD(mWsD).VayvDta(mRnoEnd - mRnoBeg, mNFld - 1)
 'End If
@@ -228,21 +228,21 @@ Attribute VB_Name = "ZZ_xWsD"
 'Function WsD_ToStr_AyWsD$()
 'Dim mS$, J%
 'For J = 0 To xNWsD - 1
-'    mS = Add_Str(mS, WsD_ToStr_WsD(xAyWsD(J).NmWs), vbLf)
+'    mS = Add_Str(mS, WsD_ToStr_WsD(xAyWsD(J).WsNm), vbLf)
 'Next
 'WsD_ToStr_AyWsD = "xAyWsD(" & xNWsD & ")" & vbLf & mS
 'End Function
-'Function WsD_ToStr_WsD$(pNmWs$)
+'Function WsD_ToStr_WsD$(pWsNm$)
 'Dim mS$, J%, I%
-'If WsD_Fnd_iWsD(J, pNmWs) Then GoTo E
+'If WsD_Fnd_iWsD(J, pWsNm) Then GoTo E
 'With xAyWsD(J)
 '    For I = 0 To Siz_Am(.AmFld) - 1
 '        mS = Add_Str(mS, .AmFld(I).F1)
 '    Next
-'    WsD_ToStr_WsD = .NmWs & ":" & mS
+'    WsD_ToStr_WsD = .WsNm & ":" & mS
 'End With
 'Exit Function
-'E: WsD_ToStr_WsD = "Err: WsD_ToStr_WsD(" & pNmWs & ")"
+'E: WsD_ToStr_WsD = "Err: WsD_ToStr_WsD(" & pWsNm & ")"
 'End Function
 'Function WsD_Bld_CsvStr_ByRge(oCsvStr$, RgDta As Range) As Boolean
 ''Aim: Bld oCsvStr for export if any row has chg: {RgDta} does not match {mVayvDta}
@@ -272,8 +272,8 @@ Attribute VB_Name = "ZZ_xWsD"
 'Shw_AllDta mWs
 'Dim mRnoLas&: mRnoLas = RgDta(1, 2).End(xlDown).Row
 '
-'Dim mNFld As Byte: mNFld = Siz_Ay(mAyCno): If mNFld = 0 Then ss.A 1, "mAyCno cannot be zero len": GoTo E
-'Dim mNROld&: mNROld = Siz_Ay(mVayvDta)
+'Dim mNFld As Byte: mNFld = Sz(mAyCno): If mNFld = 0 Then ss.A 1, "mAyCno cannot be zero len": GoTo E
+'Dim mNROld&: mNROld = Sz(mVayvDta)
 '
 'ReDim mAyRHere(mNROld - 1) As Boolean 'Is the Row still here in the ws
 '
@@ -337,12 +337,12 @@ Attribute VB_Name = "ZZ_xWsD"
 'End Function
 '
 'Function WsD_Bld_CsvStr_ByRge__Tst()
-'Const cNmWs$ = "Tbl"
+'Const cWsNm$ = "Tbl"
 'If Cpy_Fil("P:\AppDef_Meta\MetaDb.xls", "c:\tmp\aa.xls", True) Then Stop: GoTo E
 'Dim mWb As Workbook: If Opn_Wb_R(mWb, "c:\tmp\aa.xls", , True) Then Stop: GoTo E
 'If WsD_Init_ByWb(mWb, "c:\tmp\aa.mdb") Then Stop: GoTo E
 '
-'Dim mWs As Worksheet: Set mWs = mWb.Sheets(cNmWs)
+'Dim mWs As Worksheet: Set mWs = mWb.Sheets(cWsNm)
 'Dim mRge As Range: Set mRge = mWs.Range("A5")
 'If WsD_Set_BefChg(mRge) Then Stop: GoTo E
 'Stop

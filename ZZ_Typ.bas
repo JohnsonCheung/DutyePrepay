@@ -16,7 +16,7 @@ Attribute VB_Name = "ZZ_Typ"
 '    To As Byte
 'End Type
 'Public Type tGenWs
-'    Pt_SqlStr As String
+'    Pt_Sqs As String
 '    Pt_Nam As String
 '    PivotRows As String
 '    PivotColumns As String
@@ -28,7 +28,7 @@ Attribute VB_Name = "ZZ_Typ"
 '    ColumnGrand As Boolean
 '    HideRows As String
 '    FreezeAt As String
-'    NmWsNew As String
+'    WsNmNew As String
 'End Type
 ''=====================================
 'Public Type tRgeRno

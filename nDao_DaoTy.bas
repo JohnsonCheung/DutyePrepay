@@ -47,16 +47,16 @@ Exit Function
 X: Er "Given {VbTy} cannot convert to DataTypeEnum", VbTy
 End Function
 
-Function DaoTySqlStr$(A As DAO.DataTypeEnum)
+Function DaoTySqs$(A As DAO.DataTypeEnum)
 Dim O$
 Select Case A
 Case dbDate: O = "Date"
 Case dbInteger: O = "Int"
 Case dbBoolean: O = "YesNo"
 Case Else
-    Er "DaoTySqlStr: Given {DataType} is not [dbDate dbInteger dbBoolean", A
+    Er "DaoTySqs: Given {DataType} is not [dbDate dbInteger dbBoolean", A
 End Select
-DaoTySqlStr = O
+DaoTySqs = O
 End Function
 
 Function DaoTyToStr$(A As DAO.DataTypeEnum)

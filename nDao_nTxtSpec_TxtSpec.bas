@@ -109,7 +109,7 @@ Function TxtSpecCrt_Delimi__Tst()
 Const cSub$ = "TxtSpecCrt_Delimi_Tst"
 Dim mWb As Workbook: If Opn_Wb_R(mWb, "P:\AppDef_Meta\MetaDb.xls") Then ss.A 1: GoTo E
 Dim mAnWs$(): If Fnd_AnWs_BySetWs(mAnWs, mWb) Then ss.A 2: GoTo E
-Dim J%, N%: N = Siz_Ay(mAnWs)
+Dim J%, N%: N = Sz(mAnWs)
 Dim mXls As Excel.Application: Set mXls = mWb.Application: mXls.DisplayAlerts = False
 ReDim mAyFfn$(N - 1)
 For J = 0 To N - 1

@@ -7,7 +7,7 @@ Dim Sql$
 Dim Rs As DAO.Recordset
     Dim Where$
     Where = KeyFld & "='" & KeyVal & "'"
-    Sql = SqlStrOfSel(T, FldToUpd, Where)
+    Sql = SqsOfSel(T, FldToUpd, Where)
     Set Rs = CurrentDb.OpenRecordset(Sql)
 With Rs
     If .AbsolutePosition = -1 Then Er "No record in {Table} with given {KeyFld}={KeyVal}", T, KeyFld, KeyVal

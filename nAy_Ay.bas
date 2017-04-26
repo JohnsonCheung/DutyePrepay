@@ -56,6 +56,13 @@ Dr = Act(2): Debug.Assert Dr(0) = "2": Debug.Assert Dr(1) = "c"
 Dr = Act(3): Debug.Assert Dr(0) = "2": Debug.Assert Dr(1) = "d"
 End Sub
 
+Function AyAddItm(Ay, Itm)
+If IsEmpty(Itm) Then AyAddItm = Ay: Exit Function
+Dim O: O = Ay
+Push O, Itm
+AyAddItm = O
+End Function
+
 Function AyAddPfx(Ay, Pfx) As String()
 Dim U&: U = UB(Ay)
 Dim O$(): ReSz O, U
@@ -129,7 +136,7 @@ End Sub
 
 Sub AyAsstSamSet(Ay1, Ay2, ParamArray MsgAp())
 Dim Av(): Av = MsgAp
-ErAsst AyChkSamSet(Ay1, Ay2), Av
+ErAsst AyChkSam(Ay1, Ay2), Av
 End Sub
 
 Sub AyAsstZerOrPos(Ay, ParamArray MsgAp())
@@ -147,86 +154,86 @@ Else
 End If
 End Sub
 
-Function AyChkDupEle(Ay) As Dt
+Function AyChkDupEle(Ay) As Variant()
 Dim A As Dt: A = DtWhere(AyDistDt(Ay), "Cnt", ">1")
 
 Dim N&: N = DtNRec(A)
-Dim ODt As Dt
+Dim O()
 If N > 0 Then
     Dim J&, V(), C&()
-    ODt = ErNew("Given Ay has {N}-Element.  {M} of are duplicated", Sz(Ay), N)
+    O = ErNew("Given Ay has {N}-Element.  {M} of are duplicated", Sz(Ay), N)
     For J = 0 To N - 1
-        ODt = ErApd(ODt, ".EleVal-{V} are found {N}-times", A.DrAy(J)(0), A.DrAy(J)(1))
+        O = ErApd(O, ".EleVal-{V} are found {N}-times", A.DrAy(J)(0), A.DrAy(J)(1))
     Next
 End If
-AyChkDupEle = ODt
+AyChkDupEle = O
 End Function
 
 Sub AyChkDupEle__Tst()
 Dim Ay: Ay = Array(1, 1, 1, 2, 2, 3, 1, "a")
-DtBrw AyChkDupEle(Ay)
+ErBrw AyChkDupEle(Ay)
 End Sub
 
-Function AyChkEq(Ay1, Ay2) As Dt
+Function AyChkEq(Ay1, Ay2) As Variant()
 AyChkEq = AyChkEqEr(Ay1, Ay2, False)
 End Function
 
 Sub AyChkEq__Tst()
-Debug.Assert ErIsSom(AyChkEq(Array(1, 2), Array("1", 2))) = True
-Debug.Assert ErIsSom(AyChkEq(Array(1, 1), Array("1", 2))) = True
-Debug.Assert ErIsSom(AyChkEq(Array("1", 2), Array("1", 2))) = False
-Debug.Assert ErIsSom(AyChkEq(Array(CByte(1), 2), Array(CInt(1), 2))) = False
+Debug.Assert AyHasEle(AyChkEq(Array(1, 2), Array("1", 2))) = True
+Debug.Assert AyHasEle(AyChkEq(Array(1, 1), Array("1", 2))) = True
+Debug.Assert AyHasEle(AyChkEq(Array("1", 2), Array("1", 2))) = False
+Debug.Assert AyHasEle(AyChkEq(Array(CByte(1), 2), Array(CInt(1), 2))) = False
 
-Dim Er As Dt:
+Dim Er()
 Dim Ay1:
 Dim Ay2:
 
 Ay2 = Array(1, 2, 3, 4, 6, 5, 7)
 Ay1 = Array(1, 2, 3, 4, 57, 4, 1)
 Er = AyChkEq(Ay1, Ay2)
-'Debug.Assert ErIsSom(Er)
-DtBrw Er
+'Debug.Assert AyHasEle(Er)
+ErBrw Er
 
 Ay1 = Array(1, 2, 3, 4, 5)
 Ay2 = Array(1, 2, 3, 4, CByte(5))
 Er = AyChkEq(Ay1, Ay2)
-Debug.Assert Not ErIsSom(Er)
+Debug.Assert Not AyHasEle(Er)
 
 
 End Sub
 
-Function AyChkEqExa(Ay1, Ay2) As Dt
+Function AyChkEqExa(Ay1, Ay2) As Variant()
 AyChkEqExa = AyChkEqEr(Ay1, Ay2, True)
 End Function
 
 Sub AyChkEqExa__Tst()
-Debug.Assert ErIsSom(AyChkEqExa(Array(1, 2), Array("1", 2))) = True
-Debug.Assert ErIsSom(AyChkEqExa(Array(1, 1), Array("1", 2))) = True
-Debug.Assert ErIsSom(AyChkEqExa(Array("1", 2), Array("1", 2))) = False
-Debug.Assert ErIsSom(AyChkEqExa(Array(CByte(1), 2), Array(CInt(1), 2))) = True
+Debug.Assert AyHasEle(AyChkEqExa(Array(1, 2), Array("1", 2))) = True
+Debug.Assert AyHasEle(AyChkEqExa(Array(1, 1), Array("1", 2))) = True
+Debug.Assert AyHasEle(AyChkEqExa(Array("1", 2), Array("1", 2))) = False
+Debug.Assert AyHasEle(AyChkEqExa(Array(CByte(1), 2), Array(CInt(1), 2))) = True
 
-Dim D As Dt:
+Dim D()
 Dim Ay1
 Dim Ay2
 
 Ay2 = Array(1, 2, 3, 4, 6)
 Ay1 = Array(1, 2, 3, 4, 5)
 D = AyChkEqExa(Ay1, Ay2)
-Debug.Assert ErIsSom(D)
+Debug.Assert AyHasEle(D)
 
 Ay1 = Array(1, 2, 3, 4, 5)
 Ay2 = Array(1, 2, 3, 4, CByte(5))
 D = AyChkEqExa(Ay1, Ay2)
-Debug.Assert ErIsSom(D)
+Debug.Assert AyHasEle(D)
 
 Ay1 = Array(1, 2, 3, 4, CByte(5))
 Ay2 = Array(1, 2, 3, 4, CByte(5))
 D = AyChkEqExa(Ay1, Ay2)
-Debug.Assert Not ErIsSom(D)
+Debug.Assert Not AyHasEle(D)
 End Sub
 
-Function AyChkEqSz(Ay1, Ay2) As Dt
-Dim UU&, U1&, U2&, U&, J&, O As Dt
+Function AyChkEqSz(Ay1, Ay2) As Variant()
+Dim UU&, U1&, U2&, U&, J&, O()
 U1 = UB(Ay1)
 U2 = UB(Ay2)
 If U1 = U2 Then Exit Function
@@ -244,13 +251,14 @@ AyChkEqSz = O
 End Function
 
 Sub AyChkEqSz__Tst()
-DtBrw AyChkEqSz(Array(1, 2), Array(1, 2, 3))
+ErBrw AyChkEqSz(Array(1, 2), Array(1, 2, 3))
 End Sub
 
-Function AyChkSamSet(Ay1, Ay2) As Dt
+Function AyChkSam(Ay1, Ay2) As Variant()
+
 End Function
 
-Function AyChkZerOrPos(Ay) As Dt
+Function AyChkZerOrPos(Ay) As Variant()
 Dim ErI&(), J&
 For J = 0 To UB(Ay)
     If Ay(J) < 0 Then
@@ -279,7 +287,7 @@ Dim O1, O2
     Erase O1
     O2 = O1
     
-    Dim N%: N = Siz_Ay(Ay)
+    Dim N%: N = Sz(Ay)
     If At >= N Then
         O2 = Ay
     ElseIf At <= 0 Then
@@ -383,9 +391,9 @@ Sub AyDupItm__Tst()
 Dim Act, Exp
 Act = AyDupItm(Array(1, 2, 3, 1, 3))
 Exp = Array(1, 4)
-Dim Er As Dt
+Dim Er()
 Er = AyChkEq(Act, Exp)
-Er = ErExplain(Er, "AyDupImt_Tst fail")
+Er = ErApd(Er, "AyDupImt_Tst fail")
 ErAsst Er
 End Sub
 
@@ -412,7 +420,28 @@ Next
 AyExcl = O
 End Function
 
-Function AyExpandAy(Itm_or_Ay)
+Function AyExpd(Ay)
+Dim O: O = Ay: Erase O
+If AyIsEmpty(Ay) Then AyExpd = O: Exit Function
+Dim V
+For Each V In Ay
+    If IsArray(V) Then
+        PushAy O, V
+    Else
+        Push O, V
+    End If
+Next
+AyExpd = O
+End Function
+
+Sub AyExpd__Tst()
+Dim Ay(): Ay = Array(1, 2, Array(3, 4), 5, Array(6, 7))
+Dim Act(): Act = AyExpd(Ay)
+Dim Exp(): Exp = Array(1, 2, 3, 4, 5, 6, 7)
+AyAsstEqExa Act, Exp
+End Sub
+
+Function AyExpdAy(Itm_or_Ay)
 Dim J&, O()
 For J = 0 To UB(Itm_or_Ay)
     If IsArray(Itm_or_Ay(J)) Then
@@ -421,7 +450,7 @@ For J = 0 To UB(Itm_or_Ay)
         Push O, Itm_or_Ay(J)
     End If
 Next
-AyExpandAy = O
+AyExpdAy = O
 End Function
 
 Function AyFstUEle(Ay, Optional U& = 0, Optional IsExtToU As Boolean)
@@ -512,6 +541,10 @@ For J = 1 To U
 Next
 End Function
 
+Function AyHasEle(Ay) As Boolean
+AyHasEle = Sz(Ay) <> 0
+End Function
+
 Function AyIdx&(Ay, I)
 Dim U&
     U = UB(Ay)
@@ -533,18 +566,6 @@ For J = 0 To U
     O(J) = AyIdx(Ay, SubAy(J))
 Next
 AyIdxAy = O
-End Function
-
-Function AyIdxDic(Ay) As Dictionary
-Dim O As New Dictionary
-If AyIsEmpty(Ay) Then GoTo X
-Dim V, I&
-For Each V In Ay
-    O.Add V, I
-    I = I + 1
-Next
-X:
-Set AyIdxDic = O
 End Function
 
 Function AyInsAt(Ay, Optional At& = 0, Optional I)
@@ -619,8 +640,7 @@ If AyIsEmpty(Ay) Then Er "AyLasEle: Given Ay is empty"
 AyLasEle = Ay(UB(Ay))
 End Function
 
-Function AyLik(Ay, Lik$)
-Dim O$()
+Function AyLik(Ay, Lik)
 AyLik = AySel(Ay, "StrLik", Lik)
 End Function
 
@@ -642,6 +662,18 @@ Function AyMap(Ay, Fn$, ParamArray Ap())
 Dim Av(): Av = Ap
 Dim A()
 AyMap = AyMapInto_PrmAv(Ay, A, Fn, Av)
+End Function
+
+Function AyMapInt(Ay) As Integer()
+Dim U&
+    U = UB(Ay)
+Dim O%()
+    ReSz O, U
+Dim J&
+For J = 0 To U
+    If VarIsStr(Ay(J)) Then O(J) = Ay(J)
+Next
+AyMapInt = O
 End Function
 
 Function AyMapInto(Ay, Into, Fn$, ParamArray Ap())
@@ -671,6 +703,18 @@ Function AyMapIntoSy(Ay, Fn$, ParamArray Ap())
 Dim Av(): Av = Ap
 Dim Sy$()
 AyMapIntoSy = AyMapInto_PrmAv(Ay, Sy, Fn, Av)
+End Function
+
+Function AyMapStr(Ay) As String()
+Dim U&
+    U = UB(Ay)
+Dim O$()
+    ReSz O, U
+Dim J&
+For J = 0 To U
+    If VarIsStr(Ay(J)) Then O(J) = Ay(J)
+Next
+AyMapStr = O
 End Function
 
 Function AyMax(Ay)
@@ -730,6 +774,18 @@ For Each I In Ay1
     End If
 Next
 AyMinus1 = O
+End Function
+
+Function AyPkDic(Ay) As Dictionary
+Dim O As New Dictionary
+If AyIsEmpty(Ay) Then GoTo X
+Dim V, I&
+For Each V In Ay
+    O.Add V, I
+    I = I + 1
+Next
+X:
+Set AyPkDic = O
 End Function
 
 Function AyQuote(Ay, QStr$) As String()
@@ -1007,6 +1063,30 @@ Next
 AyTrim = O
 End Function
 
+Function AyTryMap(Ay, OInto, MapFct$)
+Dim U&: U = UB(Ay)
+Dim O: O = OInto
+ReSz O, U
+Dim J&
+For J = 0 To U
+    With TryRun(MapFct, Ay(J))
+        If .Som Then O(J) = .V
+    End With
+Next
+AyTryMap = O
+End Function
+
+Function AyTryMapLng(Ay) As Long()
+AyTryMapLng = AyTryMap(Ay, ApLngAy, "VarLng")
+End Function
+
+Sub AyTryMapLng__Tst()
+Dim A(): A = Array(1, 2, 3, "sdf", 3, 2&)
+Dim Act&(): Act = AyTryMapLng(A)
+Stop
+AyAsstEqExa Act, ApLngAy(1, 2, 3, 0, 3, 2)
+End Sub
+
 Function AyUnion(Ay1, Ay2)
 Dim O, I, U&, J&
 O = Ay1
@@ -1031,6 +1111,11 @@ For J = 0 To UB(Ay)
     Print #Fno, Ay(J)
 Next
 End Sub
+
+Function CInt1%(A)
+On Error Resume Next
+CInt1 = A
+End Function
 
 Function LasEle(Ay)
 LasEle = Ay(UB(Ay))
@@ -1091,7 +1176,7 @@ Set Ay(N) = I
 End Sub
 
 Sub ReSz(OAy, U&)
-If U = -1 Then
+If U <= -1 Then
     Erase OAy
     Exit Sub
 End If
@@ -1127,16 +1212,14 @@ Next
 AyChkEqDifIdx = O
 End Function
 
-Private Function AyChkEqEr(Ay1, Ay2, IsExa As Boolean) As Dt
-Dim O As Dt
+Private Function AyChkEqEr(Ay1, Ay2, IsExa As Boolean) As Variant()
+Dim O()
     O = AyChkEqSz(Ay1, Ay2)
-If ErIsSom(O) Then AyChkEqEr = O: Exit Function
-
-
+If AyHasEle(O) Then AyChkEqEr = O: Exit Function
 AyChkEqEr = AyChkEqEr_(Ay1, Ay2, IsExa)
 End Function
 
-Private Function AyChkEqEr_(Ay1, Ay2, IsExa As Boolean) As Dt
+Private Function AyChkEqEr_(Ay1, Ay2, IsExa As Boolean) As Variant()
 Dim A As DifIdx:
     A = AyChkEqDifIdx(Ay1, Ay2, IsExa)
 
@@ -1145,7 +1228,7 @@ Dim U&: U = UB(A.DifIdx)
 If U = -1 Then Exit Function
 Dim B$: If IsExa Then B = "exactly "
 Dim A1$: A1 = FmtQQ("Given 2 Ay of {U} are not ?equal", B)
-Dim O As Dt: O = ErNew(A1, UB(Ay1))
+Dim O(): O = ErNew(A1, UB(Ay1))
 If A.IsMore Then
     O = ErApd(O, ".There are more than 10 elements are different")
 Else

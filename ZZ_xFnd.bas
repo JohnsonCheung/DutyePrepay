@@ -117,7 +117,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_AyRecCnt"
 'On Error GoTo R
 'Dim N%, J%
-'For J = 0 To Siz_Ay(pAnt) - 1
+'For J = 0 To Sz(pAnt) - 1
 '    ReDim Preserve oAyRecCnt(N)
 '    oAyRecCnt(N) = Fct.RecCnt(pAnt(J), pDb)
 '    N = N + 1
@@ -238,7 +238,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_AnFld_ReqTxt__Tst()
 'Dim mDb As database: If Opn_Db_R(mDb, "p:\workingdir\MetaAll.mdb") Then Stop: GoTo E
 'Dim mAnt$(): If SqlIntoAy(mAnt, "Select NmTbl from [$Tbl] where NmTbl=PKey", mDb) Then Stop: GoTo E
-'Dim J%, N%: N = Siz_Ay(mAnt)
+'Dim J%, N%: N = Sz(mAnt)
 'For J = 0 To N - 1
 '    Dim mAnFld$(): If Fnd_AnFld_ReqTxt(mAnFld, "$" & mAnt(J), mDb) Then Stop: GoTo E
 '    Debug.Print mAnt(J) & ":" & ToStr_Ays(mAnFld)
@@ -303,7 +303,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'If pRootFirst Then If Add_AyEleLng(oAyId, pRoot, True) Then Exit Function
 'Dim mSql$: mSql = Fmt_Str_ByLpAp("Select {pChd} from {pNmt} where {pPar}={pRoot}", "pChd,pNmt,pPar,pRoot", pChd, Q_S(pNmt, "[]"), pPar, pRoot)
 'Dim mAyId&(): If SqlIntoAy(mAyId, mSql) Then ss.A 2: GoTo E
-'For J = 0 To Siz_Ay(mAyId) - 1
+'For J = 0 To Sz(mAyId) - 1
 '    If Fnd_AyChd_ByRoot(oAyId, pNmt, mAyId(J), pPar, pChd, pRootFirst, True) Then ss.A 3: GoTo E
 'Next
 'If Not pRootFirst Then If Add_AyEleLng(oAyId, pRoot, True) Then Exit Function
@@ -316,7 +316,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'If TblCrt_FmLnkLnt("p:\workingdir\MetaAll.mdb", "$TblR,$Tbl") Then Stop: GoTo E
 'Dim mAyRoot&(): If Fnd_AyRoot(mAyRoot, "$TblR", "Tbl", "TblTo") Then Stop: GoTo E
 'Dim J%
-'For J = 0 To Siz_Ay(mAyRoot) - 1
+'For J = 0 To Sz(mAyRoot) - 1
 '    Dim mNmt$
 '    If Fnd_ValFmSql(mNmt, "Select NmTbl from [$Tbl] where Tbl=" & mAyRoot(J)) Then Stop: GoTo E
 '    Debug.Print mAyRoot(J); ": "; mNmt
@@ -359,7 +359,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mRge As Range: Set mRge = mNm.RefersToRange
 'Dim mCno As Byte: mCno = mRge.Column
 'Dim J%
-'For J = 0 To Siz_Ay(pAyRno) - 1
+'For J = 0 To Sz(pAyRno) - 1
 '    Add_AyEle oAyVal, Nz(pWs.Cells(pAyRno(J), mCno).Value, "")
 'Next
 'GoTo X
@@ -383,7 +383,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'oRowVal = ""
 'Dim mAn$(): mAn = Split(pLn, ",")
 'Dim J%
-'For J = 0 To Siz_Ay(mAn) - 1
+'For J = 0 To Sz(mAn) - 1
 '    Dim mCno As Byte: If Fnd_Cno_ByNm(mCno, pWs, mAn(J)) Then ss.A 1: GoTo E
 '    Dim mV: mV = pWs.Cells(pRno, mCno).Value
 '    oRowVal = Add_Str(oRowVal, CStr(mV))
@@ -455,13 +455,13 @@ Attribute VB_Name = "ZZ_xFnd"
 'Debug.Print Join(mAn, vbLf)
 'End Function
 
-'Function Fnd_Ws(oWs As Worksheet, pWb As Workbook, pNmWs$, Optional pSilent As Boolean) As Boolean
+'Function Fnd_Ws(oWs As Worksheet, pWb As Workbook, pWsNm$, Optional pSilent As Boolean) As Boolean
 'Const cSub$ = "Fnd_Ws"
 'On Error GoTo R
-'Set oWs = pWb.Sheets(pNmWs)
+'Set oWs = pWb.Sheets(pWsNm)
 'Exit Function
 'R: ss.R
-'E: Fnd_Ws = True: If Not pSilent Then ss.B cSub, cMod, "pWb,pNmWs", ToStr_Wb(pWb), pNmWs
+'E: Fnd_Ws = True: If Not pSilent Then ss.B cSub, cMod, "pWb,pWsNm", ToStr_Wb(pWb), pWsNm
 'End Function
 'Function Fnd_RnoLas(oRnoLas&, Rg As Range) As Boolean
 ''Aim: find first empty cell of a column {pCno} in {pWs} starting {pRnoFm}into {oRnoLas}
@@ -480,7 +480,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Clr_Ays oAnt
 'Dim mAyLikNmt$(): mAyLikNmt = Split(pSetNmt$, CtComma)
 'Dim J%
-'For J = 0 To Siz_Ay(mAyLikNmt) - 1
+'For J = 0 To Sz(mAyLikNmt) - 1
 '    Dim mAnt$(): If Fnd_Ant_ByLik(mAnt, Trim(mAyLikNmt(J)), pDb) Then ss.A 1: GoTo E
 '    If Add_AyAtEnd(oAnt, mAnt) Then ss.A 1: GoTo E
 'Next
@@ -503,7 +503,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mAyLikNmtq$(): mAyLikNmtq = Split(pSetNmtq$, CtComma)
 'Dim J%
 '
-'For J = 0 To Siz_Ay(mAyLikNmtq) - 1
+'For J = 0 To Sz(mAyLikNmtq) - 1
 '    Dim mAntq$(): If Fnd_Antq_ByLik(mAntq, Trim(mAyLikNmtq(J)), pDb, pQ) Then ss.A 1: GoTo E
 '    If Add_AyAtEnd(oAntq, mAntq) Then ss.A 1: GoTo E
 'Next
@@ -549,7 +549,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mDb As database:        Set mDb = mAcs.CurrentDb
 '
 'Dim mAnq$(): If Fnd_Anq_ByLik(mAnq, QryNmLik, mDb) Then ss.A 1: GoTo E
-'Dim N%: N = Siz_Ay(mAnq)
+'Dim N%: N = Sz(mAnq)
 'If N = 0 Then
 '    Dim mAyDQry() As d_Qry: oAyDQry = mAyDQry: Exit Function
 '    Exit Function
@@ -603,7 +603,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mDQry As New d_Qry
 'If mDQry.WrtHdr(mF) Then Stop
 '
-'For I = 0 To Siz_Ay(mAyFb) - 1
+'For I = 0 To Sz(mAyFb) - 1
 '    Dim mNmQs$: mNmQs = ""
 '    Select Case mAyFb(I)
 '    Case "MPS_GenDta.mdb":    mNmQs = "qryMPS"
@@ -618,13 +618,13 @@ Attribute VB_Name = "ZZ_xFnd"
 '    Dim mDb As database:
 '    Do
 '        If Opn_Db(mDb, cDir & mAyFb(I), True) Then Stop
-'        Dim N%: N = Siz_Ay(mAnQs)
+'        Dim N%: N = Sz(mAnQs)
 '
 '        Dim J%
 '        For J = 0 To N - 1
 '            Dim mAyDQry() As d_Qry: If Fnd_AyDQry(mAyDQry, mAnQs(J) & "*", True, mDb) Then Stop
 '            Dim K%
-'            For K = 0 To Siz_AyDQry(mAyDQry) - 1
+'            For K = 0 To SzDQry(mAyDQry) - 1
 '                If mAyDQry(K).Wrt(mF, mAyFb(I)) Then Stop
 '            Next
 '        Next
@@ -640,7 +640,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_MaxLin%(pLines$)
 'Dim J%, L%, mAys$()
 'mAys = Split(pLines, vbLf)
-'For J = 0 To Siz_Ay(mAys) - 1
+'For J = 0 To Sz(mAys) - 1
 '    If L < Len(mAys(J)) Then L = Len(mAys(J))
 'Next
 'Fnd_MaxLin = L
@@ -783,7 +783,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mAnq$(), mAnt$()
 'If Fnd_Anq_ByLik(mAnq, "*") Then Stop: GoTo E
 'Dim J%
-'For J = 0 To Siz_Ay(mAnq) - 1
+'For J = 0 To Sz(mAnq) - 1
 '    Debug.Print mAnq(J),
 '    If Fnd_AnDpd(mAnt, mAnq(J)) Then Stop: GoTo E
 '    Debug.Print ToStr_Ays(mAnt)
@@ -799,7 +799,7 @@ Attribute VB_Name = "ZZ_xFnd"
 ''Aim: Find {pV} in {pAy} by return {oIdx}
 'Const cSub$ = "Fnd_Idx"
 'On Error GoTo R
-'For oIdx = 0 To Siz_Ay(pAy) - 1
+'For oIdx = 0 To Sz(pAy) - 1
 '    If pAy(oIdx) = pV Then Exit Function
 'Next
 'oIdx = -1
@@ -811,7 +811,7 @@ Attribute VB_Name = "ZZ_xFnd"
 ''Aim: Find {pLng} in {pAyLng} by return {oIdx}
 'Const cSub$ = "Fnd_IdxLng"
 'On Error GoTo R
-'For oIdx = 0 To Siz_Ay(pAyLng) - 1
+'For oIdx = 0 To Sz(pAyLng) - 1
 '    If pAyLng(oIdx) = pLng Then Exit Function
 'Next
 'oIdx = -1
@@ -823,7 +823,7 @@ Attribute VB_Name = "ZZ_xFnd"
 ''Aim: Find {pLng} in {pAyLng} by return {oIdx}
 'Const cSub$ = "Fnd_IdxByt"
 'On Error GoTo R
-'For oIdx = 0 To Siz_Ay(pAyByt) - 1
+'For oIdx = 0 To Sz(pAyByt) - 1
 '    If pAyByt(oIdx) = pByt Then Exit Function
 'Next
 'oIdx = -1
@@ -856,7 +856,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'End Function
 
 'Function Fnd_MaxEle(oIdx%, pAy$()) As Boolean
-'Dim N%: N = Siz_Ay(pAy)
+'Dim N%: N = Sz(pAy)
 'If N = 0 Then oIdx = -1: Exit Function
 'Dim J%, mMax$
 'oIdx = 0: mMax = pAy(0)
@@ -865,7 +865,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Next
 'End Function
 'Function Fnd_MinEle(oIdx%, pAy$()) As Boolean
-'Dim N%: N = Siz_Ay(pAy)
+'Dim N%: N = Sz(pAy)
 'If N = 0 Then oIdx = -1: Exit Function
 'Dim J%, mMin$
 'oIdx = 0: mMin = pAy(0)
@@ -876,7 +876,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_LoQVal_ByFrm(oLoQVal$, pFrm As Access.Form, pAnCtl$()) As Boolean
 'Const cSub$ = "Fnd_LoQVal_ByFrm"
 ''Aim: Find {oLoQVal} by the control's NewValue in {pFrm} using {pAnCtl} as the control's name.
-'Dim J%, N%: N = Siz_Ay(pAnCtl)
+'Dim J%, N%: N = Sz(pAnCtl)
 'oLoQVal = ""
 'Dim mA$
 'For J = 0 To N - 1
@@ -905,7 +905,7 @@ Attribute VB_Name = "ZZ_xFnd"
 ''     oLoAsg  is fmt of xxx='nnnn',bbb=nnnn                     which is the [ssss] part of "Update tttt set ssss where wwww"
 ''     oLoChgd is fmt of xxx=[oooo]<--[nnnn]|bbb=[oooo]<--[nnnn] which will be show in status.
 'Dim mAnCtl$(), mAnAsg$(): If Brk_Lm_To2Ay(mAnCtl, mAnAsg, pLm) Then ss.A 1: GoTo E
-'Dim J%, N%: N = Siz_Ay(mAnCtl)
+'Dim J%, N%: N = Sz(mAnCtl)
 'oLoAsg = "": oLoChgd = ""
 'Dim mA$, mB$
 'For J = 0 To N - 1
@@ -1091,7 +1091,7 @@ Attribute VB_Name = "ZZ_xFnd"
 '
 ''Put the Function Fnd_declaration lines into mAy() first
 'oPrcDcl = ""
-'Dim J%, I%, N%: N% = Fct.MinInt(50, Siz_Ay(mAy) - 1)
+'Dim J%, I%, N%: N% = Fct.MinInt(50, Sz(mAy) - 1)
 'For J = 0 To N
 '    oPrcDcl = Add_Str(oPrcDcl, mAy(J), vbLf)
 '    If Right(mAy(J), 1) <> "_" Then Exit For
@@ -1235,7 +1235,7 @@ Attribute VB_Name = "ZZ_xFnd"
 ''Aim: Fnd {oAn2V} from {FnStr} in {pFrm} with optional to replace the {.Nm} of {oAn2V} by {pLnNew}
 'Const cSub$ = "Fnd_AnV_ByFrm"
 'Dim mAn_Frm$(), mAn_Host$(): If Brk_Lm_To2Ay(mAn_Frm, mAn_Host, FnStr) Then ss.A 1: GoTo E
-'Dim N%: N = Siz_Ay(mAn_Frm): If N = 0 Then Exit Function
+'Dim N%: N = Sz(mAn_Frm): If N = 0 Then Exit Function
 'ReDim oAn2V(N - 1)
 'On Error GoTo R
 'Dim J%, iCtl As Access.Control
@@ -1281,7 +1281,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_Anm__Tst()
 'Dim mAnPrj$(): If Fnd_AnPrj(mAnPrj) Then Stop: GoTo E
 'Dim J%
-'For J = 0 To Siz_Ay(mAnPrj) - 1
+'For J = 0 To Sz(mAnPrj) - 1
 '    Dim mPrj As vbproject: If Fnd_Prj(mPrj, mAnPrj(J)) Then Stop: GoTo E
 '    Dim mAnm$(): If Fnd_Anm_ByPrj(mAnm, mPrj) Then Stop: GoTo E
 '    Debug.Print mAnPrj(J) & ": " & ToStr_Ays(mAnm)
@@ -1453,22 +1453,22 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_AnWs_BySetWs(oAnWs$(), pWb As Workbook, Optional pSetWs$ = "*") As Boolean
 'Const cSub$ = "Fnd_AnWs_BySetWs"
 'On Error GoTo R
-'Dim mAnLikNmWs$(): mAnLikNmWs = Split(pSetWs, CtComma)
+'Dim mAnLikWsNm$(): mAnLikWsNm = Split(pSetWs, CtComma)
 'Dim J%, mAnWs$()
-'For J = 0 To Siz_Ay(mAnLikNmWs) - 1
-'    Dim mLikNmWs$: If Fnd_AnWs_ByLikNmWs(mAnWs, pWb, Trim(mAnLikNmWs(J))) Then ss.A 1: GoTo E
+'For J = 0 To Sz(mAnLikWsNm) - 1
+'    Dim mLikWsNm$: If Fnd_AnWs_ByLikWsNm(mAnWs, pWb, Trim(mAnLikWsNm(J))) Then ss.A 1: GoTo E
 '    If Add_AyAtEnd(oAnWs, mAnWs) Then ss.A 2: GoTo E
 'Next
 'Exit Function
 'R: ss.R
 'E: Fnd_AnWs_BySetWs = True: ss.B cSub, cMod, "pWb,pSetWs", ToStr_Wb(pWb), pSetWs
 'End Function
-'Function Fnd_AnWs_ByLikNmWs(oAnWs$(), pWb As Workbook, pLikNmWs$) As Boolean
-'Const cSub$ = "Fnd_AnWs_ByLikNmWs"
+'Function Fnd_AnWs_ByLikWsNm(oAnWs$(), pWb As Workbook, pLikWsNm$) As Boolean
+'Const cSub$ = "Fnd_AnWs_ByLikWsNm"
 'On Error GoTo R
-'If InStr(pLikNmWs, "*") = 0 Then
-'    If IsWs(pWb, pLikNmWs) Then
-'        ReDim oAnWs(0): oAnWs(0) = pLikNmWs
+'If InStr(pLikWsNm, "*") = 0 Then
+'    If IsWs(pWb, pLikWsNm) Then
+'        ReDim oAnWs(0): oAnWs(0) = pLikWsNm
 '        Exit Function
 '    End If
 '    Dim mA$(): oAnWs = mA
@@ -1476,7 +1476,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'End If
 'Dim iWs As Worksheet, mN%: mN = 0
 'For Each iWs In pWb.Sheets
-'    If iWs.Name Like pLikNmWs Then
+'    If iWs.Name Like pLikWsNm Then
 '        ReDim Preserve oAnWs(mN)
 '        oAnWs(mN) = iWs.Name
 '        mN = mN + 1
@@ -1484,7 +1484,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Next
 'Exit Function
 'R: ss.R
-'E: Fnd_AnWs_ByLikNmWs = True: ss.B cSub, cMod, "pWb,pLikNmWs", ToStr_Wb(pWb), pLikNmWs
+'E: Fnd_AnWs_ByLikWsNm = True: ss.B cSub, cMod, "pWb,pLikWsNm", ToStr_Wb(pWb), pLikWsNm
 'End Function
 'Function Fnd_AnWs(oAnWs$(), pFx$, Optional pInclInvisible As Boolean = False) As Boolean
 'Const cSub$ = "Fnd_AnWs"
@@ -1946,7 +1946,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'If Not IsMissing(oAyV4) Then If VarType(oAyV4) And vbArray = 0 Then ss.A 5, "oAyV4 must be an array": GoTo E
 'If Not IsMissing(oAyV5) Then If VarType(oAyV5) And vbArray = 0 Then ss.A 6, "oAyV5 must be an array": GoTo E
 'Dim mAnFld$():  mAnFld = Split(FnStr, CtComma)
-'Dim mNFld%:     mNFld = Siz_Ay(mAnFld): If mNFld <= 0 Or mNFld > 6 Then ss.A 7, "FnStr is invalid (at most 6 elements)": GoTo E
+'Dim mNFld%:     mNFld = Sz(mAnFld): If mNFld <= 0 Or mNFld > 6 Then ss.A 7, "FnStr is invalid (at most 6 elements)": GoTo E
 'Dim mNRec%:     If Fnd_RecCnt_ByRs(mNRec, pRs) Then ss.A 1: GoTo E
 'If mNRec% = 0 Then
 '    Dim mAy()
@@ -2018,7 +2018,7 @@ Attribute VB_Name = "ZZ_xFnd"
 '    ) As Boolean
 'Const cSub$ = "Fnd_LnFldVal"
 'Dim mAnFld$(): If Brk_Ln2Ay(mAnFld, FnStr) Then ss.A 1: GoTo E
-'Dim N%: N = Siz_Ay(mAnFld): If N > 10 Then ss.A 1, "No more than 10 fields can be return": GoTo E
+'Dim N%: N = Sz(mAnFld): If N > 10 Then ss.A 1, "No more than 10 fields can be return": GoTo E
 'On Error GoTo R
 'Dim J%: For J = 0 To N - 1
 '    Select Case J
@@ -2151,7 +2151,7 @@ Attribute VB_Name = "ZZ_xFnd"
 '    ) As Boolean
 'Const cSub$ = "Fnd_PrcBody_ByMd"
 'Dim mAnPrc$(): If Fnd_AnPrc_ByMd(mAnPrc, pMd, pNmPrc, , True, pBodyOnly) Then ss.A 1: GoTo E
-'If Siz_Ay(mAnPrc) = 0 Then ss.A 2, "pNmPrc is not found": GoTo E
+'If Sz(mAnPrc) = 0 Then ss.A 2, "pNmPrc is not found": GoTo E
 'On Error GoTo R
 'Dim iNmPrc$, iPrcLinBeg$, iPrcLinEnd$, iPrcNLin$
 'If Brk_Str_To3Seg(iNmPrc, iPrcLinBeg, iPrcLinEnd, mAnPrc(0)) Then ss.A 3: GoTo E
@@ -2239,7 +2239,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_RecCnt_ByNmtq(oRecCnt&, Qry_or_Tbl_Nm$, Optional pLExpr$ = "", Optional pDb As database) As Boolean
 'Const cSub$ = "Fnd_RecCnt_ByNmt"
 'On Error GoTo R
-'Dim mSql$: mSql = Fmt_Str("select count(*) from [{0}]{1}", Rmv_SqBkt(Qry_or_Tbl_Nm), SqlStrWhere(pLExpr))
+'Dim mSql$: mSql = Fmt_Str("select count(*) from [{0}]{1}", Rmv_SqBkt(Qry_or_Tbl_Nm), SqsWhere(pLExpr))
 'If Fnd_ValFmSql(oRecCnt, mSql, pDb) Then ss.A 1: GoTo E
 'Exit Function
 'R: ss.R
@@ -2347,7 +2347,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_SegFmCmd_2"
 'Dim mCmd$: mCmd = CtCommand()
 'Dim mA$(): mA() = Split(mCmd, CtComma)
-'If Siz_Ay(mA) <> 2 Then ss.A 1, "/Cmd is expected as {Nmrptsht},{NmSess} format.", , "mCmd", mCmd: GoTo E
+'If Sz(mA) <> 2 Then ss.A 1, "/Cmd is expected as {Nmrptsht},{NmSess} format.", , "mCmd", mCmd: GoTo E
 'oA1 = mA(0)
 'oA2 = mA(1)
 'Exit Function
@@ -2357,7 +2357,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_SegFmCmd_3"
 'Dim mCmd$: mCmd = CtCommand()
 'Dim mA$(): mA() = Split(mCmd, CtComma)
-'If Siz_Ay(mA) <> 3 Then ss.A 1, "/Cmd is expected as {Nmrptsht},{NmSess}.{xxx} format.", , "mCmd", mCmd: GoTo E
+'If Sz(mA) <> 3 Then ss.A 1, "/Cmd is expected as {Nmrptsht},{NmSess}.{xxx} format.", , "mCmd", mCmd: GoTo E
 'oA1 = mA(0)
 'oA2 = mA(1)
 'oA3 = mA(2)
@@ -2477,7 +2477,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_LvFmRs_Of1Rec"
 'On Error GoTo R
 'Dim mAnFld$(): mAnFld = Split(FnStr, CtComma)
-'Dim N%: N = Siz_Ay(mAnFld)
+'Dim N%: N = Sz(mAnFld)
 'Dim mV
 'oLv = ""
 'Dim J%: For J = 0 To N - 1
@@ -2660,7 +2660,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Function Fnd_VbCmp_FmWs(oVbCmp As VBIDE.VBComponent, pWs As Worksheet) As Boolean
 'Const cSub$ = "Fnd_VBCmp_FmWs"
 'On Error GoTo R
-'Dim mNmWs$: mNmWs = pWs.Name
+'Dim mWsNm$: mWsNm = pWs.Name
 'For Each oVbCmp In pWs.Application.Vbe.ActiveVBProject.VBComponents
 '    If oVbCmp.Type = vbext_ct_Document Then
 '        If oVbCmp.Properties("Name").Value = pWs.Name Then Exit Function
@@ -2723,7 +2723,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_PrcRgeRno_ByMd"
 'On Error GoTo R
 'Dim mAnPrc_LinBeg_LinEnd$(): If Fnd_AnPrc_ByMd(mAnPrc_LinBeg_LinEnd, pMd, pNmPrc, , True) Then ss.A 1: GoTo E
-'Dim mN%: mN = Siz_Ay(mAnPrc_LinBeg_LinEnd)
+'Dim mN%: mN = Sz(mAnPrc_LinBeg_LinEnd)
 'If mN = 0 Then oRgeRno.Fm = 0: oRgeRno.To = 0: Exit Function
 'If mN > 1 Then ss.A 2, "Return mAnPrc_LinBeg_LinEnd should be one element", , "mAnPrc_LinBeg_LinEnd", ToStr_Ays(mAnPrc_LinBeg_LinEnd): GoTo E
 'Dim mNmPrc$, mLinBeg&, mLinEnd&: If Brk_Str_To3Seg(mNmPrc, oRgeRno.Fm, oRgeRno.To, mAnPrc_LinBeg_LinEnd(0), ":") Then ss.A 2: GoTo E
@@ -2794,11 +2794,11 @@ Attribute VB_Name = "ZZ_xFnd"
 'Select Case mCase
 'Case 1
 '    If Fnd_AnPrj(mAnPrj) Then Stop: GoTo E
-'    For J = 0 To Siz_Ay(mAnPrj) - 1
+'    For J = 0 To Sz(mAnPrj) - 1
 '        If Fnd_Prj(mPrj, mAnPrj(J)) Then Stop: GoTo E
 '        If Fnd_Anm_ByPrj(mAnm, mPrj) Then Stop: GoTo E
 '        Dim I%
-'        For I = 0 To Siz_Ay(mAnm) - 1
+'        For I = 0 To Sz(mAnm) - 1
 '            If Fnd_Md(mMd, mPrj, mAnm(I)) Then Stop: GoTo E
 '            If Fnd_AnPrc_ByMd(mAnPrc, mMd) Then Stop: GoTo E
 '            Debug.Print mAnPrj(J) & "." & mAnm(I) & ": " & ToStr_Ays(mAnPrc)

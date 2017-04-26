@@ -10,9 +10,21 @@ End If
 Fmt_yMmmWww = Right(Year(Dte), 1) & "M" & Format(Month(Dte), "00") & "W" & Format(MGIWeekNum(Dte), "00")
 End Function
 
-Function FmtNm$(NmStr$, ParamArray Ap())
+Function FmtDic$(NmMacro$, Dic As Dictionary)
+'Aim: pFmtStr is in forAt of xxxx{Fld1}xxx{Fld2}.  Return the subst string by subst the fields in {pRs} into {pFmtStr}
+Dim S$: S = NmMacro
+Dim K
+Dim A$
+For Each K In Dic
+    A = "{" & K & "}"
+    S = Replace(S, A, Dic(K))
+Next
+FmtDic = S
+End Function
+
+Function FmtNm$(Nmstr$, ParamArray Ap())
 Dim Av(): Av = Ap
-FmtNm = FmtNmAv(NmStr, Av)
+FmtNm = FmtNmAv(Nmstr, Av)
 End Function
 
 Sub FmtNm__Tst()
@@ -34,18 +46,6 @@ End Function
 Sub FmtNmAv__Tst()
 Debug.Assert FmtNm("{a}--{b}...{a}!!!", 1, 2) = "1--2...1!!!"
 End Sub
-
-Function FmtNmByDic$(NmStr$, Dic As Dictionary)
-'Aim: pFmtStr is in forAt of xxxx{Fld1}xxx{Fld2}.  Return the subst string by subst the fields in {pRs} into {pFmtStr}
-Dim S$: S = NmStr
-Dim K
-Dim A$
-For Each K In Dic
-    A = "{" & K & "}"
-    S = Replace(S, A, Dic(K))
-Next
-FmtNmByDic = S
-End Function
 
 Function FmtQQ$(QQStr$, ParamArray Ap())
 Dim Av(): Av = Ap

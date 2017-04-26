@@ -2,6 +2,14 @@ Attribute VB_Name = "nStr_Parse"
 Option Compare Database
 Option Explicit
 
+Function ParseChr$(A$, ChrStr$)
+Dim F$: F = FstChr(A)
+Dim J%
+For J = 1 To Len(ChrStr)
+    If F = Mid(ChrStr, J, 1) Then ParseChr = Mid(ChrStr, J, 1): Exit Function
+Next
+End Function
+
 Function ParseNm$(A$)
 Dim J%, C$
 C = Left(A, 1)
@@ -26,21 +34,17 @@ Debug.Assert Act = "sdkf"
 Debug.Assert A = "$lksdf"
 End Sub
 
-Function ParseStr$(A$, S)
-If IsPfx(A, S) Then
-    ParseStr = S
-    A = RmvPfx(A, S)
-End If
+Function ParseStr(A$, S) As Boolean
+Dim O As Boolean
+O = IsPfx(A, S)
+If O Then A = RmvPfx(A, S)
+ParseStr = O
 End Function
 
 Function ParseSy$(A$, Ay$())
 Dim I, O$
 For Each I In Ay
-    O = ParseStr(A, I)
-    If O <> "" Then
-        ParseSy = O
-        Exit Function
-    End If
+    If ParseStr(A, I) Then ParseSy = I: Exit Function
 Next
 End Function
 

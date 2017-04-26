@@ -2,6 +2,10 @@ Attribute VB_Name = "nAy_ObjAy"
 Option Compare Database
 Option Explicit
 
+Function ObjAyNy(ObjAy) As String()
+ObjAyNy = ObjAySyPrp(ObjAy, "Name")
+End Function
+
 Function ObjAyPrp(ObjAy, PrpNm$, OAy)
 Erase OAy
 Dim U&: U = UB(ObjAy)
@@ -44,4 +48,17 @@ If U >= 0 Then
     Next
 End If
 ObjAyStrPrp = O
+End Function
+
+Function ObjAySyPrp(ObjAy, PrpNm$) As String()
+Dim O$()
+Dim U&: U = UB(ObjAy)
+If U >= 0 Then
+    Dim J&
+    ReDim O(U)
+    For J = 0 To U
+        O(J) = CallByName(ObjAy(J), PrpNm, VbGet)
+    Next
+End If
+ObjAySyPrp = O
 End Function

@@ -19,7 +19,7 @@ End Type
 
 Sub Gen_LetXXX()
 Dim A$: A = ResStr("LetXXX", "nMGI_UsrPrf")
-Debug.Print StrExpand(A, cLnItm, vbLf)
+Debug.Print StrExpd(A, cLnItm, vbLf)
 End Sub
 
 Sub LetXXX()
@@ -60,7 +60,7 @@ Function UsrPrf_Login(NmUsr$) As Boolean
 Dim Pwd$:
     Dim S$
     S = FmtQQ("Select password from tblUsr where NmUsr='?'", NmUsr)
-    Pwd = SqlStr(S)
+    Pwd = Sqs(S)
 UsrPrf_AsstPwd NmUsr, Pwd
 End Function
 
@@ -73,13 +73,13 @@ Function UsrPrf_Login__Tst()
 If UsrPrf_Login("Johnson") Then Stop
 End Function
 Function UsrPrf_NmBrand$(): UsrPrf_NmBrand = X.NmBrand: End Function
-'Debug.Print StrExpand("Function Nm{B}$(): Nm{B} = X.{B}: End Function", "Usr,Dpt,Fy,Env,Lvl,Brand", vbLf)
+'Debug.Print StrExpd("Function Nm{B}$(): Nm{B} = X.{B}: End Function", "Usr,Dpt,Fy,Env,Lvl,Brand", vbLf)
 Function UsrPrf_Usr&(): UsrPrf_Usr = X.Usr: End Function
 Function UsrPrf_NmDpt$(): UsrPrf_NmDpt = X.NmDpt: End Function
 Function UsrPrf_NmFy$(): UsrPrf_NmFy = X.NmFy: End Function
 Function UsrPrf_NmEnv$(): UsrPrf_NmEnv = X.NmEnv: End Function
 Function UsrPrf_NmLvl$(): UsrPrf_NmLvl = X.NmLvl: End Function
-'Debug.Print StrExpand("Function Nm{B}$(): Nm{B} = X.{B}: End Function", "Usr,Dpt,Fy,Env,Lvl,Brand", vbLf)
+'Debug.Print StrExpd("Function Nm{B}$(): Nm{B} = X.{B}: End Function", "Usr,Dpt,Fy,Env,Lvl,Brand", vbLf)
 Function UsrPrf_NmUsr$(): UsrPrf_NmUsr = X.NmUsr: End Function
 Function UsrPrf_zzChkLogin() As Boolean
 Const cSub$ = "zzChkLogin"

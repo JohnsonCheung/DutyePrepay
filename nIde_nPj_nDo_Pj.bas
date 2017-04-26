@@ -110,6 +110,10 @@ Sub PjRmvCmp(CmpNm$, Optional CmpTy As vbext_ComponentType = vbext_ct_StdModule,
 PjNz(A).VBComponents.Remove PjCmp(CmpNm, A)
 End Sub
 
+Sub PjRmvEmptyMd(Optional A As vbproject)
+'Dim N$(): N = PjEmptyMdNy
+End Sub
+
 Sub PjSav(Optional A As vbproject)
 Dim C As VBComponent
 For Each C In PjNz(A).VBComponents

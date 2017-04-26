@@ -60,33 +60,61 @@ End Function
 
 Function PjMdAy(Optional A As vbproject, Optional MdNmLik$ = "*") As CodeModule()
 Dim C As VBComponent
+Dim M As CodeModule
 Dim O() As CodeModule
 For Each C In PjNz(A).VBComponents
     Select Case C.Type
     Case vbext_ct_StdModule, vbext_ct_ClassModule, vbext_ct_Document
-        If C.CodeModule.CountOfLines > 0 Then PushObj O, C.CodeModule
+        Set M = C.CodeModule
+        If Not MdIsEmpty(M) Then
+            PushObj O, M
+        End If
     End Select
 Next
 PjMdAy = O
 End Function
 
-Function PjMdAy_Cls(A As vbproject, Optional MdNmLik$ = "*") As CodeModule()
+Function PjMdAy_Cls(Optional A As vbproject, Optional MdNmLik$ = "*") As CodeModule()
 Dim C As VBComponent
+Dim M As CodeModule
 Dim O() As CodeModule
-For Each C In A.VBComponents
+For Each C In PjNz(A).VBComponents
     If C.Type = vbext_ct_ClassModule Then
-        If C.CodeModule.CountOfLines > 0 Then PushObj O, C.CodeModule
+        Set M = C.CodeModule
+        If Not MdIsEmpty(M) Then
+            PushObj O, M
+        End If
     End If
 Next
 PjMdAy_Cls = O
 End Function
 
-Function PjMdAy_Std(A As vbproject, Optional MdNmLik$ = "*") As CodeModule()
+Function PjMdAy_Empty(Optional A As vbproject) As CodeModule()
+Dim C As VBComponent
+Dim M As CodeModule
+Dim O() As CodeModule
+For Each C In PjNz(A).VBComponents
+    Select Case C.Type
+    Case vbext_ct_ClassModule, vbext_ct_StdModule
+        Set M = C.CodeModule
+        If MdIsEmpty(M) Then
+            PushObj O, M
+        End If
+    End Select
+Next
+PjMdAy_Empty = O
+End Function
+
+Function PjMdAy_Std(Optional A As vbproject, Optional MdNmLik$ = "*") As CodeModule()
 Dim C As VBComponent
 Dim O() As CodeModule
-For Each C In A.VBComponents
-    If C.Type = vbext_ct_Document Then
-        If C.CodeModule.CountOfLines > 0 Then PushObj O, C.CodeModule
+Dim M As CodeModule
+For Each C In PjNz(A).VBComponents
+    If C.Type = vbext_ct_StdModule Then
+        Set M = C.CodeModule
+        If Not MdIsEmpty(M) Then
+            PushObj O, M
+        End If
     End If
 Next
 PjMdAy_Std = O
@@ -149,6 +177,10 @@ Function PjPth$(Optional A As vbproject)
 PjPth = FfnPth(PjNz(A).FileName)
 End Function
 
+Sub PjPthBrw(Optional A As vbproject)
+PthBrw PjPth(A)
+End Sub
+
 Function PjRfDt(pFfn$, Optional pNmPrj$ = "", Optional pAcs As Access.Application = Nothing) As Dt
 Const cSub$ = "PjRfDt"
 On Error GoTo R
@@ -173,11 +205,15 @@ DtBrw PjRfDt("c:\tmp\aa.txt")
 Shell "notepad c:\tmp\aa.txt", vbMaximizedFocus
 End Function
 
-Function PjSrcPth$(A As vbproject)
+Function PjSrcPth$(Optional A As vbproject)
 Dim O$
 O = PjPth(A) & "Src\": PthEns O
 O = O & A.Name & "\":  PthEns O
 PjSrcPth = O
+End Function
+
+Function PjSrcPthBrw(Optional A As vbproject)
+PthBrw PjSrcPth(A)
 End Function
 
 Sub PjSwh(Optional A As vbproject)

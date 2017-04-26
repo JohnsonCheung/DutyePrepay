@@ -31,7 +31,7 @@ End Function
 Function SrcLinIsTth(Lin) As Boolean
 If Not SrcLinIsMth(Lin) Then Exit Function
 Dim A As MthBrk: A = MthBrkNew(Lin)
-If A.mFY = "" Or A.mFY = "Public" Then
+If A.Mdfy = "" Or A.Mdfy = "Public" Then
     If IsPfx(A.Nm, "Tst_") Then
         If A.Ty = "Sub" Then
             SrcLinIsTth = True

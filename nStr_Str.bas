@@ -74,7 +74,7 @@ StrWrt S, T
 FtBrw T, True
 End Sub
 
-Function StrChkEq(S1, S2) As Dt
+Function StrChkEq(S1, S2) As Variant()
 If S1 = S2 Then Exit Function
 '==================
 Dim L1&, L2&
@@ -99,17 +99,17 @@ End If
 D1 = "{Len}: " & Quote(D1, "[]")
 D2 = "{Len}: " & Quote(D2, "[]")
 '==================
-Dim O As Dt
+Dim O()
 O = ErNew("Two strings are different:")
-O = ErApd(O, D, P)
-O = ErApd(O, D1, L1)
-O = ErApd(O, D2, L2)
+PushAy O, ErNew(D, P)
+PushAy O, ErNew(D1, L1)
+PushAy O, ErNew(D2, L2)
 StrChkEq = O
 End Function
 
 Sub StrChkEq__Tst()
-Dim Er As Dt: Er = StrChkEq("1;2;3", "1;2;4")
-DtBrw Er
+Dim Er(): Er = StrChkEq("1;2;3", "1;2;4")
+ErBrw Er
 End Sub
 
 Function StrDifPos&(S1, S2)
@@ -126,56 +126,56 @@ Function StrDup$(S, N%)
 StrDup = String(N, S)
 End Function
 
-Function StrExpand$(S, SyOpt, Optional Sep$ = CtComma, Optional MacroStr$ = "{?}")
+Function StrExpd$(S, SyOpt, Optional Sep$ = CtComma, Optional MacroStr$ = "{?}")
 'Aim: Format a string with {?} by repeatly join it after substitue {?} by pAn$(0 to N)
-StrExpand = Join(StrExpandToSy(S, SyOpt, MacroStr), Sep)
+StrExpd = Join(StrExpdToSy(S, SyOpt, MacroStr), Sep)
 End Function
 
-Sub StrExpand__Tst()
+Sub StrExpd__Tst()
 Dim Sy$()
 Dim J%
 For J = 0 To 3
     Push Sy, "[" & J & "]"
 Next
-Debug.Print StrExpand("xxxx{?}yyyyy", Sy, " and ")
-Debug.Print StrExpand("Tbl{?}", "x xx xxx")
-Debug.Print StrExpand("Tbl{?}", "x xx xxx", vbCrLf)
+Debug.Print StrExpd("xxxx{?}yyyyy", Sy, " and ")
+Debug.Print StrExpd("Tbl{?}", "x xx xxx")
+Debug.Print StrExpd("Tbl{?}", "x xx xxx", vbCrLf)
 
 Dim mLines$:
 mLines = RplVBar("Line1:lksdjflskdf sdklfj|" & _
 "Line2:klsdjf{?}klsdjf}|" & _
 "Line3:ksldjfslkdf")
 Sy = Split("<Itm1>,<Itm2>,<Itm3>,<Itm4>", ",")
-Debug.Print StrExpand(mLines, Sy, vbCrLf)
+Debug.Print StrExpd(mLines, Sy, vbCrLf)
 End Sub
 
-Function StrExpandSeq$(pBeg As Byte, pN As Byte, Optional pFmtStr$ = "{N}", Optional pSepChr$ = CtComma, Optional pMacroStr$ = "{N}")
+Function StrExpdSeq$(pBeg As Byte, pN As Byte, Optional pFmtStr$ = "{N}", Optional pSepChr$ = CtComma, Optional pMacroStr$ = "{N}")
 'Aim: Build a string to repeating {pFmtStr} {pN} times from {pBeg} with separated by {pSepChr}.  {pFmtStr} has {N} as the Idx.
-Const cSub$ = "StrExpandSeq"
+Const cSub$ = "StrExpdSeq"
 Dim mA$, J As Byte
 For J = pBeg To pBeg + pN - 1
     mA = Add_Str(mA, Replace(pFmtStr, pMacroStr, J), pSepChr)
 Next
-StrExpandSeq = mA
+StrExpdSeq = mA
 End Function
 
-Sub StrExpandSeq__Tst()
+Sub StrExpdSeq__Tst()
 Dim mExpr$
-mExpr = "StrExpandSeq(0, 10, ""a{N} as xx{N}"")"
+mExpr = "StrExpdSeq(0, 10, ""a{N} as xx{N}"")"
 Debug.Print "================="
 Debug.Print mExpr
-Debug.Print Eval(mExpr) ' StrExpandSeq(1, 10, "a{N} as xx{N}")
+Debug.Print Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
 Debug.Print
-mExpr = "StrExpandSeq(1, 10, ""a{N} as xx{N}"")"
+mExpr = "StrExpdSeq(1, 10, ""a{N} as xx{N}"")"
 Debug.Print mExpr
-Debug.Print Eval(mExpr) ' StrExpandSeq(1, 10, "a{N} as xx{N}")
+Debug.Print Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
 End Sub
 
-Function StrExpandToSy(S, SyOpt, Optional MacroStr$ = "{?}") As String()
+Function StrExpdToSy(S, SyOpt, Optional MacroStr$ = "{?}") As String()
 'Aim: Format a string with {?} by repeatly join it after substitue {?} by pAn$(0 to N)
 Dim OSy$(): OSy = OptSy(SyOpt)
 If InStr(S, MacroStr) = 0 Then
-    StrExpandToSy = ApSy(S)
+    StrExpdToSy = ApSy(S)
     Exit Function
 End If
 Dim O$()
@@ -186,7 +186,7 @@ Dim O$()
     For J = 0 To U
         O(J) = Replace(S, MacroStr, OSy(J))
     Next
-StrExpandToSy = O
+StrExpdToSy = O
 End Function
 
 Function StrHas(S, SubStr) As Boolean
@@ -218,9 +218,9 @@ Debug.Assert StrIsLikAy("aa", Array("bb*", "aa*")) = True
 End Function
 
 Function StrIsMacro(pS$) As Boolean
-Dim p1%: p1 = InStr(pS, "{")
-Dim p2%: p2 = InStr(pS, "}")
-StrIsMacro = (p2 > p1 And p1 > 0)
+Dim P1%: P1 = InStr(pS, "{")
+Dim P2%: P2 = InStr(pS, "}")
+StrIsMacro = (P2 > P1 And P1 > 0)
 End Function
 
 Function StrIsNm(S) As Boolean

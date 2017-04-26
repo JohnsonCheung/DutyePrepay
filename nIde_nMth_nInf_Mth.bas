@@ -29,9 +29,9 @@ If L = 0 Then Exit Function
 MthLin = Md.Lines(L, 1)
 End Function
 
-Function MthLines$(MthNm$, Optional A As CodeModule)
+Function MthLines$(MthNm$, Optional PrpTy$, Optional A As CodeModule)
 Dim Md As CodeModule: Set Md = MdNz(A)
-Dim Stru() As MthStru: Stru = MthStruAy(MthNm, , A) ' Ms = Method Structure
+Dim Stru() As MthStru: Stru = MthStruAy(MthNm, PrpTy, A)
 If MthStruAyIsEmpty(Stru) Then Exit Function
 Dim J%, O$(), M As MthStru
 For J = 0 To UBound(Stru)
@@ -57,6 +57,6 @@ Sub MthLno__Tst()
 Debug.Assert MthLno("MthLno", Md("nIde_nMth_nInf_Mth")) = 123
 End Sub
 
-Function MthLy(MthNm$, Optional A As CodeModule) As String()
-MthLy = LinesSplit(MthLines(MthNm, A))
+Function MthLy(MthNm$, Optional PrpTy$, Optional A As CodeModule) As String()
+MthLy = LinesSplit(MthLines(MthNm, PrpTy, A))
 End Function

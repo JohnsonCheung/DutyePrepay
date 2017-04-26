@@ -224,8 +224,8 @@ If VarType(pVayv) <> vbArray + vbVariant Then ss.A 1, "VarType of pVayv must be 
 oLExpr = ""
 Dim mAn$(): mAn = Split(pLp, CtComma)
 Dim mAyV(): mAyV = pVayv
-Dim N1%: N1 = Siz_Ay(mAn)
-Dim N2%: N2 = Siz_Ay(mAyV)
+Dim N1%: N1 = Sz(mAn)
+Dim N2%: N2 = Sz(mAyV)
 If N1 <> N2 Then ss.A 1, "Cnt in pLn & pV() not match", , "N1,N2", N1, N2: GoTo E
 Dim J%: For J = 0 To N1 - 1
     Dim mA$: If Join_NmV(mA, mAn(J), mAyV(J)) Then ss.A 2: GoTo E

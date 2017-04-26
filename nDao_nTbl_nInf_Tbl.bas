@@ -32,7 +32,7 @@ TblFldToLng = TblFldV(T, F, Where, A)
 End Function
 
 Function TblFldV(T, F, Where$, Optional A As database)
-TblFldV = SqlV(SqlStrOfSel(T, F, Where))
+TblFldV = SqlV(SqsOfSel(T, F, Where))
 End Function
 
 Function TblFny(T, Optional FstNFld%, Optional A As database) As String()
@@ -78,7 +78,7 @@ TblNonPKStr = FnyToStr(TblNonPKAy(T, D))
 End Function
 
 Function TblNRec&(T$, Optional A As database)
-TblNRec = SqlLng(SqlStrOfSel(T, "Count(*)"), A)
+TblNRec = SqlLng(SqsOfSel(T, "Count(*)"), A)
 End Function
 
 Function TblNRec_IgnoreEr&(T$, Optional A As database)
@@ -118,7 +118,7 @@ X:
 End Function
 
 Function TblRs(T, Optional A As database) As Recordset
-Set TblRs = SqlRs((SqlStrOfSel(T)), A)
+Set TblRs = SqlRs((SqsOfSel(T)), A)
 End Function
 
 Function TblStru$(T$, Optional D As database)
