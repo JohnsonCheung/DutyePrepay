@@ -43,7 +43,7 @@ Close mF1, mF2
 oIsSam = True
 Exit Function
 R: ss.R
-E: FtCmp = True: ss.B cSub, cMod, "Ft1,Ft2", Ft1, Ft2
+E:
 End Function
 
 Function FtCmp__Tst()

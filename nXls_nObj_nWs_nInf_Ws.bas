@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nWs_nInf_Ws"
+Attribute VB_Name = "nXls_nObj_nWs_nInf_Ws"
 Option Compare Database
 Option Explicit
 
@@ -74,6 +74,16 @@ End Function
 
 Function WsMaxCno&(A As Worksheet)
 WsMaxCno = A.Columns.Count
+End Function
+
+Function WsMaxRno&(A As Worksheet)
+WsMaxRno = A.Rows.Count
+End Function
+
+Function WsHasLoNm(A As Workbook, LoNm$) As Boolean
+On Error GoTo X
+WsHasLoNm = A.ListObjects(LoNm).Name = LoNm
+X:
 End Function
 
 Function WsQt(A As Worksheet, QtNm$) As QueryTable

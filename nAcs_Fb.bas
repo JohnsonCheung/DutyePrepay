@@ -42,11 +42,11 @@ Sub FbNew(Fb$, Optional Locale$ = dbLangGeneral)
 DbNew(Fb, Locale).Close
 End Sub
 
-Function FbRenToBackup(pFb$, Optional pKeepBackupLvl As Byte = 3) As Boolean
+Sub FbRenToBackup(pFb$, Optional pKeepBackupLvl As Byte = 3)
 Const cSub$ = "FbRenToBackup"
 If pKeepBackupLvl = 0 Then
     If Dlt_Fil(pFb) Then ss.A 1: GoTo E
-    Exit Function
+    Exit Sub
 End If
 If pKeepBackupLvl > 9 Then pKeepBackupLvl = 9
 Dim mFfnn$, mExt$: If Brk_Ffn_To2Seg(mFfnn, mExt, pFb) Then ss.A 1: GoTo E
@@ -55,11 +55,11 @@ If mNxtBkNo >= 10 Or mNxtBkNo >= pKeepBackupLvl Then
     If Dlt_Fil(mNxtFfnn & mExt, True) Then ss.A 1: GoTo E
     If Ren_Fil(pFb, mNxtFfnn & mExt) Then ss.A 2: GoTo E
     If Set_FilRO(mNxtFfnn & mExt) Then ss.A 3: GoTo E
-    Exit Function
+    Exit Sub
 End If
-If VBA.Dir(mNxtFfnn & mExt) <> "" Then If FbRenToBackup(mNxtFfnn & mExt, pKeepBackupLvl) Then Exit Function
+If VBA.Dir(mNxtFfnn & mExt) <> "" Then FbRenToBackup mNxtFfnn & mExt, pKeepBackupLvl:    Exit Sub
 If Ren_Fil(pFb, mNxtFfnn & mExt) Then ss.A 2: GoTo E
-Exit Function
+Exit Sub
 R: ss.R
-E: FbRenToBackup = True: ss.B cSub, cMod, "pFb,pKeepBackupLvl", pKeepBackupLvl
-End Function
+E:
+End Sub

@@ -1,7 +1,6 @@
 Attribute VB_Name = "ZZ_z"
 'Option Compare Text
 'Option Explicit
-'Const cMod$ = cLib & ".z"
 ''ARBal 4Var Fix SimRule
 '''4Var RPAAP, RPFAP(AP): amount payable (ie current outstanding).  RPAG(Gross) RPACR (Curr)
 '''Fix 193RecTblF0311Excl 20Rec0AG

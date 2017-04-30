@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nImp"
+Attribute VB_Name = "nXls_nAct_nImp"
 Option Compare Database
 Option Explicit
 Const C_Mod$ = "nXls_nImp_CsvFfn"
@@ -134,14 +134,6 @@ Exit Function
 X:
 End Function
 
-Function PtNmNz$(PtNm$, A As Worksheet)
-If PtNm <> "" Then PtNmNz = PtNm: Exit Function
-Dim J%
-For J = 1 To 1000
-    If Not PtNmIsExist("PT_" & J, A) Then PtNmNz = "PT_" & J: Exit Function
-Next
-Er "PtNmNz: Impossible"
-End Function
 
 Function WcCnnStrCsvFfn$(CsvFfn$)
 WcCnnStrCsvFfn = WcCnnStrCsv(FfnPth(CsvFfn))

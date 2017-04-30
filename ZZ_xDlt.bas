@@ -2,7 +2,6 @@ Attribute VB_Name = "ZZ_xDlt"
 Option Compare Text
 Option Explicit
 Option Base 0
-Const cMod$ = cLib & ".xDlt"
 
 Function Dlt_Fil_ByAy(pDir$, pAyFn$()) As Boolean
 Const cSub$ = "Dlt_Fil_ByAy"
@@ -11,7 +10,7 @@ For J = 0 To Sz(pAyFn) - 1
     If Dlt_Fil(pDir & pAyFn(J)) Then ss.A 1: GoTo E
 Next
 Exit Function
-E: Dlt_Fil_ByAy = True: ss.B cSub, cMod, "pDir,pAyFn", pDir, ToStr_Ays(pAyFn)
+E:
 End Function
 
 Function Dlt_Fil_ByPfx(pDir$, pPfx$) As Boolean
@@ -20,7 +19,7 @@ Dim mAyFn$()
 If Fnd_AyFn_ByLik(mAyFn, pDir, pPfx & "*") Then ss.A 1: GoTo E
 If Dlt_Fil_ByAy(pDir, mAyFn) Then ss.A 2: GoTo E
 Exit Function
-E: Dlt_Fil_ByPfx = True: ss.B cSub, cMod, "pDir,pPfx", pDir, pPfx
+E:
 End Function
 
 Function Dlt_Rel(pNmRel$, Optional pDb As database) As Boolean
@@ -28,7 +27,7 @@ Const cSub$ = "Dlt_Rel"
 On Error GoTo R
 DbNz(pDb).Relations.Delete pNmRel
 R: ss.R
-E: Dlt_Rel = True: ss.B cSub, cMod, "pRel,pDb", ToStr_Rel(pNmRel), ToStr_Db(pDb)
+E:
 End Function
 
 Function Dlt_RelAll(Optional pDb As database) As Boolean
@@ -62,7 +61,7 @@ For iRCnt = mRnoLas - Rg.Row + 1 To 1 Step -1
 Next
 Exit Function
 R: ss.R
-E: Dlt_RowNotInAy = True: ss.B cSub, cMod, "Rg,pAy", ToStr_Rge(Rg), ToStr_Ays(pAy)
+E:
 End Function
 
 Function Dlt_TBar(pWs As Worksheet, pNmTBar$) As Boolean
@@ -84,7 +83,7 @@ Else
 End If
 Exit Function
 R: ss.R
-E: Dlt_Tbl = True: ss.B cSub, cMod, "pNmt,pDb", pNmt, ToStr_Db(pDb)
+E:
 End Function
 
 Function Dlt_Tbl_ByLnk() As Boolean
@@ -98,7 +97,7 @@ For J = 0 To Sz(mAnt_Lnk) - 1
 Next
 GoTo X
 R: ss.R
-E: Dlt_Tbl_ByLnk = True: ss.B cSub, cMod
+E:
 X:
     Clr_Sts
 End Function
@@ -118,33 +117,7 @@ Next
 mDb.TableDefs.Refresh
 If Len(mA) <> 0 Then ss.A 1, "These tables cannot be deleted: " & mA: GoTo E
 Exit Function
-E: Dlt_Tbl_ByPfx = True: ss.B cSub, cMod, "pPfx,pDb", pPfx, ToStr_Db(pDb)
-End Function
-
-Function Dlt_TxtSpec(pNmSpec$, Optional pDb As database) As Boolean
-'Aim: Delete all records in MSysIMEXSpecs & MSysIMEXColumns for SpecName={pNmSpec}
-'     MSysIMEXSpecs  : DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecID,SpecName,SpecType,StartRow,TextDelim,TimeDelim
-'     MSysIMEXColumns: Attributes,DataType,FieldName,IndexType,SkipColumn,SpecID,Start,Width
-Const cSub$ = "Dlt_TxtSpec"
-Dim mDb As database: Set mDb = DbNz(pDb)
-If pNmSpec = "*" Then
-    Dim mAnTxtSpec$(): If Fnd_AnTxtSpec(mAnTxtSpec, pDb) Then ss.A 1: GoTo E
-    If Sz(mAnTxtSpec) = 0 Then MsgBox "No Txt Spec is found", , "Delete Txt Spec for importing": Exit Function
-    If MsgBox("Are your sure to delete all following Txt Spec?" & vbLf & vbLf & Join(mAnTxtSpec, vbLf), vbYesNo) = vbNo Then Exit Function
-    If Run_Sql_ByDbExec("Delete * from MSysIMEXSpecs", mDb) Then ss.A 2: GoTo E
-    If Run_Sql_ByDbExec("Delete * from MSysIMEXColumns", mDb) Then ss.A 2: GoTo E
-    Exit Function
-End If
-Dim mTxtSpecId&: If Fnd_TxtSpecId(mTxtSpecId, pNmSpec, mDb) Then Exit Function
-mDb.Execute "Delete * from MSysIMEXSpecs where SpecId=" & mTxtSpecId
-mDb.Execute "Delete * from MSysIMEXColumns where SpecId=" & mTxtSpecId
-Exit Function
-R: ss.R
-E: Dlt_TxtSpec = True: ss.B cSub, cMod, "pNmSpec,pDb", pNmSpec, ToStr_Db(pDb)
-End Function
-
-Function Dlt_TxtSpec__Tst()
-If Dlt_TxtSpec("*") Then Stop
+E:
 End Function
 
 Function Dlt_Ws(pWs As Worksheet) As Boolean
@@ -156,7 +129,7 @@ pWs.Delete
 mXls.DisplayAlerts = True
 Exit Function
 R: ss.R
-E: Dlt_Ws = True: ss.B cSub, cMod, "Ws", ToStr_Ws(pWs)
+E:
 End Function
 
 Function Dlt_Ws_Excpt(pWb As Workbook, pWsNmExcpt$) As Boolean
@@ -174,7 +147,7 @@ Wend
 pWb.Application.DisplayAlerts = True
 Exit Function
 R: ss.R
-E: Dlt_Ws_Excpt = True: ss.B cSub, cMod, "pWb,pWsNmExcpt", ToStr_Wb(pWb), pWsNmExcpt
+E:
 End Function
 
 Function Dlt_Ws_Excpt__Tst()
@@ -195,5 +168,5 @@ On Error GoTo R
 If Dlt_Ws(pWb.Worksheets(pWsNm)) Then ss.A 1: GoTo E
 Exit Function
 R: ss.R
-E: Dlt_Ws_InWb = True: ss.B cSub, cMod, "pWb,pWsNm", ToStr_Wb(pWb), pWsNm
+E:
 End Function

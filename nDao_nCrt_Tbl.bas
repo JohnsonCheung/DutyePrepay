@@ -62,7 +62,7 @@ End Sub
 Function TblCrt_ByFldDclStr__Tst()
 'If Run_Sql("Create table aXa (bb NUMERIC)") Then Stop
 Dim mFmLoFld$, mNmt$
-Dim mDb As database: If Crt_Db(mDb, "c:\tmp\aa.mdb", True) Then Stop
+Dim Db As database: If Crt_Db(Db, "c:\tmp\aa.Db", True) Then Stop
 Dim mCase As Byte: mCase = 2
 Select Case mCase
 Case 1
@@ -83,11 +83,11 @@ Case 2
         ", StartRow Long" & _
         ", TextDelim Text 2" & _
         ", TimeDelim Text 2"
-    TblCrt_ByFldDclStr mNmt, mFmLoFld, 1, 2, mDb
+    TblCrt_ByFldDclStr mNmt, mFmLoFld, 1, 2, Db
     
 End Select
-Cls_Db mDb
-If Opn_CurDb(G.gAcs, "c:\tmp\aa.mdb") Then Stop
+Cls_Db Db
+If Opn_CurDb(G.gAcs, "c:\tmp\aa.Db") Then Stop
 G.gAcs.Visible = True
 Stop
 GoTo X
@@ -130,11 +130,10 @@ Const cSub$ = "TblCrt_FmDSN_Sql_Tst"
 Dim mDsn$, mSql$, mNmtTar$, mFbTar$
 Dim mRslt As Boolean, mCase As Byte
 Dim mNRec&, mDteBeg As Date, mDteEnd As Date
-Shw_Dbg cSub, cMod
 For mCase = 1 To 4
     Select Case mCase
-    Case 1: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Xls": mFbTar = "C:\aa.Mdb"
-    Case 2: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Txt": mFbTar = "C:\aa.Mdb"
+    Case 1: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Xls": mFbTar = "C:\aa.Db"
+    Case 2: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Txt": mFbTar = "C:\aa.Db"
     Case 3: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Xls": mFbTar = ""
     Case 4: mDsn = "FEPROD_RBPCSF": mSql = "Select * from IIC": mNmtTar = "IIC_Txt": mFbTar = ""
     End Select
@@ -201,11 +200,10 @@ Const cSub$ = "TblCrt_FmDTF_Sql_Tst"
 Dim mNRec&, mNmt$, mDteBeg As Date, mDteEnd As Date, mIsByXls As Boolean, mRslt
 Dim mFbTar$
 Dim mCase As Byte
-Shw_Dbg cSub, cMod
 For mCase = 3 To 3
     Select Case mCase
-        Case 1: mNmt = "IIC_ByXls": mIsByXls = True: mFbTar = "c:\aa.mdb"
-        Case 2: mNmt = "IIC_ByTxt": mIsByXls = False: mFbTar = "c:\aa.mdb"
+        Case 1: mNmt = "IIC_ByXls": mIsByXls = True: mFbTar = "c:\aa.Db"
+        Case 2: mNmt = "IIC_ByTxt": mIsByXls = False: mFbTar = "c:\aa.Db"
         Case 3: mNmt = "IIC_ByXls": mIsByXls = True: mFbTar = ""
         Case 4: mNmt = "IIC_ByTxt": mIsByXls = False: mFbTar = ""
     End Select
@@ -328,8 +326,8 @@ Function TblCrt_FmLnk__Tst()
 Dim mNmt$:      mNmt = "A1"
 Dim mNmtSrc$:   mNmtSrc = "a1.txt"
 Dim mCnn$:      mCnn = "Text;DSN=A1;FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE=c:\;TABLE=a1#txt"
-Dim mDb As database: If Crt_Db(mDb, "c:\aa.mdb", True) Then Stop
-If TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, mDb) Then Stop
+Dim Db As database: If Crt_Db(Db, "c:\aa.Db", True) Then Stop
+If TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, Db) Then Stop
 End Function
 
 Function TblCrt_FmLnkAs400Dsn(T, Optional pLib$ = "RBPCSF", Optional pAs400Dsn$ = "FEPROD_RBPCSF", Optional TNew$ = "", Optional pInDb As database) As Boolean
@@ -341,8 +339,7 @@ Dim mNmtSrc$: mNmtSrc = pLib & "." & T
 TblCrt_FmLnkAs400Dsn = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkAs400Dsn = True: ss.B cSub, cMod, "T,pLib,pAs400Dsn", T, pLib, pAs400Dsn
-    Debug.Print "<--- Cannot link"
+E:     Debug.Print "<--- Cannot link"
 End Function
 
 Function TblCrt_FmLnkAs400Dsn__Tst()
@@ -351,9 +348,9 @@ End Function
 
 Function TblCrt_FmLnkCsv(pFfnCsv$, Optional TNew$ = "", Optional A As database) As Boolean
 Const cSub$ = "TblCrt_FmLnkCsv"
-Dim mDb As database: Set mDb = DbNz(A)
+Dim Db As database: Set Db = DbNz(A)
 Dim mNmtNew$: If TNew = "" Then mNmtNew = Fct.Nam_FilNam(pFfnCsv) Else mNmtNew = TNew
-Dlt_Tbl mNmtNew, mDb
+Dlt_Tbl mNmtNew, Db
 Dim mTbl As New DAO.TableDef
 On Error GoTo R
 With mTbl
@@ -362,12 +359,12 @@ With mTbl
     .Connect = Fmt_Str("Text;DSN=Import Link Specification;FMT=Delimited;HDR=NO;IMEX=2;CharacterSet=936;DATABASE={0};TABLE={1}#{2}", mDir, mFnn, Mid(mExt, 2))
     .Name = mNmtNew
     .SourceTableName = mFnn & mExt
-    mDb.TableDefs.Append mTbl
+    Db.TableDefs.Append mTbl
 End With
 On Error GoTo 0
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkCsv = True: ss.B cSub, cMod, "pFfnCsv,TNew", pFfnCsv, TNew
+E:
 'Text;DSN=Import Link Specification;FMT=Delimited;HDR=NO;IMEX=2;CharacterSet=936;DATABASE=R:\Sales Simulation\Simulation\Import\2007_07_19 @01 55;TABLE=Import#Csv
 
 End Function
@@ -382,16 +379,16 @@ cNmtNew$ = "tmpImp_Val"
 TblCrt_FmLnkCsv cFfnCsv, cNmtNew
 End Sub
 
-Function TblCrt_FmLnkLdb(pFbLdb$, pLoadInstId&, pNmDb$, pLnt$) As Boolean
+Function TblCrt_FmLnkLdb(pFbLdb$, pLoadInstId&, pNDb$, pLnt$) As Boolean
 Const cSub$ = "TblCrt_FmLnkLdb"
 'Aim: Create a list of table in {pLnt} by referring {pFbLdb} & {pLoadInstId}
-Dim mDb As database: If Opn_Db_R(mDb, pFbLdb) Then ss.A 1: GoTo E
+Dim Db As database: If Opn_Db_R(Db, pFbLdb) Then ss.A 1: GoTo E
 Dim mLn_wQuote$: If Q_Ln(mLn_wQuote, pLnt) Then ss.A 2: GoTo E
 Dim mSql$: mSql = "Select" & _
-" [SdirHom] & 'Mdb' & Format([MdbSno],'000') & '.Mdb' AS xFbTar," & _
-" [NmHost] & '_' & [NmDb] & '_' & [Nmt]                 AS xNmt" & _
+" [SdirHom] & 'Db' & Format([DbSno],'000') & '.Db' AS xFbTar," & _
+" [NmHost] & '_' & [NDb] & '_' & [Nmt]                 AS xNmt" & _
 " from tblLdbHdr h inner join tblLdbDet d on h.LoadInstId=d.LoadInstId where h.LoadInstId=" & pLoadInstId & " and Nmt in (" & mLn_wQuote & ")"
-With mDb.OpenRecordset(mSql)
+With Db.OpenRecordset(mSql)
     While Not .EOF
         Dim mNmt$:     mNmt = !xNmt
         Dim mFbTar$:   mFbTar = !xFbTar
@@ -403,13 +400,13 @@ With mDb.OpenRecordset(mSql)
 End With
 GoTo X
 R: ss.R
-E: TblCrt_FmLnkLdb = True: ss.B cSub, cMod, "pFbLdb,pLoadInstId,pNmDb,pLnt"
+E:
 X:
-    Cls_Db mDb
+    Cls_Db Db
 End Function
 
 Function TblCrt_FmLnkLdb__Tst()
-Debug.Print TblCrt_FmLnkLdb("M:\07 ARCollection\ARCollection\WorkingDir\PgmObj\modLdmdb", 7, "RBPCSF", "IIM,IIC")
+Debug.Print TblCrt_FmLnkLdb("M:\07 ARCollection\ARCollection\WorkingDir\PgmObj\modLdDb", 7, "RBPCSF", "IIM,IIC")
 End Function
 
 Function TblCrt_FmLnkLnt(SrcFb$, pLnt$, Optional pLntNew$ = "", Optional pInDb As database) As Boolean
@@ -425,7 +422,7 @@ For J = 0 To N - 1
 Next
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkLnt = True: ss.B cSub, cMod, "SrcFb,pLnt,pLntNew,pInDb", SrcFb, pLnt, pLntNew, ToStr_Db(pInDb)
+E:
 End Function
 
 Function TblCrt_FmLnkLnt__Tst()
@@ -435,11 +432,10 @@ Dim mResult As Boolean, mCase As Byte: mCase = 1
 Select Case mCase
 Case 1
     mLnt = "tblOdbcSql,tblFc"
-    mFbSrc = "D:\SPLHalfWayHouse\MPSDetail\VerNew@2007_01_04\WorkingDir\PgmObj\MPS_RfhFc.Mdb"
+    mFbSrc = "D:\SPLHalfWayHouse\MPSDetail\VerNew@2007_01_04\WorkingDir\PgmObj\MPS_RfhFc.Db"
     mLntNew = ""
 End Select
 mResult = TblCrt_FmLnkLnt(mFbSrc, mLnt, mLntNew)
-Shw_Dbg cSub, cMod, , "Result,mLnt,mFbSrc,mLntNew", mResult, mLnt, mFbSrc, mLntNew
 End Function
 
 Function TblCrt_FmLnkNmt(pFb$, T$, Optional TNew$ = "", Optional pInDb As database) As Boolean
@@ -451,15 +447,15 @@ Dim mCnn$: mCnn = ";DATABASE=" & pFb ';DATABASE={pFb};TABLE={T}
 TblCrt_FmLnkNmt = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkNmt = True: ss.B cSub, cMod, "pFb,T,TNew,pInDb", pFb, T, TNew, ToStr_Db(pInDb)
+E:
 End Function
 
 Function TblCrt_FmLnkNmt__Tst()
-Dim mFb$: mFb = "c:\tmp\aa.mdb"
+Dim mFb$: mFb = "c:\tmp\aa.Db"
 Dim mNmt$: mNmt = "tmpLnk_AA"
 Dim mNmtNew$: mNmtNew = "$AA"
-Dim mDb As database: If Crt_Db(mDb, mFb, True) Then Stop
-TblCrt_ByFldDclStr mNmt, "aa text 10, bb int", , , mDb
+Dim Db As database: If Crt_Db(Db, mFb, True) Then Stop
+TblCrt_ByFldDclStr mNmt, "aa text 10, bb int", , , Db
 If TblCrt_FmLnkNmt(mFb, mNmt, mNmtNew) Then Stop
 End Function
 
@@ -470,11 +466,10 @@ Dim mResult As Boolean, mCase As Byte: mCase = 1
 Select Case mCase
 Case 1
     mSetNmt = "tbl*"
-    mFbSrc = "D:\SPLHalfWayHouse\MPSDetail\VerNew@2007_01_04\WorkingDir\PgmObj\MPS_RfhFc.Mdb"
+    mFbSrc = "D:\SPLHalfWayHouse\MPSDetail\VerNew@2007_01_04\WorkingDir\PgmObj\MPS_RfhFc.Db"
     mPfxNmt = "$"
 End Select
 mResult = TblCrt_FmLnkLnt(mFbSrc, mSetNmt, mPfxNmt)
-Shw_Dbg cSub, cMod, , "Result,mLnt,mSetNmt,mPfxNmt", mResult, mFbSrc, mSetNmt, mPfxNmt
 End Function
 
 Function TblCrt_FmLnkSetWs(Pfx$, pSetWs$, Optional pPfxNmt$ = "", Optional pInDb As database) As Boolean
@@ -492,7 +487,7 @@ For J = 0 To Sz(mAnWs) - 1
 Next
 GoTo X
 R: ss.R
-E: TblCrt_FmLnkSetWs = True: ss.B cSub, cMod, "pFx,pSetWs,pPfxNmt,pInDb", Pfx, pSetWs, pPfxNmt, ToStr_Db(pInDb)
+E:
 X:
     Clr_Sts
     Cls_Wb mWb, False, True
@@ -508,7 +503,7 @@ Dim mNmtSrc$: mNmtSrc = pWsNm & "$"
 TblCrt_FmLnkWs = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
-E: TblCrt_FmLnkWs = True: ss.B cSub, cMod, "pFx,pWsNm,TNew,pInDb", Pfx, pWsNm, TNew, ToStr_Db(pInDb)
+E:
 'Excel 8.0;HDR=YES;IMEX=2;DATABASE=D:\Data\MyDoc\Development\ISS\Imports\PO\PUR904 (On-Line).xls;TABLE='PUR904 (On-Line)'
 End Function
 
@@ -536,7 +531,7 @@ Next
 If Len(mA) <> 0 Then ss.A 1, "Some ws {mA} in xls file cannot be linked", "mA", mA: GoTo E
 GoTo X
 R: ss.R
-E: TblCrt_FmLnkXls = True: ss.B cSub, cMod, "pFx,pPfx,A", Pfx, pPfx, ToStr_Db(A)
+E:
 X:
     Clr_Sts
 End Function
@@ -580,11 +575,11 @@ With CurrentDb.OpenRecordset(Fmt_Str("Select {0},{1} from {2} order by {0},{1}",
 End With
 Exit Function
 R: ss.R
-E: TblCrt_FmMgeNRec_To1Fld = True: ss.B cSub, cMod, "T,pSepChr,pFillDta", T, pSepChr, pFillDta
+E:
 End Function
 
 Sub TblCrt_FmMgeNRec_To1Fld__Tst()
-'tmpMPS_SKUFacParam is from MPSDetail.Mdb
+'tmpMPS_SKUFacParam is from MPSDetail.Db
 Const cNmt$ = "tmpMPS_SKUFacParam"
 Const cNmt_x$ = "tmpMPS_SKUFacParam_x"
 Const cSub$ = "TblCrt_FmMgeNRec_To1Fld_Tst"
@@ -641,7 +636,7 @@ mSql = Fmt_Str("Update {0} set {1}", mNmTar, B)
 If Run_Sql(mSql) Then ss.A 4: GoTo E
 Exit Function
 R: ss.R
-E: TblCrt_ForEdtTbl = True: ss.B cSub, cMod, "Qry_or_Tbl_NmSrc,mNmTar,pStructOnly", Qry_or_Tbl_NmSrc, mNmTar, pStructOnly
+E:
 End Function
 
 Function TblCrt_ForEdtTbl__Tst()
@@ -657,7 +652,6 @@ Case 2
     mNmtTar = ""
 End Select
 mRslt = TblCrt_ForEdtTbl(mNmtqSrc, 1, mNmtTar)
-Shw_Dbg cSub, cMod, , "mRslt, mNmtqSrc, mNmtTar", mRslt, mNmtqSrc, mNmtTar
 End Function
 
 Function TblCrt_ParChd(TarTn$, TSrc$, pPar$, pChd$, Optional A As database) As Boolean
@@ -679,17 +673,17 @@ For J = 0 To N - 1
     If TblCrt_ParChd_OneRoot(mAyRoot(J), mAyPth, mLvl, mRsTar, mNmtSrc, pPar, pChd) Then ss.A 6: GoTo E
 Next
 GoTo X
-E: TblCrt_ParChd = True: ss.B cSub, cMod, "TarTn,TSrc,pPar,pChd", TarTn, TSrc, pPar, pChd
+E:
 X: RsCls mRsTar
 End Function
 
 Function TblCrt_ParChd__Tst()
-'If TblCrt_FmLnkLnt("p:\workingdir\MetaDb.mdb", "$Tbl,$TblR") Then Stop: GoTo E
+'If TblCrt_FmLnkLnt("p:\workingdir\MetaDb.Db", "$Tbl,$TblR") Then Stop: GoTo E
 'Dim mFx$, mWb1 As Workbook, mWb2 As Workbook, mWs As Worksheet
 'If True Then
 '    mFx = "c:\tmp\aa.xls"
 '    If True Then
-'        If TblCrt_FmLnkLnt("P:\WorkingDir\MetaAll.mdb", "$Tbl,$TblR") Then Stop: GoTo E
+'        If TblCrt_FmLnkLnt("P:\WorkingDir\MetaAll.Db", "$Tbl,$TblR") Then Stop: GoTo E
 '        If Run_Qry("qryTstCrtTblParChd") Then Stop: GoTo E
 '        If Exp_SetNmtq2Xls("[#]Lst", mFx, True) Then Stop: GoTo E
 '    End If
@@ -740,21 +734,21 @@ If Run_Qry_ByAnq(mAnq, pLm) Then ss.A 4: GoTo E
 If Not IsTbl(mNmPrm) Then ss.A 1, "Table mNmPrm not exist", eRunTimErr, "mNmPrm", mNmPrm: GoTo E
 Exit Function
 R: ss.R
-E: TblCrt_tmpXXX_Prm_By_qryOdbcXXX_0 = True: ss.B cSub, cMod, "QryNmsns,pLm", QryNmsns, pLm
+E:
 End Function
 
 Function TblCrtFmCsv(pFfnCsv$, Optional TNew$ = "", Optional pAcs As Access.Application = Nothing) As Boolean
 Const cSub$ = "TblCrtFmCsv"
 On Error GoTo R
 Dim mAcs As Access.Application: Set mAcs = Cv_Acs(pAcs)
-Dim mDb As database: Set mDb = mAcs.CurrentDb
+Dim Db As database: Set Db = mAcs.CurrentDb
 Dim mNmtNew$: If TNew = "" Then mNmtNew = Fct.Nam_FilNam(pFfnCsv) Else mNmtNew = TNew
-Dlt_Tbl mNmtNew, mDb
+Dlt_Tbl mNmtNew, Db
 mAcs.DoCmd.TransferText acImportDelim, , mNmtNew, pFfnCsv, True
 GoTo X
 R: ss.R
-E: TblCrtFmCsv = True: ss.B cSub, cMod, "pFfnCsv,TNew", pFfnCsv, TNew
-X: Set mDb = Nothing
+E:
+X: Set Db = Nothing
 End Function
 
 Function TblCrtFmCsv__Tst()
@@ -767,56 +761,56 @@ If TblCrtFmCsv(mFfnCsv, ">ChgTbl") Then Stop
 DoCmd.OpenTable ">ChgTbl"
 End Function
 
-Function TblCrtFmLnkTxt(T, pFt$, pNmSpec$, Optional pInDb As database) As Boolean
-'Aim: Create {T} in {pInDb} by linking {pFt} using {pNmSpec}.
+Function TblCrtFmLnkTxt(T, pFt$, SpecNm$, Optional pInDb As database) As Boolean
+'Aim: Create {T} in {pInDb} by linking {pFt} using {SpecNm}.
 Const cSub$ = "TblCrtFmLnkTxt"
 If VBA.Dir(pFt) = "" Then ss.A 1, "Given txt file not found": GoTo E
 'Text;DSN=A1 Link Specification;FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE=C:\;TABLE=a1#txt
 Dim mDir$: mDir = Fct.Nam_DirNam(pFt)
 Dim mNmtSrc$:  mNmtSrc = Fct.Nam_FilNam(pFt)
 Dim mFn$: mFn = Replace(mNmtSrc, ".", "#")
-Dim mCnn$: mCnn = Fmt_Str("Text;DSN={0};FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE={1};TABLE={2}", pNmSpec, mDir, mFn)
+Dim mCnn$: mCnn = Fmt_Str("Text;DSN={0};FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE={1};TABLE={2}", SpecNm, mDir, mFn)
 TblCrtFmLnkTxt = TblCrt_FmLnk(T, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
-E: TblCrtFmLnkTxt = True: ss.B cSub, cMod, "T$, pFt$, pNmSpec$, pInDb", T, pFt$, pNmSpec$, ToStr_Db(pInDb)
+E:
 End Function
 
-Function TblCrtFmLnkTxt__Tst()
+Sub TblCrtFmLnkTxt__Tst()
 Dim mNmt$: mNmt = "A1"
-Dim mFb$: mFb = "c:\aa.mdb"
+Dim mFb$: mFb = "c:\aa.Db"
 Dim mFt$: mFt = "c:\a1.txt"
 Dim mNmSpec$: mNmSpec = "A1"
 Dim mTxtSpec$: mTxtSpec = "I=Int3, AA=Txt10, B=Txt2, C=Txt3"
-Dim mDb As database:: If Crt_Db(mDb, mFb, True) Then Stop
-If Dlt_Tbl(mNmt, mDb) Then Stop
-If Dlt_TxtSpec(mNmSpec, mDb) Then Stop
-If TxtSpecCrt_Fix(mNmSpec, mTxtSpec, mDb) Then Stop
+Dim Db As database:: If Crt_Db(Db, mFb, True) Then Stop
+If Dlt_Tbl(mNmt, Db) Then Stop
+If Dlt_TxtSpec(mNmSpec, Db) Then Stop
+TxtSpecCrt_Fix mNmSpec, mTxtSpec, Db
 If Dlt_Fil(mFt) Then Stop
 Open mFt For Output As #1
 Close #1
-If TblCrtFmLnkTxt(mNmt, mFt, mNmSpec, mDb) Then Stop
-End Function
+If TblCrtFmLnkTxt(mNmt, mFt, mNmSpec, Db) Then Stop
+End Sub
 
-Function TblCrtFmTblF(Optional TTblF$ = "#TblF") As Boolean
+Sub TblCrtFmTblF(Optional TTblF$ = "#TblF", Optional A As database)
 'Aim: Create all tables as defined in {TTblF} to the Fb
-'     #TblF: Pth,NmMdb,NPk,StopAutoInc,TblAtr,NmTbl,SnoTblF,NmFld,TypDao,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal
+'     #TblF: Pth,NmDb,NPk,StopAutoInc,TblAtr,NmTbl,SnoTblF,NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal
 Const cSub$ = "TblCrtFmTblF"
 On Error GoTo R
 Dim mAyFld() As DAO.Field
-If Chk_Struct_Tbl(TTblF, "Pth,NmMdb,NPk,StopAutoInc,TblAtr,NmTbl,SnoTblF,NmFld,TypDao,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal") Then ss.A 1: GoTo E
+If Chk_Struct_Tbl(TTblF, "Pth,NmDb,NPk,StopAutoInc,TblAtr,NmTbl,SnoTblF,NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal") Then ss.A 1: GoTo E
 Dim mNmtTblF$: mNmtTblF = Q_S(TTblF, "[]")
-Dim mAyFb$(): mAyFb = SqlSy("Select Distinct Pth & NmMdb from " & mNmtTblF)
+Dim mAyFb$(): mAyFb = SqlSy("Select Distinct Pth & NmDb from " & mNmtTblF)
 Dim iFb%
 For iFb = 0 To Sz(mAyFb) - 1
-    Dim mDb As database: If Opn_Db_RW(mDb, mAyFb(iFb)) Then ss.A 2: GoTo E
+    Dim Db As database: If Opn_Db_RW(Db, mAyFb(iFb)) Then ss.A 2: GoTo E
     Dim mAyNPk() As Byte, mAyStopAutoInc() As Boolean, mAyTblAtr&(), mAnt$()
-    Dim mSql$: mSql = Fmt_Str("Select Distinct NPk,StopAutoInc,TblAtr,NmTbl from {0} where Pth & NmMdb='{1}' order by NmTbl", mNmtTblF, mAyFb(iFb))
+    Dim mSql$: mSql = Fmt_Str("Select Distinct NPk,StopAutoInc,TblAtr,NmTbl from {0} where Pth & NmDb='{1}' order by NmTbl", mNmtTblF, mAyFb(iFb))
     If Fnd_LoAyV_FmSql(mSql, "NPk,StopAutoInc,TblAtr,NmTbl", mAyNPk, mAyStopAutoInc, mAyTblAtr, mAnt) Then ss.A 2: GoTo E
     Dim iNmt%
     For iNmt = 0 To Sz(mAnt) - 1
         StsShw "Creating Table " & mAnt(iNmt) & " ..."
-        mSql = Fmt_Str("Select NmFld,TypDao,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal from {0} where NmTbl='{1}' order by SnoTblF", mNmtTblF, mAnt(iNmt))
+        mSql = Fmt_Str("Select NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal from {0} where NmTbl='{1}' order by SnoTblF", mNmtTblF, mAnt(iNmt))
         Dim mRs As DAO.Recordset: If Opn_Rs(mRs, mSql) Then ss.A 3: GoTo E
         Dim J%: J = 0
         With mRs
@@ -828,12 +822,12 @@ For iFb = 0 To Sz(mAyFb) - 1
             Wend
             .Close
         End With
-        TblCrt_ByFldAy mAnt(iNmt), mAyFld, mAyNPk(iNmt), mAyTblAtr(iNmt), mAyStopAutoInc(iNmt), mDb
+        TblCrt_ByFldAy mAnt(iNmt), mAyFld, mAyNPk(iNmt), mAyTblAtr(iNmt), mAyStopAutoInc(iNmt), Db
 
         'Add ZerRec
         If mAyNPk(iNmt) = 1 Then
             If Left(mAnt(iNmt), 3) <> "$Ty" Or mAnt(iNmt) = "$TypDta" Then
-                Dim mAnFld$(): If Fnd_AnFld_ReqTxt(mAnFld, mAnt(iNmt), mDb) Then ss.A 3: GoTo E
+                Dim mAnFld$(): If Fnd_AnFld_ReqTxt(mAnFld, mAnt(iNmt), Db) Then ss.A 3: GoTo E
                 Dim mLnFld$, mLnVal$
                 mLnFld = "": mLnVal = ""
                 Dim I%, NFld%: NFld = Sz(mAnFld)
@@ -842,27 +836,25 @@ For iFb = 0 To Sz(mAyFb) - 1
                     mLnVal = mLnVal & ",'-'"
                 Next
                 mSql = Fmt_Str("Insert into [${0}] ({0}{1}) values (0{2})", Mid(mAnt(iNmt), 2), mLnFld, mLnVal)
-                If Run_Sql_ByDbExec(mSql, mDb) Then ss.A 4: GoTo E
+                If Run_Sql_ByDbExec(mSql, Db) Then ss.A 4: GoTo E
             End If
         End If
     Next
-    mDb.Close
+    Db.Close
 Next
 GoTo X
 R: ss.R
-E: TblCrtFmTblF = True: ss.B cSub, cMod, "TTblF", TTblF
+E:
 X:
-    Cls_Db mDb
+    Cls_Db Db
     RsCls mRs
     Clr_Sts
-End Function
+End Sub
 
-Function TblCrtFmTblF__Tst()
-If TblCrt_FmLnkNmt("p:\workingdir\pgmobj\JMtcDb.mdb", "#TblF") Then Stop: GoTo E
-If TblCrtFmTblF Then Stop: GoTo E
-Exit Function
-E:
-End Function
+Sub TblCrtFmTblF__Tst()
+TblCrt_FmLnkNmt "p:\workingdir\pgmobj\JMtcDb.Db", "#TblF"
+TblCrtFmTblF
+End Sub
 
 Function TblCrtPk(T$, FnStr$, Optional A As database) As Boolean
 'Aim: Create PrimaryKey on {T} by {FnStr}
@@ -873,7 +865,7 @@ Dim mSql$: mSql = Fmt_Str("Create Index PrimaryKey on {0} ({1}) Primary", Q_SqBk
 If Run_Sql_ByDbExec(mSql, A) Then ss.A 2: GoTo E
 Exit Function
 R: ss.R
-E: TblCrtPk = True: ss.B cSub, cMod, "T,FnStr,A", T, FnStr, ToStr_Db(A)
+E:
 End Function
 
 Sub TblCrtSubDtaSheet(MstTn$, ChdTn$, MstFnStr$, Optional ChdFnStr$, Optional A As database)

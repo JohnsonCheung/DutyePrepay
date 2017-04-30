@@ -95,9 +95,8 @@ Function SqlRs(Sql$, Optional A As database) As Recordset
 Set SqlRs = DbNz(A).OpenRecordset(Sql)
 End Function
 
-Sub SqlRun(Sql$)
-DoCmd.SetWarnings False
-DoCmd.RunSql Sql
+Sub SqlRun(S, Optional A As database)
+DbNz(A).Execute S
 End Sub
 
 Sub SqlRunAy(SqlAy$(), Optional A As database)

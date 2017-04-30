@@ -11,7 +11,7 @@ Dim mRge As Range: Set mRge = mXlsNm.RefersToRange
 mRge.Copy pWsTar.Range("A1")
 Exit Function
 R: ss.R
-E: XNmCpyToCell = True: ss.B cSub, cMod, "pWbSrc,pXlsNmSrc,pWbTar", ToStr_Wb(pWbSrc), pXlsNmSrc, ToStr_Ws(pWsTar)
+E:
 End Function
 
 Function XNmCpyToCell__Tst()
@@ -38,7 +38,7 @@ If XNmCpyToCell(pWbSrc, pXlsNmSrc, mWsTar) Then ss.A 3: GoTo E
 If Cls_Wb(mWbTar, True) Then ss.A 1: GoTo E
 Exit Function
 R: ss.R
-E: XNmCpyToFx = True: ss.B cSub, cMod, "pWbSrc,pXlsNmSrc,pFxTar", ToStr_Wb(pWbSrc), pXlsNmSrc, pFxTar
+E:
 End Function
 
 Sub XNmCpyToFx__Tst()

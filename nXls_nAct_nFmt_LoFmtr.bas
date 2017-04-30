@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nFmt_LoFmtr"
+Attribute VB_Name = "nXls_nAct_nFmt_LoFmtr"
 Option Compare Database
 Option Explicit
 Const C_Mod$ = "nXls_nFmt_LOFmtr"

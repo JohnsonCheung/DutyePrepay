@@ -2,7 +2,6 @@ Attribute VB_Name = "nAcs_Appa"
 Option Compare Database
 Option Explicit
 Private X_Appa As Access.Application
-Public Const cMod$ = ""
 
 Function Appa() As Access.Application
 On Error GoTo X
@@ -72,7 +71,7 @@ Case Access.AcObjectType.acTable: CurrentDb.TableDefs.Refresh
 End Select
 Exit Function
 R: ss.R
-E: AppaCpyObj = True: ss.B cSub, cMod, "J (Idx of LnObj with err),pLnObj_Tar,pTypObj,pFb_Src,pLnObj_Src", J, pLnObj_Tar, pTypObj, pFb_Src, pLnObj_Src
+E:
 X: If pFb_Src <> "" Then Cls_CurDb mAccess
 End Function
 
@@ -87,7 +86,6 @@ Case 1
     mTypObj = acQuery
 End Select
 mResult = AppaCpyObj(mLnObj_Src, mTypObj, mFb_Src)
-Shw_Dbg cSub, cMod, , "Result,mLnObj_Src,mTypObj,mFb_Src", mResult, mLnObj_Src, ToStr_TypObj(mTypObj), mFb_Src
 End Function
 
 Function AppaCpyObjByPfx(pPfx_Tar$, pTypObj As AcObjectType, Optional pFb_Src$ = "", Optional pPfx_Src$ = "") As Boolean
@@ -127,7 +125,7 @@ Case Access.AcObjectType.acTable: CurrentDb.TableDefs.Refresh
 End Select
 Exit Function
 R: ss.R
-E: AppaCpyObjByPfx = True: ss.B cSub, cMod, "J (Idx of Pfx with err),pPfx_Tar,pTypObj,pFb_Src,pPfx_Src", J, pPfx_Tar, pTypObj, pFb_Src, pPfx_Src
+E:
 X: If pFb_Src <> "" Then Cls_CurDb mAccess: mAccess.Quit: Set mAccess = Nothing
 End Function
 
@@ -142,7 +140,6 @@ Case 1
     mTypObj = acQuery
 End Select
 mResult = AppaCpyObjByPfx(mPfx_Src, mTypObj, mFb_Src)
-Shw_Dbg cSub, cMod, , "Result,mPfx_Src,mTypObj,mFb_Src", mResult, mPfx_Src, ToStr_TypObj(mTypObj), mFb_Src
 End Function
 
 Function AppaCrtFb(Fb$, Optional Locale$ = dbLangGeneral, Optional A As Access.Application) As Access.Application
@@ -157,10 +154,10 @@ Dim F$: F = PjNm_NewFmda(PjNm, Pth)
 Set AppaCrtPja = FmdaCrt(F, A)
 End Function
 
-Function AppaDbAy(Optional P As Access.Application) As database()
+Function AppaDbAy(Optional A As Access.Application) As database()
 Dim I As Workspace, D As database
 Dim O() As database
-For Each I In AppaNz(P).DBEngine.Workspaces
+For Each I In AppaNz(A).DBEngine.Workspaces
     For Each D In I.Databases
         PushObj O, D
     Next
@@ -168,8 +165,8 @@ Next
 AppaDbAy = O
 End Function
 
-Function AppaDtaDb() As database
-Set AppaDtaDb = Application.DBEngine.OpenDatabase(AppaDtaFb)
+Function AppaDtaDb(Optional A As Access.Application) As database
+Set AppaDtaDb = AppaNz(A).DBEngine.Workspaces(0).Databases(0)
 End Function
 
 Function AppaDtaFb$()

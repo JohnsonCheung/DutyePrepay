@@ -2,7 +2,7 @@ Attribute VB_Name = "nDao_TblCmp"
 Option Compare Database
 Option Explicit
 
-Function TblCmp(T1$, T2$, pLoCmpKey$, pLoCmV$) As Boolean
+Sub TblDeltaCrt(T1$, T2$, pLoCmpKey$, pLoCmV$, Optional A As database)
 Const cSub$ = "TblCmp"
 'Debug.Print TblCmp("tmpAsAt_F0311_1Os_Odbc", "tmpCurOs_F0311_CurOs_Odbc", "RPAN8,RPDCT,RPDOC", "OsBas=RPAAP,OsCur=RPFAP")
 'Aim: Build 5 steps of queries to compare 2 tables:
@@ -189,15 +189,15 @@ If Crt_TqRel("qryCmp_04_0_Output", T2, ToStr_Ays(mAnFld_CmnKey, , ";"), ToStr_Ay
 
 'OpnQry
 If Opn_Qry(Nmq40) Then ss.A 35: GoTo E
-Exit Function
+Exit Sub
 R: ss.R
-E: TblCmp = True: ss.B cSub, cMod, "T1,T2,pLoCmpKey,pLoCmV", T1, T2, pLoCmpKey, pLoCmV
-End Function
+E:
+End Sub
 
-Function TblCmp__Tst()
+Function TblDeltaCrt__Tst()
 'Debug.Print TblCmp("tmpChk_Hdr", "qF0311", "RPAN8,RPDCT,RPDOC,RPSFX,RPCRCD", "RPAAP=RPAG,RPFAP=RPACR")
 'Debug.Print TblCmp("tmpARBalAt_F0311_1At_Odbc", "tmpARBalCur_F0311_1Cur_Odbc", "RPAN8,RPDCT,RPDOC,RPCRCD", "OsBas=RPAAP,OsCur=RPFAP")
-Debug.Print TblCmp("mstBrand", "mstBrand", "Brand", "BrandId")
+TblDeltaCrt "mstBrand", "mstBrand", "Brand", "BrandId"
 End Function
 
 Function TblCmp_x(TBef$, TAft$, pLnKey$, FnStr$) As Boolean
@@ -360,6 +360,6 @@ Am2 = Get_Am_ByLm(FnStr)
 'End With
 Exit Function
 R: ss.R
-E: TblCmp_x = True: ss.B cSub, cMod, "TBef$, TAft$, pLnKey$, FnStr$", TBef$, TAft$, pLnKey$, FnStr$
+E:
 End Function
 

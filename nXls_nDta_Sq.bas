@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_Sq"
+Attribute VB_Name = "nXls_nDta_Sq"
 Option Compare Database
 Option Explicit
 
@@ -8,6 +8,37 @@ If SqIsEmpty(Sq) Then
     Exit Sub
 End If
 DrAyBrw SqDrAy(Sq), , Pfx
+End Sub
+Function SqTranspose(Sq)
+Dim NC&, NR&, R&, C&
+NC = UBound(Sq, 2)
+NR = UBound(Sq, 1)
+Dim O()
+ReDim O(1 To NC, 1 To NR)
+For R = 1 To NR
+    For C = 1 To NC
+        O(C, R) = Sq(R, C)
+    Next
+Next
+SqTranspose = Sq
+End Function
+
+Function SqDic(SqOfNx2) As Dictionary
+SqAsstNx2 SqOfNx2
+End Function
+
+Function SqChkNx2(Sq) As Variant()
+On Error GoTo X
+If UBound(Sq, 2) = 2 Then Exit Function
+SqChkNx2 = ErNew("Given Sq is not Nx2")
+Exit Function
+X:
+SqChkNx2 = ErNew("Given Sq is not Nx2.  It has {error} in accessing UBound(Sq,2).", Err.Description)
+End Function
+
+Sub SqAsstNx2(Sq, ParamArray MsgAp())
+Dim Av(): Av = MsgAp
+ErAsst SqChkNx2(Sq), Av
 End Sub
 
 Function SqDr(Sq, R)
@@ -57,6 +88,8 @@ Dim Sq()
 Debug.Assert SqIsEmpty(Sq) = True
 ReDim Sq(1 To 1, 1 To 1)
 Debug.Assert SqIsEmpty(Sq) = False
+ReDim Sq(1 To 0, 1 To 1)
+
 End Sub
 
 Sub SqPutCell(Sq, Cell As Range)

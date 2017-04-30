@@ -461,7 +461,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Set oWs = pWb.Sheets(pWsNm)
 'Exit Function
 'R: ss.R
-'E: Fnd_Ws = True: If Not pSilent Then ss.B cSub, cMod, "pWb,pWsNm", ToStr_Wb(pWb), pWsNm
+'E: Fnd_Ws = True: If Not pSilent Then ss.B cSub, cMod, "pWb,pWsNm", WbToStr(pWb), pWsNm
 'End Function
 'Function Fnd_RnoLas(oRnoLas&, Rg As Range) As Boolean
 ''Aim: find first empty cell of a column {pCno} in {pWs} starting {pRnoFm}into {oRnoLas}
@@ -519,29 +519,6 @@ Attribute VB_Name = "ZZ_xFnd"
 'Shw_Dbg cSub, cMod, "mSetNmtq,Result(mAntq)", mSetNmtq, ToStr_Ays(mAntq)
 'End Function
 
-'Function Fnd_AnTxtSpec(oAnTxtSpec$(), Optional pDb As database) As Boolean
-'Const cSub$ = "Fnd_AnTxtSpec"
-'Dim mDb As database: Set mDb = DbNz(pDb)
-'If Fnd_LoAyV_FmSql_InDb(mDb, "Select SpecName from MSysIMEXSpecs", "SpecName", oAnTxtSpec) Then
-'    Dim mA$(): oAnTxtSpec = mA
-'    ss.A 1: GoTo E
-'End If
-'Exit Function
-'R: ss.R
-'E: Fnd_AnTxtSpec = True: ss.B cSub, cMod, "pDb", ToStr_Db(pDb)
-'End Function
-'Function Fnd_AnTxtSpec__Tst()
-'Dim mAnTxtSpec$(): If Fnd_AnTxtSpec(mAnTxtSpec) Then Stop
-'Debug.Print ToStr_Ays(mAnTxtSpec)
-'End Function
-'Function Fnd_TxtSpecId(oTxtSpecId&, pNmSpec$, Optional pDb As database) As Boolean
-'Const cSub$ = "Fnd_TxtSpecId"
-'Set_Silent
-'If Fnd_ValFmSql(oTxtSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & pNmSpec & CtSngQ, pDb) Then GoTo E
-'GoTo X
-'E: Fnd_TxtSpecId = True
-'X: Set_Silent_Rst
-'End Function
 'Function Fnd_AyDQry(oAyDQry() As d_Qry, QryNmLik$, Optional pInclQDpd As Boolean = False, Optional pAcs As Access.Application = Nothing) As Boolean
 ''Aim: Find the {AyDQry} of {QryNms} in {pDb}
 'Const cSub$ = "Fnd_AyDQry"
@@ -946,31 +923,31 @@ Attribute VB_Name = "ZZ_xFnd"
 'Dim mCtl As Access.Control: If Fnd_Ctl(mCtl, pFrm, pNmCtl) Then ss.A 1: GoTo E
 'Dim mVNew, mVOld: mVNew = mCtl.Value: mVOld = mCtl.OldValue
 'If mVNew = mVOld Then Exit Function
-'Dim mTypSim As eTypSim: mTypSim = VarType(mVNew)
-'If mTypSim = vbNull Then
+'Dim mSimTy As eSimTy: mSimTy = VarType(mVNew)
+'If mSimTy = vbNull Then
 '    If pAlwNull Then
 '        oAsg = mNmAsg & "=Null"
 '        oChgd = mNmAsg & "=Null<--[" & mVOld & "]"
 '        Exit Function
 '    End If
 '    Dim mRs As DAO.Recordset: Set mRs = pFrm.Recordset
-'    mTypSim = DaoTyToSim(mRs.Fields(pNmCtl).Type)
-'    Select Case mTypSim
-'    Case eTypSim_Bool: oAsg = mNmAsg & "=False": oChgd = mNmAsg & "=[False]<--[" & mVOld & "]"
-'    Case eTypSim_Num: oAsg = mNmAsg & "=0":      oChgd = mNmAsg & "=[0]<--[" & mVOld & "]"
-'    Case eTypSim_Str: oAsg = mNmAsg & "=''":     oChgd = mNmAsg & "=[]<--[" & mVOld & "]"
+'    mSimTy = DaoTyToSim(mRs.Fields(pNmCtl).Type)
+'    Select Case mSimTy
+'    Case eSimBool: oAsg = mNmAsg & "=False": oChgd = mNmAsg & "=[False]<--[" & mVOld & "]"
+'    Case eSimNum: oAsg = mNmAsg & "=0":      oChgd = mNmAsg & "=[0]<--[" & mVOld & "]"
+'    Case eSimStr: oAsg = mNmAsg & "=''":     oChgd = mNmAsg & "=[]<--[" & mVOld & "]"
 '    Case Else
-'        ss.A 1, "The control having a null and it is not Bool,Num or Str", , "pFrm,pNmCtl,mNmAsg,SimTyp", ToStr_Frm(pFrm), pNmCtl, mNmAsg, mTypSim
+'        ss.A 1, "The control having a null and it is not Bool,Num or Str", , "pFrm,pNmCtl,mNmAsg,SimTyp", ToStr_Frm(pFrm), pNmCtl, mNmAsg, mSimTy
 '        GoTo E
 '    End Select
 '    Exit Function
 'End If
-'mTypSim = VarToSimTy(mVNew)
-'Select Case mTypSim
-'Case eTypSim_Bool, eTypSim_Num, eTypSim_Str
+'mSimTy = VarSimTy(mVNew)
+'Select Case mSimTy
+'Case eSimBool, eSimNum, eSimStr
 '    oAsg = mNmAsg & "=" & Q_V(mVNew): oChgd = mNmAsg & "=[" & mVOld & "]<--[" & mVNew & "]"
 'Case Else
-'    ss.A 1, "The control having a value not being (Num,Bool,Str)", , "The Ctl's NewVal SimTyp", mTypSim
+'    ss.A 1, "The control having a value not being (Num,Bool,Str)", , "The Ctl's NewVal SimTyp", mSimTy
 '    GoTo E
 'End Select
 'Exit Function
@@ -984,30 +961,30 @@ Attribute VB_Name = "ZZ_xFnd"
 'Const cSub$ = "Fnd_QVal_ByFrm"
 'On Error GoTo R
 'Dim mV: mV = pFrm.Controls(pNmCtl).Value
-'Dim mTypSim As eTypSim
+'Dim mSimTy As eSimTy
 '
 'If VarType(mV) = vbNull Then
 '    If pAlwNull Then oQVal = "Null": Exit Function
 '    Dim mRs As DAO.Recordset: Set mRs = pFrm.Recordset
-'    mTypSim = DaoTyToSim(mRs.Fields(pNmCtl).Type)
-'    Select Case mTypSim
-'    Case eTypSim_Bool:  oQVal = "False"
-'    Case eTypSim_Num:   oQVal = "0"
-'    Case eTypSim_Str:   oQVal = "''"
+'    mSimTy = DaoTyToSim(mRs.Fields(pNmCtl).Type)
+'    Select Case mSimTy
+'    Case eSimBool:  oQVal = "False"
+'    Case eSimNum:   oQVal = "0"
+'    Case eSimStr:   oQVal = "''"
 '    Case Else:          ss.A 1, "The control having a null and it is not Bool,Num or Str": GoTo E
 '    End Select
 '    Exit Function
 'End If
-'mTypSim = VarToSimTy(mV)
-'Select Case mTypSim
-'Case eTypSim_Bool, eTypSim_Num, eTypSim_Str, eTypSim_Dte
+'mSimTy = VarSimTy(mV)
+'Select Case mSimTy
+'Case eSimBool, eSimNum, eSimStr, eSimDte
 '    oQVal = Q_V(mV)
 'Case Else
 '    ss.A 2, "The control having a value not in (Num,Bool,Str,Dte)": GoTo E
 'End Select
 'Exit Function
 'R: ss.R
-'E: Fnd_QVal_ByFrm = True: ss.B cSub, cMod, "pFrm,pNmCtl,SimTyp of the ctl.value", ToStr_Frm(pFrm), pNmCtl, mTypSim
+'E: Fnd_QVal_ByFrm = True: ss.B cSub, cMod, "pFrm,pNmCtl,SimTyp of the ctl.value", ToStr_Frm(pFrm), pNmCtl, mSimTy
 'End Function
 'Function Fnd_AyMacroStr_InStr(oAyMacroStr$(), pInStr$) As Boolean
 'Dim mP%, mA%, mB%, J%, mN As Byte
@@ -1461,7 +1438,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Next
 'Exit Function
 'R: ss.R
-'E: Fnd_AnWs_BySetWs = True: ss.B cSub, cMod, "pWb,pSetWs", ToStr_Wb(pWb), pSetWs
+'E: Fnd_AnWs_BySetWs = True: ss.B cSub, cMod, "pWb,pSetWs", WbToStr(pWb), pSetWs
 'End Function
 'Function Fnd_AnWs_ByLikWsNm(oAnWs$(), pWb As Workbook, pLikWsNm$) As Boolean
 'Const cSub$ = "Fnd_AnWs_ByLikWsNm"
@@ -1484,7 +1461,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Next
 'Exit Function
 'R: ss.R
-'E: Fnd_AnWs_ByLikWsNm = True: ss.B cSub, cMod, "pWb,pLikWsNm", ToStr_Wb(pWb), pLikWsNm
+'E: Fnd_AnWs_ByLikWsNm = True: ss.B cSub, cMod, "pWb,pLikWsNm", WbToStr(pWb), pLikWsNm
 'End Function
 'Function Fnd_AnWs(oAnWs$(), pFx$, Optional pInclInvisible As Boolean = False) As Boolean
 'Const cSub$ = "Fnd_AnWs"
@@ -1508,7 +1485,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Next
 'Exit Function
 'R: ss.R
-'E: Fnd_AnWs_ByWb = True: ss.B cSub, cMod, "pWb,pInclinvisble", ToStr_Wb(pWb), pInclInvisible
+'E: Fnd_AnWs_ByWb = True: ss.B cSub, cMod, "pWb,pInclinvisble", WbToStr(pWb), pInclInvisible
 'End Function
 'Public Function Fnd_AnWs_wColr(oAnWs$(), pWb As Workbook) As Boolean
 ''Aim: Find {oAnws} with color in tab
@@ -2081,7 +2058,7 @@ Attribute VB_Name = "ZZ_xFnd"
 'Set oNm = pWb.Names(pNm)
 'Exit Function
 'R: ss.R
-'E: Fnd_Nm_InWb = True: ss.B cSub, cMod, "pWb,pNm", ToStr_Wb(pWb), pNm
+'E: Fnd_Nm_InWb = True: ss.B cSub, cMod, "pWb,pNm", WbToStr(pWb), pNm
 'End Function
 'Public Function Fnd_Nm_InWs(oNm As Excel.Name, pWs As Worksheet, pNm$) As Boolean
 'Const cSub$ = "Fnd_Nm_InWs"

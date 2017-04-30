@@ -63,7 +63,7 @@ Cls_Wb mWb, True
 Close #mF
 Exit Function
 R: ss.R
-E: FdfCrtFx = True: ss.B cSub, cMod, "pFxTar,pFfnFDF", pFxTar, pFfnFdf
+E:
 End Function
 
 Function FdfCrtFx__Tst()

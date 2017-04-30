@@ -29,7 +29,7 @@ If mA <> "" Then ss.A 1, "There is some fields OldValue not same as the host", "
 oIsSam = True
 Exit Function
 R: ss.R
-E: RsCmpFrm = True: ss.B cSub, cMod, "J,pRs,pFrm,FnStr,mNmFld_Rs,mV_Rs,mNmFld_Frm,mV_FrmOld", J, ToStr_Rs(pRs), ToStr_Frm(pFrm), FnStr, mNmFld_Rs, mV_Rs, mNmFld_Frm, mV_FrmOld
+E:
 End Function
 
 Function RsCol(A As DAO.Recordset, Optional FldNm$) As Variant
@@ -155,21 +155,21 @@ On Error GoTo R
 Dim mIsEq As Boolean
 Dim J%: For J = 0 To pRsSub.Fields.Count - 1
     With pRsSub.Fields(J)
-        Dim MNm$: MNm = .Name
+        Dim mNm$: mNm = .Name
         Dim mV1: mV1 = .Value
         Dim mTyp As DAO.DataTypeEnum: mTyp = .Type
     End With
-    If IfEq(mIsEq, mV1, pRsSuper.Fields(MNm).Value) Then ss.A 1, , , "Field with IsEq err", MNm: GoTo E
+    If IfEq(mIsEq, mV1, pRsSuper.Fields(mNm).Value) Then ss.A 1, , , "Field with IsEq err", mNm: GoTo E
     If Not mIsEq Then GoTo E
 Next
 Exit Function
 R: ss.R
-E: RsIsSubSet = True: ss.B cSub, cMod, "pRsSub,pRsSuper", ToStr_Rs_NmFld(pRsSub), ToStr_Rs_NmFld(pRsSuper)
+E:
 End Function
 
-Function RsRbr(pRs As DAO.Recordset, pStart As Byte, pStp As Byte) As Boolean
+Sub RsRbr(A As DAO.Recordset, pStart As Byte, pStp As Byte)
 Dim I&: I = pStart
-With pRs
+With A
     While Not .EOF
         .Edit
         .Fields(0).Value = I: I = I + pStp
@@ -178,7 +178,7 @@ With pRs
     Wend
     .Close
 End With
-End Function
+End Sub
 
 Function RsRmv_Cummulation(pRs As DAO.Recordset, FnStrKey$, pNmFldCum$, pNmFldSet$) As Boolean
 Const cSub$ = "Rmv_Cummulation"

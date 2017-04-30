@@ -50,7 +50,7 @@ If mChk Then
 End If
 Exit Function
 R: ss.R
-E: PthCpyFilUp1Dir = True: ss.B cSub, cMod, "pDir,pFSpc"
+E:
 End Function
 
 Sub PthDltFil(Pth$, Optional FnSpec$ = "*.*")

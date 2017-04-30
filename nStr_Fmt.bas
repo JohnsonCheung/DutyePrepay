@@ -22,9 +22,9 @@ Next
 FmtDic = S
 End Function
 
-Function FmtNm$(Nmstr$, ParamArray Ap())
+Function FmtNm$(NmStr$, ParamArray Ap())
 Dim Av(): Av = Ap
-FmtNm = FmtNmAv(Nmstr, Av)
+FmtNm = FmtNmAv(NmStr, Av)
 End Function
 
 Sub FmtNm__Tst()

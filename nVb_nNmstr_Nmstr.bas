@@ -15,9 +15,9 @@ Function FnStrPkDic(FnStr) As Dictionary
 Set FnStrPkDic = AyPkDic(NmstrBrk(FnStr))
 End Function
 
-Function NmstrBrk(Nmstr) As String()
+Function NmstrBrk(NmStr) As String()
 Dim M$, O$()
-M = Nmstr
+M = NmStr
 With StrBrk1(M, "[")
     O = AyAdd(LvsSplit(.S1), O)
     If .S2 = "" Then NmstrBrk = O: Exit Function
@@ -37,12 +37,12 @@ Dim Exp$(): Exp = ApSy("skldf", "dfk", "kdf", "df d", "kdf", "df", "a")
 AyChkEq Act, Exp
 End Sub
 
-Function NmstrExcp(Nmstr, Ay$()) As String()
-NmstrExcp = AyMinus(Ay, NmstrExpd(Nmstr, Ay))
+Function NmstrExcp(NmStr, Ay$()) As String()
+NmstrExcp = AyMinus(Ay, NmstrExpd(NmStr, Ay))
 End Function
 
-Function NmstrExpd(Nmstr, Ay$()) As String()
-Dim Ny$(): Ny = NmstrBrk(Nmstr)
+Function NmstrExpd(NmStr, Ay$()) As String()
+Dim Ny$(): Ny = NmstrBrk(NmStr)
 If AyIsEmpty(Ny) Then Exit Function
 Dim I, O$()
 For Each I In Ny

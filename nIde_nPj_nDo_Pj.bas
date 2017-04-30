@@ -1,7 +1,12 @@
 Attribute VB_Name = "nIde_nPj_nDo_Pj"
 Option Compare Database
 Option Explicit
-
+Private Type PjFnd
+    MdAy() As CodeModule
+    LasTim_MdAyIdx As Integer
+    LasTim_MdLno As Integer
+End Type
+Private X_PjFnd As PjFnd
 Function PjAddCmp(CmpNm$, Optional CmpTy As vbext_ComponentType = vbext_ct_StdModule, Optional A As vbproject) As VBComponent
 Dim O As VBComponent
 Set O = PjNz(A).VBComponents.Add(CmpTy)
@@ -14,6 +19,43 @@ Dim Act As VBComponent:
 Set Act = PjAddCmp(CmpNm)
 PjRmvCmp CmpNm
 End Function
+
+Sub PjFnd(S$, Optional A As vbproject)
+Dim B() As CodeModule
+Dim Fnd As Boolean, Lno&
+A = PjMdAy(PjNz(A))
+Dim J%
+For J = 0 To UB(A)
+    AyAsg MdFnd(S, A(J)), Fnd, Lno
+    If Fnd Then
+        MdShwLno Lno, A(J)
+        With X_PjFnd
+            .MdAy = B
+            .LasTim_MdAyIdx = J
+            .LasTim_MdLno = Lno
+        End With
+        Exit Sub
+    End If
+Next
+With X_PjFnd
+    .MdAy = B
+    .LasTim_MdAyIdx = -1
+    .LasTim_MdLno = 0
+End With
+MsgBox "No found!"
+End Sub
+
+Sub PjFndNxt()
+
+End Sub
+
+Sub PjFndRe(S$)
+
+End Sub
+
+Sub PjFndNxtRe()
+
+End Sub
 
 Sub PjAddRf(RfFfn, A As vbproject)
 PjNz(A).References.AddFromFile RfFfn

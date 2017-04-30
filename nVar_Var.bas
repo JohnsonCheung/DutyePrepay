@@ -261,7 +261,7 @@ Function VarSemiColonFldRev(SemiColonFld$)
 VarSemiColonFldRev = UnEscTab(UnEscCR(UnEscLF(UnEsCtSemiColonColon(SemiColonFld))))
 End Function
 
-Function VarSimTy(V) As eTypSim
+Function VarSimTy(V) As eSimTy
 Stop
 End Function
 

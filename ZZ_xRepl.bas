@@ -13,7 +13,7 @@ Attribute VB_Name = "ZZ_xRepl"
 'If Repl_Ws(mWsTar, mWsSrc) Then ss.A 3: GoTo E
 'Exit Function
 'R: ss.R
-'E: Repl_Ws_In2Wb = True: ss.B cSub, cMod, "pWbTar,pWbSrc,pWsNm", ToStr_Wb(pWbTar), ToStr_Wb(pWbSrc), pWsNm
+'E: Repl_Ws_In2Wb = True: ss.B cSub, cMod, "pWbTar,pWbSrc,pWsNm", WbToStr(pWbTar), WbToStr(pWbSrc), pWsNm
 'End Function
 
 'Function Repl_Ws_In2Wb__Tst()
@@ -88,7 +88,7 @@ Attribute VB_Name = "ZZ_xRepl"
 'If Repl_Ws(mWsTar, mWsSrc) Then ss.A 3: GoTo E
 'Exit Function
 'R: ss.R
-'E: Repl_Ws_InWb = True: ss.B cSub, cMod, "pWb,pWsNmTar,pWsNmTar", ToStr_Wb(pWb), pWsNmTar, pWsNmTar
+'E: Repl_Ws_InWb = True: ss.B cSub, cMod, "pWb,pWsNmTar,pWsNmTar", WbToStr(pWb), pWsNmTar, pWsNmTar
 'End Function
 
 'Function Repl_Ws_InWb__Tst()

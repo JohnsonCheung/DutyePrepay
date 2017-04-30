@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nInf_Rg"
+Attribute VB_Name = "nXls_nObj_nRg_nInf_Rg"
 Option Compare Database
 Option Explicit
 
@@ -56,8 +56,11 @@ Dim O As New Dictionary
 Set RgKeyAdrDicH = O
 End Function
 
-Function RgKvDic(A As Range) As Dictionary
-
+Function RgDicH(A As Range) As Dictionary
+Set RgDicH = SqDic(SqTranspose(A.Value))
+End Function
+Function RgDicV(A As Range) As Dictionary
+Set RgDicV = SqDic(A.Value)
 End Function
 
 Function RgLasCnoFmEdge&(A As Range)

@@ -270,9 +270,9 @@ If Ty = vbEmpty Then Exit Function
 If Ty = vbNull Then SqsQuoteVar1 = "Null": Exit Function
 If (Ty And vbArray) <> 0 Then Er "Given V is an array, cannot SqsQuoteVal"
 Select Case VarSimTy(V)
-Case eTypSim_Bool, eTypSim_Num: SqsQuoteVar1 = V
-Case eTypSim_Dte: SqsQuoteVar1 = "#" & V & "#"
-Case eTypSim_Str: SqsQuoteVar1 = Quote(Replace(V, "'", "''"), "'")
+Case eSimBool, eSimNum: SqsQuoteVar1 = V
+Case eSimDte: SqsQuoteVar1 = "#" & V & "#"
+Case eSimStr: SqsQuoteVar1 = Quote(Replace(V, "'", "''"), "'")
 Case Else: Er "Unexpected {Ty}-of-V", TypeName(V)
 End Select
 End Function

@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nWs_nDo_Ws"
+Attribute VB_Name = "nXls_nObj_nWs_nDo_Ws"
 Option Compare Database
 Option Explicit
 
@@ -9,6 +9,11 @@ Else
 End If
 
 End Function
+
+Sub WsVis(A As Worksheet)
+A.Application.Visible = True
+End Sub
+
 
 Sub WsAddContent(A As Worksheet, FmSngWsFx$)
 Dim Dt As Dt
@@ -121,7 +126,7 @@ mRowTo.PasteSpecial xlPasteAllExceptBorders
 pWs.Application.CutCopyMode = False
 Exit Function
 R: ss.R
-E: WsCpyRow = True: ss.B cSub, cMod, "pWs,pRnoFm,pRnoTo", ToStr_Ws(pWs), pRnoFm, pRnoTo
+E:
 End Function
 
 Function WsCpyRowDown(pWs As Worksheet, pColRgeList$, pRow&, pNRow&, Optional pCopyOnly_Val_Fmt As Boolean = True) As Boolean
@@ -152,7 +157,7 @@ OWs.Application.Selection.PasteSpecial Paste:=xlPasteValues, Operation:=xlNone, 
 OWs.Application.Selection.PasteSpecial Paste:=xlPasteFormats, Operation:=xlNone, SkipBlanks:=False, Transpose:=False
 Exit Function
 R: ss.R
-E: WsCpyVal = True: ss.B cSub, cMod, "pFmWs,pToWsNm", ToStr_Ws(pFmWs), pToWsNm
+E:
 End Function
 
 Sub WsInsCell(A As Worksheet, pLoCol$, pRnoBeg&, pNRow&)

@@ -607,7 +607,7 @@ Attribute VB_Name = "ZZ_xSet"
 'pWb.Names.Add pNm, pReferTo$
 'GoTo X
 'R: ss.R
-'E: Set_Nm_InWb = True: ss.B cSub, cMod, "pWb,pNm,pReferTo", ToStr_Wb(pWb), pNm, pReferTo
+'E: Set_Nm_InWb = True: ss.B cSub, cMod, "pWb,pNm,pReferTo", WbToStr(pWb), pNm, pReferTo
 'X:
 'End Function
 'Function Set_Nm_InWs(pWs As Worksheet, pNm$, pReferTo$) As Boolean

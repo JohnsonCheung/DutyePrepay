@@ -1,7 +1,6 @@
 Attribute VB_Name = "nAs400_Dtf"
 Option Compare Database
 Option Explicit
-Const cMod$ = "aa"
 
 Sub DtfCrt(Dtf$, Sql$, IP$ _
     , Optional Lib$ = "RBPCSF" _
@@ -136,7 +135,7 @@ Loop Until True
 If ONrec > 0 Then Dlt_Fil Dtf
 Exit Function
 R: ss.R
-E: DtfRun = True: ss.B cSub, cMod, "Dtf$, FfnDownload$", Dtf$, FfnDownload$
+E:
 End Function
 
 Sub DtfRun__Tst()

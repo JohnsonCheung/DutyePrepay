@@ -33,7 +33,7 @@ For J = 0 To Sz(mA) - 1 Step 2
     End Select
 Next
 Exit Function
-E: Brk_Brk_Cmd = True: ss.B cSub, cMod, "pBrkCmd", pBrkCmd
+E:
 End Function
 
 Function Brk_Cmb_Cmd(oCmb$, oJoin$, OInto$, oTo$, oKeep$, oOrd$, oStp%, pCmbCmd$) As Boolean
@@ -65,7 +65,7 @@ For J = 0 To Sz(mA) - 1 Step 2
     End Select
 Next
 Exit Function
-E: Brk_Cmb_Cmd = True: ss.B cSub, cMod, "pCmbCmd", pCmbCmd
+E:
 End Function
 
 Function Brk_ColonAs_ToCaptionNm(oCaption$, oNm$, pColonAsStr$) As Boolean
@@ -74,13 +74,13 @@ Const cSub$ = "Brk_ColonAs_ToCaptionNm"
 If Brk_Str_1ForS2(oCaption, oNm, pColonAsStr, ":") Then ss.A 1: GoTo E
 Exit Function
 R: ss.R
-E: Brk_ColonAs_ToCaptionNm = True: ss.B cSub, cMod, "pColonAsStr", pColonAsStr
+E:
 End Function
 
 Function Brk_ColonAs_ToCaptionNm__Tst()
 Const cSub$ = "Brk_ColonAs_ToCaptionNm_Tst"
-Shw_Dbg cSub, cMod
-Dim mColonAsStr$, MNm$, mCaption$, mCase As Byte
+
+Dim mColonAsStr$, mNm$, mCaption$, mCase As Byte
 For mCase = 1 To 2
     Select Case mCase
     Case 1
@@ -88,9 +88,9 @@ For mCase = 1 To 2
     Case 2
         mColonAsStr = "xx"
     End Select
-    If Brk_ColonAs_ToCaptionNm(mCaption, MNm, mColonAsStr) Then Stop
+    If Brk_ColonAs_ToCaptionNm(mCaption, mNm, mColonAsStr) Then Stop
     Debug.Print mCase
-    Debug.Print ToStr_LpAp(vbLf, "mColonAsStr, mNm, mCaption", mColonAsStr, MNm, mCaption)
+    Debug.Print ToStr_LpAp(vbLf, "mColonAsStr, mNm, mCaption", mColonAsStr, mNm, mCaption)
     Debug.Print "-----------"
 Next
 End Function
@@ -114,7 +114,7 @@ If Brk_Str_0Or2(oS1, A, pS, pBrkChr, pNoTrim) Then ss.A 1: GoTo E
 Brk_Str_To3Seg = Brk_Str_0Or2(oS2, oS3, A, pBrkChr, pNoTrim)
 Exit Function
 R: ss.R
-E: Brk_Str_To3Seg = True: ss.C cSub, cMod, "pS,pBrkChr,pNoTrim", pS, pBrkChr, pNoTrim
+E:
 End Function
 
 Function Brk_Str_To4Seg(oS1, oS2, oS3, oS4, pS$, Optional pBrkChr$ = ":", Optional pNoTrim As Boolean = False) As Boolean
@@ -124,7 +124,7 @@ If Brk_Str_To3Seg(oS1, oS2, A, pS, pBrkChr, pNoTrim) Then ss.A 1: GoTo E
 Brk_Str_To4Seg = Brk_Str_0Or2(oS3, oS4, A, pBrkChr, pNoTrim)
 Exit Function
 R: ss.R
-E: Brk_Str_To4Seg = True: ss.B cSub, cMod, "pS,pBrkChr,pNoTrim", pS, pBrkChr, pNoTrim
+E:
 End Function
 
 Function Brk_Str_To5Seg(oS1, oS2, oS3, oS4, oS5, pS$, Optional pBrkChr$ = ":", Optional pNoTrim As Boolean = False) As Boolean
@@ -134,7 +134,7 @@ If Brk_Str_To4Seg(oS1, oS2, oS3, A, pS, pBrkChr, pNoTrim) Then ss.A 1: GoTo E
 Brk_Str_To5Seg = Brk_Str_0Or2(oS4, oS5, A, pBrkChr, pNoTrim)
 Exit Function
 R: ss.R
-E: Brk_Str_To5Seg = True: ss.B cSub, cMod, "pS,pBrkChr,pNoTrim", pS, pBrkChr, pNoTrim
+E:
 End Function
 
 Function StrBrk(S, BrkChr$, Optional NoTrim As Boolean) As S1S2

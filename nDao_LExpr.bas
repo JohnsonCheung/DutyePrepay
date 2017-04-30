@@ -3,17 +3,17 @@ Option Compare Database
 Option Explicit
 Const cMod$ = ""
 
-Function LExpr(oLExpr$, pNmFld$, pTypSim As eTypSim, pVraw$, Optional pIsOpt As Boolean = False) As Boolean
+Function LExpr(oLExpr$, pNmFld$, pSimTy As eSimTy, pVraw$, Optional pIsOpt As Boolean = False) As Boolean
 'Aim: Build a sql condition {oLExpr}
 'Prm: {pVraw}   [x] [%x-x] [x,x,x] [>x] [>=x] [<x] [<=x] [*x] [x*] [*x*] [!%x-x] [!x,x,x] [!*x] [!x*] [!*x*] [!x] (16)
 '               Eq  Rge    Lst     Gt   Ge    Lt   Le    ----- Lik ----- NRge    NLst     ------ NLik ------ Ne   (12)
 Const cSub$ = "LExpr"
 On Error GoTo R
 If pIsOpt Then If Trim(pVraw) = "" Then ss.A 1, "Not optional prm, but pVraw is empty": GoTo E
-Select Case pTypSim
-Case eTypSim_Num, eTypSim_Bool, eTypSim_Str, eTypSim_Dte
+Select Case pSimTy
+Case eSimNum, eSimBool, eSimStr, eSimDte
 Case Else
-     ss.A 2, "Only TypSim: N,B,S,D will handle": GoTo E
+     ss.A 2, "Only SimTy: N,B,S,D will handle": GoTo E
 End Select
 If pNmFld = "" Then ss.A 3, "pNmfld cannot be nothing": GoTo E
 
@@ -59,42 +59,42 @@ End Select
 '[Find Q]
 ''All Op: Eq , Rge, Lst, Gt, Ge, Lt, Le, Lik, NRge, NLst, NLik, Ne
 Dim Q$
-Select Case pTypSim
+Select Case pSimTy
 ''[Bool: Op=(Eq,Ne)]
-Case eTypSim_Bool
+Case eSimBool
     Select Case OpTyp
     Case eOpTyp.eEq, eOpTyp.eNe
     Case Else:  ss.A 6, "Boolean data only allow = or <>", , "OpTyp", OpTyp: GoTo E
     End Select
     If V1 <> "True" And V1 <> "False" Then ss.A 7, "Boolean data allow value True or False", , "V1", V1: GoTo E
-Case eTypSim_Dte
+Case eSimDte
 ''[Dte: Op=(!Lik,NLik)]
     Select Case OpTyp
     Case eOpTyp.eLik, eOpTyp.eNLik:  ss.A 8, "Date data not allow Like or not like", , "OpTyp", OpTyp: GoTo E
     Case Else
     End Select
     Q = "#"
-Case eTypSim_Str
+Case eSimStr
     Q = CtSngQ
 End Select
 
-'[Reject Some Value for some TypSim]
+'[Reject Some Value for some SimTy]
 ''All Op: Eq , Rge, Lst, Gt, Ge, Lt, Le, Lik, NRge, NLst, NLik, Ne
 Dim Ay$(), J%
 Select Case OpTyp
 Case eOpTyp.eEq, eOpTyp.eGt, eOpTyp.eGe, eOpTyp.eLt, eOpTyp.Ele, eOpTyp.eLik, eOpTyp.eNLik, eOpTyp.eNe
-    If Cv_Vraw2Val(V1, V1, pTypSim) Then ss.A 9, "Field 1 has invalid value": GoTo E
+    If Cv_Vraw2Val(V1, V1, pSimTy) Then ss.A 9, "Field 1 has invalid value": GoTo E
 Case eOpTyp.eRge, eOpTyp.eNRge
-    Dim mV1: If Cv_Vraw2Val(mV1, V1, pTypSim) Then ss.A 10, "Field 1 has invalid value", , "V1", V1: GoTo E
-    Dim mV2: If Cv_Vraw2Val(mV2, V2, pTypSim) Then ss.A 11, "Field 2 has invalid value", , "V1", V2: GoTo E
+    Dim mV1: If Cv_Vraw2Val(mV1, V1, pSimTy) Then ss.A 10, "Field 1 has invalid value", , "V1", V1: GoTo E
+    Dim mV2: If Cv_Vraw2Val(mV2, V2, pSimTy) Then ss.A 11, "Field 2 has invalid value", , "V1", V2: GoTo E
     If mV1 > mV2 Then ss.A 12, "Field 2 > Field 1 for Between or Not Between", , "V1,V2", V1, V2: GoTo E
 Case eOpTyp.eLst, eOpTyp.eNLst
     Ay = Split(V1, CtComma)
     For J = LBound(Ay) To UBound(Ay)
-        If Cv_Vraw2Val(Ay(J), Ay(J), pTypSim) Then ss.A 13, "Some field of list data has invalid value", "Ay(J)", Ay(J): GoTo E
+        If Cv_Vraw2Val(Ay(J), Ay(J), pSimTy) Then ss.A 13, "Some field of list data has invalid value", "Ay(J)", Ay(J): GoTo E
     Next
 Case Else
-    If Cv_Vraw2Val(Ay(J), Ay(J), pTypSim) Then ss.A 1: GoTo E
+    If Cv_Vraw2Val(Ay(J), Ay(J), pSimTy) Then ss.A 1: GoTo E
 End Select
 
 '[Normalize V1,V2 if Q<>'']
@@ -134,7 +134,7 @@ End If
 oLExpr = Fmt_Str(AyOpFmtStr(OpTyp), pNmFld, V1, V2)
 Exit Function
 R: ss.R
-E: LExpr = True: ss.B cSub, cMod, "pIsOpt,pNmfld,pTypSim,pVraw", pIsOpt, pNmFld, pTypSim, pVraw
+E: LExpr = True: ss.B cSub, cMod, "pIsOpt,pNmfld,pSimTy,pVraw", pIsOpt, pNmFld, pSimTy, pVraw
 End Function
 
 Function LExpr__Tst()
@@ -168,7 +168,7 @@ Set_Silent
 For J = 0 To N
     If mN(J) = "" Then Exit For
     Debug.Print J, mN(J),
-    If LExpr(mCndn, "abc", eTypSim_Str, mN(J)) Then
+    If LExpr(mCndn, "abc", eSimStr, mN(J)) Then
         Debug.Print "<-- Error"
     Else
         Debug.Print "<-- "; mCndn
@@ -177,7 +177,7 @@ Next
 For J = 0 To N
     If mN(J) = "" Then Exit For
     Debug.Print J, mN(J),
-    If LExpr(mCndn, "abc", eTypSim_Num, mN(J)) Then
+    If LExpr(mCndn, "abc", eSimNum, mN(J)) Then
         Debug.Print "<-- Error"
     Else
         Debug.Print "<-- "; mCndn

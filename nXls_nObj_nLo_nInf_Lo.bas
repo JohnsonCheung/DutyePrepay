@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_ListObj"
+Attribute VB_Name = "nXls_nObj_nLo_nInf_Lo"
 Option Compare Database
 Option Explicit
 Const C_Mod = "nXls_ListObj"

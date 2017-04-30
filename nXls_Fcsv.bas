@@ -18,7 +18,7 @@ mWb.Close
 If Not pKeepCsv Then Dlt_Fil pFfnCsv
 Exit Function
 R: ss.R
-E: FcsvWrtFx = True: ss.B cSub, cMod, "pFfnCsv,pFx,OvrWrt,pKeepCsv", pFfnCsv, Pfx, OvrWrt, pKeepCsv
+E:
 End Function
 
 Function FcsvWrtFx__Tst()

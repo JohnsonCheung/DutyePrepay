@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nFmt_PtFmt"
+Attribute VB_Name = "nXls_nAct_nFmt_PtFmt"
 Option Compare Database
 Option Explicit
 

@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_SngWs"
+Attribute VB_Name = "nXls_nObj_nSngWs_SngWs"
 Option Compare Database
 Option Explicit
 

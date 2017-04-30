@@ -102,7 +102,7 @@ Next
 mDb.Relations.Append mRel
 Exit Function
 R: ss.R
-E: DbRelCrt = True: ss.B cSub, cMod, "pNmRel, TFm, TTo, pLmFld, pIsIntegral, pIsCascadeUpd, pIsCascadeDlt", pNmRel, TFm, TTo, pLmFld, pIsIntegral, pIsCascadeUpd, pIsCascadeDlt
+E:
 End Function
 
 Function DbRelCrt__Tst()
@@ -137,7 +137,7 @@ For J = 0 To Sz(mAyFb) - 1
 Next
 GoTo X
 R: ss.R
-E: DbRelCrt_FmTbl = True: ss.B cSub, cMod, "T", T
+E:
 X:
     RsCls mRs
     Cls_Db mDb

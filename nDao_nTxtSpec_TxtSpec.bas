@@ -2,7 +2,7 @@ Attribute VB_Name = "nDao_nTxtSpec_TxtSpec"
 Option Compare Database
 Option Explicit
 
-Function TxtSpecCrt_Delimi(pNmSpec$, pAmFld() As tMap, Optional A As database) As Boolean
+Function TxtSpecCrt_Delimi(SpecNm$, pAmFld() As tMap, Optional A As database) As Boolean
 'Aim: Delete and Add one record to MSysIMEXSpecs & N records to MSysIMEXColumns to create a "text" file link spec
 '     MSysIMEXSpecs  : DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecID,SpecName,SpecType,StartRow,TextDelim,TimeDelim
 '     MSysIMEXColumns: Attributes,DataType,FieldName,IndexType,SkipColumn,SpecID,Start,Width
@@ -35,16 +35,16 @@ Function TxtSpecCrt_Delimi(pNmSpec$, pAmFld() As tMap, Optional A As database) A
 'Width   4   7
 
 Const cSub$ = "TxtSpecCrt_Delimi"
-If Dlt_TxtSpec(pNmSpec, A) Then ss.A 1: GoTo E 'Create the Spec Tables if not exist
+If Dlt_TxtSpec(SpecNm, A) Then ss.A 1: GoTo E 'Create the Spec Tables if not exist
 
 'Create one record in MSysIMEXSpecs
 Dim mSql$: mSql = Fmt_Str( _
 "Insert into MSysIMEXSpecs (DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecName,SpecType,StartRow,TextDelim,TimeDelim) values " & _
-                          "('/'      ,True             ,Yes             ,5        ,'.'         ,','           ,-536    ,'{0}'   ,1       ,1       ,'""'     ,':')", pNmSpec)
+                          "('/'      ,True             ,Yes             ,5        ,'.'         ,','           ,-536    ,'{0}'   ,1       ,1       ,'""'     ,':')", SpecNm)
 If Run_Sql_ByDbExec(mSql, A) Then ss.A 2: GoTo E
 
 'Get SpecId by SpecName
-Dim mSpecId&: If Fnd_ValFmSql(mSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & pNmSpec & CtSngQ, A) Then ss.A 1: GoTo E
+Dim mSpecId&: If Fnd_ValFmSql(mSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & SpecNm & CtSngQ, A) Then ss.A 1: GoTo E
 
 'Attributes
 '    DataType
@@ -102,7 +102,7 @@ For J = 0 To Siz_Am(pAmFld) - 1
 Next
 Exit Function
 R: ss.R
-E: TxtSpecCrt_Delimi = True: ss.B cSub, cMod, "pNmSpec,pAmFld,A", pNmSpec, ToStr_Am(pAmFld), ToStr_Db(A)
+E:
 End Function
 
 Function TxtSpecCrt_Delimi__Tst()
@@ -133,8 +133,8 @@ X: mXls.DisplayAlerts = True
    Cls_Wb mWb, False, True
 End Function
 
-Function TxtSpecCrt_Fix(pNmSpec$, pLmTxtSpec$, Optional A As database) As Boolean
-'Aim: Create (over-write}a Fixed len txt spec {pNmSpec} in {A} by {pLmTxtSpec}
+Sub TxtSpecCrt_Fix(SpecNm$, pLmTxtSpec$, Optional A As database)
+'Aim: Create (over-write}a Fixed len txt spec {SpecNm} in {A} by {pLmTxtSpec}
 '     Txt Spec are 2 tables definition: Delete and Add one record to MSysIMEXSpecs & N records to MSysIMEXColumns to create a "text" file link spec
 '     MSysIMEXSpecs  : DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecID,SpecName,SpecType,StartRow,TextDelim,TimeDelim
 '     MSysIMEXColumns: Attributes,DataType,FieldName,IndexType,SkipColumn,SpecID,Start,Width
@@ -142,8 +142,7 @@ Function TxtSpecCrt_Fix(pNmSpec$, pLmTxtSpec$, Optional A As database) As Boolea
 '       <Spec>=Txt<n> Byt<n> Int<n> Sng<n> Dbl<n> Cur<n> Mem<n> YesNo DateTime
 '           YesNo    always len=1
 '           DateTime always len=8 + 1 + 6
-Const cSub$ = "TxtSpecCrt_Fix"
-If Dlt_TxtSpec(pNmSpec, A) Then ss.A 1: GoTo E
+TxtSpecDlt_NoCfn SpecNm, A
 
 'Break pLmTxtSpec
 Dim mAm() As tMap: mAm = Get_Am_ByLm(pLmTxtSpec)
@@ -151,11 +150,11 @@ Dim mAm() As tMap: mAm = Get_Am_ByLm(pLmTxtSpec)
 'Create one record in MSysIMEXSpecs
 Dim mSql$: mSql = Fmt_Str( _
 "Insert into MSysIMEXSpecs (DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecName,SpecType,StartRow,TextDelim,TimeDelim) values " & _
-                          "(''       ,True             ,Yes             ,5        ,'.'         ,','           ,20127   ,'{0}'   ,2       ,0       ,''       ,'')", pNmSpec)
+                          "(''       ,True             ,Yes             ,5        ,'.'         ,','           ,20127   ,'{0}'   ,2       ,0       ,''       ,'')", SpecNm)
 If Run_Sql(mSql) Then ss.A 2: GoTo E
 
 'Get SpecId by SpecName
-Dim mSpecId&: If Fnd_ValFmSql(mSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & pNmSpec & CtSngQ) Then ss.A 1: GoTo E
+Dim mSpecId&: If Fnd_ValFmSql(mSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & SpecNm & CtSngQ) Then ss.A 1: GoTo E
 
 'Attributes
 '    DataType
@@ -212,25 +211,75 @@ For J = 0 To Siz_Am(mAm) - 1
     mStart = mStart + mWidth
     If Run_Sql(mSql) Then ss.A 5: GoTo E
 Next
-Exit Function
+Exit Sub
 R: ss.R
-E: TxtSpecCrt_Fix = True: ss.B cSub, cMod, "pNmSpec,pLmTxtSpec,A", pNmSpec, pLmTxtSpec, ToStr_Db(A)
+E:
+End Sub
+Sub TxtSpecClr(Optional A As database)
+Dim Db As database: Set Db = DbNz(A)
+Db.Execute "Delete * from MSysIMEXSpecs"
+Db.Execute "Delete * from MSysIMEXColumns "
+End Sub
+Private Sub TxtSpecDlt_(SpecNm$, NoCfn As Boolean, A As database)
+'Aim: Delete all records in MSysIMEXSpecs & MSysIMEXColumns for SpecName={SpecNm}
+'     MSysIMEXSpecs  : DateDelim,DateFourDigitYear,DateLeadingZeros,DateOrder,DecimalPoint,FieldSeparator,FileType,SpecID,SpecName,SpecType,StartRow,TextDelim,TimeDelim
+'     MSysIMEXColumns: Attributes,DataType,FieldName,IndexType,SkipColumn,SpecID,Start,Width
+Dim Db As database: Set Db = DbNz(A)
+Dim IdLis$: IdLis = TxtSpecNmIdLis(SpecNm, A)
+If Not TxtSpecDlt__Cfn(IdLis, NoCfn, Db) Then Exit Sub
+Db.Execute FmtQQ("Delete * from MSysIMEXSpecs where SpecId in (?)", IdLis)
+Db.Execute FmtQQ("Delete * from MSysIMEXColumns where SpecId in (?)", IdLis)
+End Sub
+Private Function TxtSpecDlt__Cfn(IdLis$, NoCfn As Boolean, A As database) As Boolean
+Dim Ny$(): Ny = TxtSpecIdLisNy(IdLis, A)
+If Not NoCfn Then
+    Dim M$: M = "Are your sure to delete all following Txt Spec?" & vbLf & vbLf & Join(Ny, vbLf)
+    If Not Cfn(M) Then Exit Function
+End If
+End Function
+Sub TxtSpecDlt_NoCfn(SpecNm$, Optional A As database)
+TxtSpecDlt_ SpecNm, NoCfn:=True, A:=A
+End Sub
+
+Sub TxtSpecDlt(SpecNm$, Optional A As database)
+TxtSpecDlt_ SpecNm, NoCfn:=False, A:=A
+
+End Sub
+Function TxtSpecIdLisNy(IdLis$, Optional pDb As database) As String()
+
 End Function
 
-Function TxtSpecCrt_Fix__Tst()
-If TxtSpecCrt_Fix("A2Test", "I=Int3, A=Txt1, B=Txt2, C=Txt3") Then Stop: GoTo E
-Stop
-Dim mF As Byte: If Opn_Fil_ForOutput(mF, "c:\tmp\aa.txt", True) Then Stop: GoTo E
-Print #mF, "123XAA 22"
-Print #mF, "12 YAB  2"
-Print #mF, "1  ZAB   "
-Print #mF, "123 AB222"
-Close #mF
+Function TxtSpecNmIdLis$(SpecNm$, Optional pDb As database)
+'Const cSub$ = "Fnd_TxtSpecId"
+'Set_Silent
+'If Fnd_ValFmSql(oTxtSpecId, "Select SpecId from MSysIMEXSpecs where SpecName='" & SpecNm & CtSngQ, pDb) Then GoTo E
+'GoTo X
+'E: Fnd_TxtSpecId = True
+'X: Set_Silent_Rst
+'End Function
+End Function
+Function TxtSpecNy(Optional A As database) As String()
+If Not TxtSpecTblIsExist(A) Then Exit Function
+TxtSpecNy = SqlSy("Select SpecName from MSysIMEXSpecs", A)
+End Function
+Sub TxtSpecNy__Tst()
+Dim Ny$(): Ny = TxtSpecNy
+AyBrw Ny
+End Sub
+
+Function TxtSpecDlt__Tst()
+TxtSpecDlt "*"
+End Function
+
+Sub TxtSpecCrt_Fix__Tst()
+TxtSpecCrt_Fix "A2Test", "I=Int3, A=Txt1, B=Txt2, C=Txt3"
+Dim F%: F = FtOpnOup("c:\tmp\aa.txt")
+Print #F, "123XAA 22"
+Print #F, "12 YAB  2"
+Print #F, "1  ZAB   "
+Print #F, "123 AB222"
+Close #F
 DoCmd.TransferText acImportFixed, "A2Test", "#Tmp", "c:\tmp\aa.txt", False
 DoCmd.OpenTable "#Tmp"
-Stop
-GoTo X
-E:
-X: Close mF
-End Function
+End Sub
 

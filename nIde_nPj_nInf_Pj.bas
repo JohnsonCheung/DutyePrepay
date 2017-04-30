@@ -49,7 +49,7 @@ End Function
 
 Function PjIsOpn(PjNm$, Optional Vbe As Vbe) As Boolean
 Dim P As vbproject
-For Each P In NzVbe(Vbe).VBProjects
+For Each P In VbeNz(Vbe).VBProjects
     If P.Name = PjNm Then PjIsOpn = True: Exit Function
 Next
 End Function
@@ -206,9 +206,10 @@ Shell "notepad c:\tmp\aa.txt", vbMaximizedFocus
 End Function
 
 Function PjSrcPth$(Optional A As vbproject)
+Dim Pj As vbproject: Set Pj = PjNz(A)
 Dim O$
-O = PjPth(A) & "Src\": PthEns O
-O = O & A.Name & "\":  PthEns O
+O = PjPth(Pj) & "Src\": PthEns O
+O = O & Pj.Name & "\":  PthEns O
 PjSrcPth = O
 End Function
 

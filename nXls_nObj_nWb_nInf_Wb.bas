@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_Wb"
+Attribute VB_Name = "nXls_nObj_nWb_nInf_Wb"
 Option Compare Database
 Option Explicit
 
@@ -12,6 +12,25 @@ For Each iWs In A.Sheets
 Next
 A.Sheets(1).Activate
 End Sub
+Function WbLy(A As Workbook) As String()
+'Dim iWs As Worksheet, iQt As QueryTable, iPt As PivotTable
+'For Each iWs In pWb.Worksheets
+'    If iWs.PivotTables.Count > 0 Then
+'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (PivotTables)", "-")
+'        For Each iPt In iWs.PivotTables
+'            Prt_Ln pFno, ToStr_Pt(iPt)
+'        Next
+'        Prt_Ln pFno
+'    End If
+'    If iWs.QueryTables.Count > 0 Then
+'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (QueryTables)", "-")
+'        For Each iQt In iWs.QueryTables
+'            Prt_Ln pFno, ToStr_Qt(iQt)
+'        Next
+'        Prt_Ln pFno
+'    End If
+'Next
+End Function
 
 Function WbAddCsv(A As Workbook, Fcsv$, Optional WsNm$, Optional KeepCsv As Boolean) As Worksheet
 'Aim: Add a new ws to {A} as {WsNm} from {Fcsv}.  If {WsNm} is not given, use {Fcsv} as worksheet name

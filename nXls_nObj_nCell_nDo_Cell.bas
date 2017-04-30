@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nDo_Cell"
+Attribute VB_Name = "nXls_nObj_nCell_nDo_Cell"
 Option Compare Database
 Option Explicit
 

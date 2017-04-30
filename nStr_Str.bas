@@ -194,7 +194,7 @@ StrHas = InStr(S, SubStr) > 0
 End Function
 
 Function StrIsBlank(S) As Boolean
-StrIsBlank = RmvBlankChr(S) = ""
+StrIsBlank = Trim(RmvBlankChr(S)) = ""
 End Function
 
 Function StrIsIn(SubStr, S) As Boolean

@@ -10,6 +10,10 @@ Sub FrmCls(FrmNm$)
 DoCmd.Close acForm, FrmNm, acSaveYes
 End Sub
 
+Sub FrmSavRec(A As Access.Form)
+Stop
+End Sub
+
 Function FrmCtlNy(Optional A As Access.Form) As String()
 Dim F As Access.Form
     Set F = FrmNz(A)
@@ -21,10 +25,9 @@ Next
 FrmCtlNy = AySrt(O)
 End Function
 
-Function FrmIsOpn(FrmNm$) As Boolean
+Function FrmIsOpn(FrmNm$, A As Access.Application) As Boolean
 On Error GoTo R
-Dim Nm$: Nm = Forms(FrmNm).Name
-FrmIsOpn = True
+FrmIsOpn = AppaNz(A).Forms(FrmNm).Name
 R:
 End Function
 

@@ -18,13 +18,6 @@ Attribute VB_Name = "ZZ_e"
 '
 'End Enum
 '
-'Public Enum eTypFct
-'    eSub = 1
-'    eFct = 2
-'    eGet = 3
-'    eLet = 4
-'    eSet = 5
-'End Enum
 'Public Enum eHostSts
 '    e1Rec = 1
 '    e0Rec = 2
@@ -78,13 +71,6 @@ Attribute VB_Name = "ZZ_e"
 '    eNLst = 10
 '    eNLik = 11
 '    eNe = 12
-'End Enum
-'Public Enum eTypSim
-'    eTypSim_Num = 1
-'    eTypSim_Str = 2
-'    eTypSim_Bool = 3
-'    eTypSim_Dte = 4
-'    eTypSim_Oth = 5
 'End Enum
 ''Public Enum eBrkStrOpt
 ''    eNoTrim = 1      'Do not trim S1 & S2

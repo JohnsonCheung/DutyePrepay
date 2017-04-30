@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nFmt_Ws"
+Attribute VB_Name = "nXls_nAct_nFmt_Ws"
 Option Compare Database
 Option Explicit
 
@@ -48,7 +48,7 @@ With Rg(1, 1)
 End With
 Exit Function
 R: ss.R
-E: WsFmt = True: ss.B cSub, cMod, "pWs,pNRec", ToStr_Rge(Rg), pNRec
+E:
 End Function
 
 Function WsFmt_ByColrRow(Rg As Range, pRnoColrIdx&) As Boolean
@@ -81,7 +81,7 @@ Const cSub$ = "WsFmt_ByColrRow"
 'Next
 Exit Function
 R: ss.R
-E: WsFmt_ByColrRow = True: ss.B cSub, cMod, "Rg,pRnoColrIdx", ToStr_Rge(Rg), pRnoColrIdx
+E:
 End Function
 
 Function WsFmt_ByColrRow__Tst()
@@ -131,7 +131,7 @@ For iRno = mRnoBeg To mRnoBeg + pNRec - 1
 Next
 GoTo X
 R: ss.R
-E: WsFmt_ByMge = True: ss.B cSub, cMod, "Rg,pRnoMgeIdx", ToStr_Rge(Rg), pRnoMgeIdx
+E:
 X: Clr_Sts
 End Function
 
@@ -169,7 +169,7 @@ For J = 0 To Sz(pAyCno) - 1
 Next
 GoTo X
 R: ss.R
-E: WsFmt_MgeCells = True: ss.B cSub, cMod, "pWs,pRnoBeg,pRnoEnd,pAyCno", ToStr_Ws(pWs), pRnoBeg, pRnoEnd, ToStr_AyByt(pAyCno)
+E:
 X: mXls.ScreenUpdating = True
    mXls.DisplayAlerts = True
 End Function
@@ -361,6 +361,6 @@ Set oRgeBorder = pWs.Range(mLvlColBeg & pRno & ":" & pColEnd & mRnoEnd)
 Set oRgeColrCols = pWs.Range(mLvlColBeg & pRno & ":" & mLvlColEnd & mRnoEnd)
 Exit Function
 R: ss.R
-E: WsFmtOutLine_Fnd2Rge = True: ss.B cSub, cMod
+E:
 End Function
 

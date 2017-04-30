@@ -286,7 +286,7 @@ Attribute VB_Name = "ZZ_xRfh"
 'End With
 'GoTo X
 'R: ss.R
-'E: Rfh_Wb = True: ss.B cSub, cMod, "pWb,pLExpr,pFb_DtaSrc", ToStr_Wb(pWb), pLExpr, pFb_DtaSrc
+'E: Rfh_Wb = True: ss.B cSub, cMod, "pWb,pLExpr,pFb_DtaSrc", WbToStr(pWb), pLExpr, pFb_DtaSrc
 'X: Clr_Sts
 'End Function
 '

@@ -53,7 +53,7 @@ With mDb
 End With
 Exit Function
 R: ss.R
-E: QryCrt = True: ss.B cSub, cMod, "QryNm,Sql,A", QryNm, Sql, ToStr_Db(A)
+E:
 End Function
 
 Sub QryCrt_ByDSN(QryNm$, Sql$, Dsn$, IsRetRec As Boolean, Optional A As database)
@@ -101,10 +101,31 @@ With mRs
 End With
 GoTo X
 R: ss.R
-E: QryCrt_FmTbl = True: ss.B cSub, cMod, "T", T
+E:
 X:
     Cls_Db mDb
     RsCls mRs
+End Function
+Function QryLy(QnStr$, Optional SqlSubStr$, Optional A As database) As String()
+'Dim L%: L = Len(QryNmPfx)
+'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
+'    If Left(iQry.Name, L) = QryNmPfx Then If InStr(iQry.Sql, Sql_SubString) > 0 Then Debug.Print ToStr_TypQry(iQry.Type), iQry.Name
+'Next
+'End Function
+'Function Lst_QryPrm_ByPfx(QryNmPfx$, Optional pFno As Byte = 0) As Boolean
+'Dim L%: L = Len(QryNmPfx)
+'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
+'    If Left(iQry.Name, L) = QryNmPfx Then
+'        If iQry.Parameters.Count > 0 Then
+'            Prt_Str pFno, iQry.Name & "-----(Param)------>"
+'            Dim iPrm As DAO.parameter
+'            For Each iPrm In iQry.Parameters
+'                Prt_Str pFno, iPrm.Name
+'            Next
+'            Prt_Ln pFno
+'        End If
+'    End If
+'Next
 End Function
 
 Function QryCrt_FmTbl__Tst()

@@ -1,4 +1,4 @@
-Attribute VB_Name = "nXls_nDo_Rg"
+Attribute VB_Name = "nXls_nObj_nRg_nDo_Rg"
 Option Compare Database
 Option Explicit
 
@@ -21,7 +21,7 @@ Next
 A.Application.CutCopyMode = False
 Exit Function
 R: ss.R
-E: RgCpyFormulaByCmt = True: ss.B cSub, cMod, "Rg,pNRec", ToStr_Rge(A)
+E:
 End Function
 
 Sub RgCpyFormulaDn(A As Range)
@@ -202,33 +202,12 @@ ORg2.PasteSpecial xlPasteFormats
 End Sub
 
 Sub RgSetVLinLeft(A As Range)
-BdrSetVLin A.Borders(xlEdgeLeft)
+BdrSet_Continuous_Medium A.Borders(xlEdgeLeft)
 End Sub
 
 Sub RgSetVLinRight(A As Range)
-BdrSetVLin A.Borders(xlEdgeRight)
+BdrSet_Continuous_Medium A.Borders(xlEdgeRight)
 End Sub
-
-Function RsCpyToFrm(pRs As DAO.Recordset, pFrm As Access.Form, FnStr$) As Boolean
-'Aim: Copy the fields value from {pRs} to the controls in {pFrm}.  Only those fields in {FnStr} will be copied.
-'     {FnStr} is in fmt of aaa=xxx,bbb,ccc  aaa,bbb,ccc will be field name in {pFrm} & xxx,bbb,ccc will be field in {pRs}
-Const cSub$ = "RsCpyToFrm"
-On Error GoTo R
-Dim mAn_Frm$(), mAn_Rs$(): If Brk_Lm_To2Ay(mAn_Frm, mAn_Rs, FnStr) Then ss.A 1: GoTo E
-Dim mIsEq As Boolean, mEr$, mV_Rs, mV_FrmNew
-Dim J%: For J = 0 To Sz(mAn_Frm) - 1
-    With pFrm.Controls(mAn_Frm(J))
-        mV_Rs = pRs.Fields(mAn_Rs(J)).Value
-        mV_FrmNew = .Value
-        If IfEq(mIsEq, mV_Rs, mV_FrmNew) Then ss.A 1: GoTo E
-        If Not mIsEq Then .Value = mV_Rs
-    End With
-Next
-'Sav.Rec
-Exit Function
-R: ss.R
-E: RsCpyToFrm = True: ss.B cSub, cMod, "pRs,pFrm,FnStr", ToStr_Rs(pRs), ToStr_Frm(pFrm), FnStr
-End Function
 
 Function RsPutCell(Rs As Recordset, Cell As Range) As Boolean
 DtPutCell RsDt(Rs), Cell

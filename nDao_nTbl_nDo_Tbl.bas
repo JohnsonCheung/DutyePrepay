@@ -362,13 +362,13 @@ If WsFmt(Rg, mNRec, 3) Then ss.A 4: GoTo E
 Clr_Qt mWs
 Exit Function
 R: ss.R
-E: TblPutCell = True: ss.B cSub, cMod, "Qry_or_Tbl_Nm,pWs,SrcFb,pNoExpTim", Qry_or_Tbl_Nm, ToStr_Rge(Rg), SrcFb, pNoExpTim
+E:
 End Function
 
-Function TblRbr(pTbl$, pNmfld_ToRbr$, Optional pStart As Byte = 1, Optional pStp As Byte = 1) As Boolean
+Sub TblRbr(pTbl$, pNmfld_ToRbr$, Optional pStart As Byte = 1, Optional pStp As Byte = 1)
 Dim mRs As DAO.Recordset: Set mRs = CurrentDb.OpenRecordset("Select {0} from {1} order by {0}", pNmfld_ToRbr, pTbl)
-TblRbr = RsRbr(mRs, pStart, pStp)
-End Function
+RsRbr mRs, pStart, pStp
+End Sub
 
 Function TblRen(pNmtFm$, pNmtTo$) As Boolean
 Const cSub$ = "Ren_Tbl_ByNmt"
@@ -377,7 +377,7 @@ On Error GoTo R
 CurrentDb.TableDefs(pNmtFm).Name = pNmtTo
 Exit Function
 R: ss.R
-E: TblRen = True: ss.B cSub, cMod, "pNmtFm,pNmtTo", pNmtFm, pNmtTo
+E:
 End Function
 
 Function TblRenPfx(FmPfx$, ToPfx$) As Boolean
@@ -389,6 +389,20 @@ Dim iTbl As TableDef: For Each iTbl In CurrentDb.TableDefs
     End If
 Next
 End Function
+Sub TblCpy(Src, Tar, FldDic As Dictionary, A As database)
+Dim Db As database: Set Db = DbNz(A)
+TblAsstExist Src, Db
+TblDrpEns Tar, Db
+Dim Ay$(): Ay = DicSy(FldDic, "{K} as {V}")
+Dim Sel$: Sel = JnComma(Ay)
+Const C$ = "Select ? into [?] from [?]"
+Dim S$: S = FmtQQ(C, Sel, Tar, Src)
+SqlRun S, Db
+End Sub
+
+Sub TblDrpEns(T, Optional A As database)
+If TblIsExist(T, A) Then TblDrp T, A
+End Sub
 
 Function TblRenToBackup(ToPfx$) As Boolean
 'Aim: Rename all linked table by adding {ToPfx}
@@ -401,7 +415,7 @@ For Each iTbl In CurrentDb.TableDefs
 Next
 Exit Function
 R: ss.R
-E: TblRenToBackup = True: ss.B cSub, cMod, "ToPfx", ToPfx
+E:
 End Function
 
 Function TblToFxmll__Tst()

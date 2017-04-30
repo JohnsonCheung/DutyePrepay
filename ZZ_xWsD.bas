@@ -94,7 +94,7 @@ Attribute VB_Name = "ZZ_xWsD"
 'If mA <> "" Then ss.A 1, "Some ws cannot create Delta Tables", , "The Ws with error", mA: GoTo E
 'Exit Function
 'R: ss.R
-'E: WsD_Init_ByWb = True: ss.B cSub, cMod, "pWb,pFbDelta", ToStr_Wb(pWb), pFbDelta
+'E: WsD_Init_ByWb = True: ss.B cSub, cMod, "pWb,pFbDelta", WbToStr(pWb), pFbDelta
 'X: If xFbDelta <> "" Then Cls_Db mDb
 '   On Error Resume Next
 '   mXls.ScreenUpdating = True

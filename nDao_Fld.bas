@@ -37,17 +37,17 @@ With OFld
 End With
 Exit Function
 R: ss.R
-E: FldNew = True: ss.B cSub, cMod, "pNmFld,pTyp,pSiz,pIsAuto,pAlwZerLen,pIsReq,pDftVal,pFmtTxt,pVdtTxt,pVdtTxt,pVdtRul", pNmFld$, ToStr_TypDta(pTyp), pSiz, pIsAuto, pAlwZerLen, pIsReq, pDftVal, pFmtTxt, pVdtTxt, pVdtTxt, pVdtRul
+E:
 End Function
 
 Function FldNew_FmRsTblF(OFld As DAO.Field, pRsTblF As DAO.Recordset) As Boolean
-'     #TblF: NmFld,TypDao,FldLen,FmtTxt,IsReq,IsAlwZerLen,DftVal,VdtTxt,VdtRul
+'     #TblF: NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,DftVal,VdtTxt,VdtRul
 Const cSub$ = "FldNew_FmRsTblF"
 On Error GoTo R
 Dim mNmFld$, mTyp As DAO.DataTypeEnum, mSiz As Byte, mIsAuto As Boolean, mIsReq As Boolean, mAlwZerLen As Boolean, mDftVal$, mFmtTxt$, mVdtTxt$, mVdtRul$
 With pRsTblF
     mNmFld = !NmFld
-    mTyp = !TypDao
+    mTyp = !DaoTy
     mSiz = Nz(!FldLen, 0)
     mFmtTxt = Nz(!FmtTxt, "")
     mIsReq = !IsReq
@@ -64,7 +64,7 @@ End With
 If FldNew(OFld, mNmFld, mTyp, mSiz, mIsAuto, mAlwZerLen, mIsReq, mDftVal, mFmtTxt, mVdtTxt, mVdtRul) Then ss.A 3: GoTo E
 Exit Function
 R: ss.R
-E: FldNew_FmRsTblF = True: ss.B cSub, cMod, "pRsTblF", ToStr_Rs(pRsTblF)
+E:
 End Function
 
 Function FldNew_FmRsTblF__Tst()
@@ -76,7 +76,7 @@ Select Case Fld.Type
 Case DAO.DataTypeEnum.dbChar _
    , DAO.DataTypeEnum.dbText: O = "Text(" & Fld.Size & ")"
 Case Else
-                              O = Cv_TypDAO_ToFldDcl(Fld.Type)
+                              O = DaoTySql(Fld.Type)
 End Select
 FldToDclStr = O
 End Function

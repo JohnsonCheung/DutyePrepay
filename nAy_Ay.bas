@@ -626,6 +626,9 @@ End Function
 Function AyJnComma$(Ay)
 AyJnComma = Join(AySy(Ay), CtComma)
 End Function
+Function JnComma$(Ay)
+JnComma = Join(AySy(Ay), CtComma)
+End Function
 
 Function AyJnScl$(Ay)
 AyJnScl = AyJn(Ay, ";")

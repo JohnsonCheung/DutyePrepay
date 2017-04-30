@@ -1,6 +1,14 @@
 Attribute VB_Name = "nDta_Dic"
 Option Compare Database
 Option Explicit
+Function DicSy(A As Dictionary, KVNmStr$) As String()
+Dim O$()
+If A.Count = 0 Then Exit Function
+For Each K In A
+    Push O, FmtNm(KVNmStr, "K V", K, A(K))
+Next
+DicSy = O
+End Function
 
 Sub DicAsg(A As Dictionary, FnStr$, O0 _
     , Optional O1 _

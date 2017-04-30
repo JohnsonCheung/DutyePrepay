@@ -33,7 +33,7 @@ gXls.AutomationSecurity = msoAutomationSecurityForceDisable
 Set OWb = gXls.Workbooks.Open(pFxTo, UpdateLinks:=False, IgnoreReadOnlyRecommended:=True)
 Exit Function
 R: ss.R
-E: FxCpyAndOpn = True: ss.B cSub, cMod, "pFxFm,pFxTo,OvrWrt", pFxFm, pFxTo, OvrWrt
+E:
 End Function
 
 Sub FxCrtFmPthOfSngWsFx(Fx$, Pth$)
@@ -113,7 +113,7 @@ If Not pKeepXls Then Dlt_Fil Pfx
 FxWrtPdf = Crt_PDF_FmFfnPS(mFfnPS, mFfnPDF)
 Exit Function
 R: ss.R
-E: FxWrtPdf = True: ss.B cSub, cMod, "pFx,pFfnPdf", Pfx, pFfnPDF
+E:
 End Function
 
 Function FxWrtPdf__Tst()

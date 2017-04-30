@@ -191,7 +191,10 @@ With P
     MdNz(A).CodePane.SetSelection .L1, .C1, .L2, .C2
 End With
 End Sub
+Function MdFnd(S$, Optional A As CodeModule) As Variant()
 
+
+End Function
 Sub MdShw(A As CodeModule)
 A.CodePane.Show
 End Sub

@@ -26,6 +26,12 @@ Else
 End If
 TblFldAy = O
 End Function
+Function TblChkExist(T, Optional A As database) As Variant()
+
+End Function
+Sub TblAsstExist(T, Optional A As database)
+ErAsst TblChkExist(T, A)
+End Sub
 
 Function TblFldToLng&(T, F, Where$, Optional A As database)
 TblFldToLng = TblFldV(T, F, Where, A)
