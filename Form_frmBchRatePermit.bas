@@ -24,7 +24,7 @@ Private Function BchNo_BeforeUpdate_1BchNo(pSku$, pBchNo) As Boolean
 'Assume: pSku is non-blank
 If IsNull(pBchNo) Then Exit Function
 If Trim(pBchNo) = "" Then Exit Function
-With CurrentDb.OpenRecordset(Fmt_Str("Select * from frmBchRateOH where SKU='{0}' and BchNo='{1}'", pSku, pBchNo))
+With CurrentDb.OpenRecordset(Fmt("Select * from frmBchRateOH where SKU='{0}' and BchNo='{1}'", pSku, pBchNo))
     If .EOF Then
         .Close
         MsgBox "The no such batch on hand!", vbCritical
@@ -44,7 +44,7 @@ Private Function VdtBchNo(BchNo$, Sku$, Rate@, ByRef ORate@) As Boolean
 If BchNo = "" Then Exit Function
 If Sku = "" Then MsgBox "SKU is blank": GoTo E
 If Rate = 0 Then MsgBox "Rate is zero": GoTo E
-With CurrentDb.OpenRecordset(Fmt_Str("Select * from SkuB where Sku='{0}' and BchNo='{1}'", Sku, BchNo))
+With CurrentDb.OpenRecordset(Fmt("Select * from SkuB where Sku='{0}' and BchNo='{1}'", Sku, BchNo))
     If .EOF Then
         ORate = Rate
         .AddNew

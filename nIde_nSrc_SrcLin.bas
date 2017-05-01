@@ -43,7 +43,7 @@ End If
 End Function
 
 Function SrcLinRmvRmk$(SrcLin)
-SrcLinRmvRmk = StrBrk1(RmvStrTok(SrcLin), "'").S1
+SrcLinRmvRmk = Brk1(RmvStrTok(SrcLin), "'").S1
 End Function
 
 Function SrcLinTyNm$(SrcLin)

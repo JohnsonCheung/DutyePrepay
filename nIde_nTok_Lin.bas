@@ -4,6 +4,6 @@ Option Explicit
 
 Function LinTokAy(Lin) As String()
 Dim L$: L = LinRmvRmk(Lin)
-LinTokAy = AyMinus(AyRmvDup(LvsSplit(RplPun(RmvStrTok(L)))), KwAy)
+LinTokAy = AyMinus(AyRmvDup(LvsSplit(RplPun(RmvStrTok(L)))), KWAy)
 End Function
 

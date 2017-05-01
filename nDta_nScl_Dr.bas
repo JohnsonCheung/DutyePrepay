@@ -52,5 +52,5 @@ End Sub
 
 Function DrScl$(Dr)
 Dim O$(): O = AyMapInto(Dr, O, "VarSemiColonFld")
-DrScl = AyJn(O, ";")
+DrScl = Jn(O, ";")
 End Function

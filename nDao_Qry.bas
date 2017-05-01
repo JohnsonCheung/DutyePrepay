@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 
 Function Qny(Optional Lik$ = "*", Optional A As database) As String()
-Qny = AyLik(ObjAyNy(QryAy(A)), Lik)
+Qny = AySelLik(OyPrp_Nm(QryAy(A)), Lik)
 End Function
 
 Function Qry(Qn, Optional A As database) As QueryDef
@@ -106,27 +106,6 @@ X:
     Cls_Db mDb
     RsCls mRs
 End Function
-Function QryLy(QnStr$, Optional SqlSubStr$, Optional A As database) As String()
-'Dim L%: L = Len(QryNmPfx)
-'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
-'    If Left(iQry.Name, L) = QryNmPfx Then If InStr(iQry.Sql, Sql_SubString) > 0 Then Debug.Print ToStr_TypQry(iQry.Type), iQry.Name
-'Next
-'End Function
-'Function Lst_QryPrm_ByPfx(QryNmPfx$, Optional pFno As Byte = 0) As Boolean
-'Dim L%: L = Len(QryNmPfx)
-'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
-'    If Left(iQry.Name, L) = QryNmPfx Then
-'        If iQry.Parameters.Count > 0 Then
-'            Prt_Str pFno, iQry.Name & "-----(Param)------>"
-'            Dim iPrm As DAO.parameter
-'            For Each iPrm In iQry.Parameters
-'                Prt_Str pFno, iPrm.Name
-'            Next
-'            Prt_Ln pFno
-'        End If
-'    End If
-'Next
-End Function
 
 Function QryCrt_FmTbl__Tst()
 TblCrt_ByFldDclStr "#FBQry", "Fb Text 255,NmQry Text 50,Sql Memo"
@@ -145,10 +124,10 @@ End Function
 Sub QryCrtSubDtaSheet(MstQn$, ChdQn$, MstFnStr$, Optional ChdFnStr$, Optional A As database)
 Dim O As QueryDef: Set O = DbNz(A).QueryDefs(MstQn)
 Dim OMst$
-    OMst = AyJnComma(NmstrBrk(MstFnStr))
+    OMst = JnComma(NmBrk(MstFnStr))
 Dim OChd$
     OChd = IIf(ChdFnStr = "", MstFnStr, ChdFnStr)
-    OChd = AyJnComma(NmstrBrk(OChd))
+    OChd = JnComma(NmBrk(OChd))
 QrySetPrp O, "SubdatasheeQname", ChdQn
 QrySetPrp O, "LinkChildFields", OChd
 QrySetPrp O, "LinkMasterFields", OMst
@@ -175,8 +154,8 @@ Dim Q$(): Q = Qny(Lik, A)
 QryDrp_ByQny Q, A
 End Sub
 
-Function QryDrp_ByPfx(Pfx, Optional A As database) As Boolean
-QryDrp_ByQny Qny(Pfx & "*", A)
+Function QryDrp_ByPfx(Fx, Optional A As database) As Boolean
+QryDrp_ByQny Qny(Fx & "*", A)
 End Function
 
 Sub QryDrp_ByQny(Qny$(), Optional A As database)
@@ -191,15 +170,15 @@ Sub QryDrpPrp(Q As QueryDef, PrpNm$)
 If QryHasPrp(Q, PrpNm) Then Q.Properties.Delete PrpNm
 End Sub
 
-Sub QryExpToFb(Qry_or_Tbl_Nm$, TarFb$, Optional TarTn$ = "", Optional SrcFb$ = "", Optional OvrWrt As Boolean = False)
-'Aim: Export {Qry_or_Tbl_Nm} in {p.FbSrc} to table {p.NmtTar} in {p.FbTar}.  {Nmt2Mdb} will be created if not exist
+Sub QryExpToFb(Qn_or_Tn$, TarFb$, Optional TarTn$ = "", Optional SrcFb$ = "", Optional OvrWrt As Boolean)
+'Aim: Export {Qn_or_Tn} in {p.FbSrc} to table {p.NmtTar} in {p.FbTar}.  {Nmt2Mdb} will be created if not exist
 Const cSub$ = "Exp_Nmq2Mdb"
 On Error GoTo R
 If VBA.Dir(TarFb) = "" Then FbNew TarFb
-Dim mNmtTar$: mNmtTar = IIf(TarTn = "", Qry_or_Tbl_Nm, TarTn)
+Dim mNmtTar$: mNmtTar = IIf(TarTn = "", Qn_or_Tn, TarTn)
 On Error GoTo R
 Dim mIn_FbSrc$: If SrcFb <> "" Then mIn_FbSrc = " in '" & SrcFb & CtSngQ
-Dim mSql$: mSql = Fmt_Str("select * into {0} in '{1}' from {2}{3}", mNmtTar, TarFb, Qry_or_Tbl_Nm, mIn_FbSrc)
+Dim mSql$: mSql = Fmt("select * into {0} in '{1}' from {2}{3}", mNmtTar, TarFb, Qn_or_Tn, mIn_FbSrc)
 If Run_Sql(mSql) Then ss.A 2: GoTo E
 Exit Sub
 R: ss.R
@@ -210,8 +189,8 @@ Function QryExpToFb__Tst()
 Dim mCase As Byte, mNmtq$, mFbTar1$, mFbTar2$, mNmtTar1$, mNmtTar2$
 mFbTar1 = "c:\aa.mdb"
 mFbTar2 = "c:\bb.mdb"
-If Dlt_Fil(mFbTar1) Then Stop
-If Dlt_Fil(mFbTar2) Then Stop
+FfnDlt mFbTar1
+FfnDlt mFbTar2
 For mCase = 1 To 2
     Select Case mCase
     Case 1: mNmtq = "qryAllBrand"
@@ -232,6 +211,28 @@ End Function
 
 Function QryHasPrp(Q As QueryDef, PrpNm$) As Boolean
 QryHasPrp = PrpIsExist(PrpNm, Q.Properties)
+End Function
+
+Function QryLy(QnStr$, Optional SqlSubStr$, Optional A As database) As String()
+'Dim L%: L = Len(QryNmPfx)
+'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
+'    If Left(iQry.Name, L) = QryNmPfx Then If InStr(iQry.Sql, Sql_SubString) > 0 Then Debug.Print QryTyToStr(iQry.Type), iQry.Name
+'Next
+'End Function
+'Function Lst_QryPrm_ByPfx(QryNmPfx$, Optional pFno As Byte = 0) As Boolean
+'Dim L%: L = Len(QryNmPfx)
+'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
+'    If Left(iQry.Name, L) = QryNmPfx Then
+'        If iQry.Parameters.Count > 0 Then
+'            Prt_Str pFno, iQry.Name & "-----(Param)------>"
+'            Dim iPrm As DAO.parameter
+'            For Each iPrm In iQry.Parameters
+'                Prt_Str pFno, iPrm.Name
+'            Next
+'            Prt_Ln pFno
+'        End If
+'    End If
+'Next
 End Function
 
 Sub QryOpn(QryNm)
@@ -264,27 +265,39 @@ Else
 End If
 End Function
 
-Sub QrySetPrp(Q As QueryDef, PrpNm$, V)
+Sub QryRplSql(QnStr$, pFmSqlSubStr$, ToSqlSubStr$, Optional A As database)
+'Dim L%: L = Len(pPfx)
+'Dim iQry As QueryDef: For Each iQry In CurrentDb.QueryDefs
+'    If Left(iQry.Name, L) = pPfx Then
+'        If InStr(iQry.Sql, pFm) > 0 Then
+'            Debug.Print "replacing Qry ... "; iQry.Name
+'            iQry.Sql = Replace(iQry.Sql, pFm, pTo)
+'        End If
+'    End If
+'Next
+End Sub
+
+Sub QrySetPrp(A As QueryDef, PrpNm$, V)
 If VarIsBlank(V) Then
-    QryDrpPrp Q, PrpNm
+    QryDrpPrp A, PrpNm
     Exit Sub
 End If
 
-If QryHasPrp(Q, PrpNm) Then
-    Q.Properties(PrpNm).Value = V
+If QryHasPrp(A, PrpNm) Then
+    A.Properties(PrpNm).Value = V
 Else
-    Q.Properties.Append Q.CreateProperty(PrpNm, VarDaoTy(V), V)
+    A.Properties.Append A.CreateProperty(PrpNm, VarDaoTy(V), V)
 End If
 End Sub
 
-Function QrySetPrp_Bool(pQry As QueryDef, PrpNm$, V As Boolean) As Boolean
-On Error GoTo R
-pQry.Properties(PrpNm).Value = V
-Exit Function
-R: ss.R
-    Dim mPrp As DAO.Property: Set mPrp = pQry.CreateProperty(PrpNm, DAO.DataTypeEnum.dbBoolean, V)
-    pQry.Properties.Append mPrp
-End Function
+Sub QrySetPrp_Bool(A As QueryDef, PrpNm$, V As Boolean)
+If PrpIsExist(PrpNm, A.Properties) Then
+    A.Properties(PrpNm).Value = V
+Else
+    Dim P As DAO.Property: Set P = A.CreateProperty(PrpNm, DAO.DataTypeEnum.dbBoolean, V)
+    A.Properties.Append P
+End If
+End Sub
 
 Sub QrySetRmk(QryNm, Rmk$, Optional A As database)
 QrySetPrp Qry(QryNm, A), "Description", Rmk
@@ -296,4 +309,23 @@ End Sub
 
 Function QrySql$(QryNm, Optional A As database)
 QrySql$ = DbNz(A).QueryDefs(QryNm).Sql
+End Function
+
+Function QryTyToStr$(pTypQry As DAO.QueryDefTypeEnum)
+Select Case pTypQry
+Case DAO.QueryDefTypeEnum.dbQAction:    QryTyToStr = "Action"
+Case DAO.QueryDefTypeEnum.dbQAppend:    QryTyToStr = "Append"
+Case DAO.QueryDefTypeEnum.dbQCompound:  QryTyToStr = "Compound"
+Case DAO.QueryDefTypeEnum.dbQCrosstab:  QryTyToStr = "Crosstab"
+Case DAO.QueryDefTypeEnum.dbQDDL:       QryTyToStr = "DDL"
+Case DAO.QueryDefTypeEnum.dbQDelete:    QryTyToStr = "DDL"
+Case DAO.QueryDefTypeEnum.dbQMakeTable: QryTyToStr = "MakeTable"
+Case DAO.QueryDefTypeEnum.dbQProcedure: QryTyToStr = "Procedure"
+Case DAO.QueryDefTypeEnum.dbQSelect:    QryTyToStr = "Select"
+Case DAO.QueryDefTypeEnum.dbQSetOperation:  QryTyToStr = "SetOperation"   'Union
+Case DAO.QueryDefTypeEnum.dbQSPTBulk:       QryTyToStr = "SPTBulk"
+Case DAO.QueryDefTypeEnum.dbQSQLPassThrough: QryTyToStr = "SqlPassThrough"
+Case DAO.QueryDefTypeEnum.dbQUpdate:        QryTyToStr = "Update"
+Case Else: QryTyToStr = "Unknown(" & pTypQry & ")"
+End Select
 End Function

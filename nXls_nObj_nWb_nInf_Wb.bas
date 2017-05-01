@@ -12,50 +12,31 @@ For Each iWs In A.Sheets
 Next
 A.Sheets(1).Activate
 End Sub
-Function WbLy(A As Workbook) As String()
-'Dim iWs As Worksheet, iQt As QueryTable, iPt As PivotTable
-'For Each iWs In pWb.Worksheets
-'    If iWs.PivotTables.Count > 0 Then
-'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (PivotTables)", "-")
-'        For Each iPt In iWs.PivotTables
-'            Prt_Ln pFno, ToStr_Pt(iPt)
-'        Next
-'        Prt_Ln pFno
-'    End If
-'    If iWs.QueryTables.Count > 0 Then
-'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (QueryTables)", "-")
-'        For Each iQt In iWs.QueryTables
-'            Prt_Ln pFno, ToStr_Qt(iQt)
-'        Next
-'        Prt_Ln pFno
-'    End If
-'Next
-End Function
 
 Function WbAddCsv(A As Workbook, Fcsv$, Optional WsNm$, Optional KeepCsv As Boolean) As Worksheet
 'Aim: Add a new ws to {A} as {WsNm} from {Fcsv}.  If {WsNm} is not given, use {Fcsv} as worksheet name
 'Open {Fcsv} & Set as <FmWb>
-Dim OWs As Worksheet
+Dim oWs As Worksheet
 FfnAsstExt Fcsv, ".csv", "WbAddCsv"
 Dim FmWb As Workbook
     Set FmWb = A.Application.Workbooks.Open(Fcsv)
 Dim WsNm1$
     WsNm1 = NonBlank(WsNm, Fct.Nam_FilNam(Fcsv, False))
 'Add a new Ws as {oWs} of name {WsNm}
-Set OWs = WbAddWs(A, WsNm1)
+Set oWs = WbAddWs(A, WsNm1)
 
 'Copy from <FmWb.Sheet1> and Paste to <oWs>
 FmWb.Sheets(1).Cells.Copy
-OWs.Cells.PasteSpecial xlPasteAll
-OWs.Activate
-OWs.Range("A1").Select
+oWs.Cells.PasteSpecial xlPasteAll
+oWs.Activate
+oWs.Range("A1").Select
 
 'Close <FmWb>
 WbCls FmWb, NoSav:=True
 
 'Kill Fcsv
 If Not KeepCsv Then FfnDlt Fcsv
-Set WbAddCsv = OWs
+Set WbAddCsv = oWs
 End Function
 
 Function WbAddWs(A As Workbook, WsNm$) As Worksheet
@@ -107,9 +88,9 @@ Function WbFstWs(A As Workbook) As Worksheet
 Set WbFstWs = A.Sheets(1)
 End Function
 
-Function WbHasWs(A As Workbook, WsNm$) As Boolean
+Function WbHasWs(A As Workbook, WsIdx) As Boolean
 On Error GoTo R
-Dim W As Worksheet: Set W = A.Sheets(WsNm)
+Dim W As Worksheet: Set W = A.Sheets(WsIdx)
 WbHasWs = True
 Exit Function
 R:
@@ -143,6 +124,26 @@ End Sub
 
 Function WbLasWs(A As Workbook) As Worksheet
 Set WbLasWs = A.Sheets(A.Sheets.Count)
+End Function
+
+Function WbLy(A As Workbook) As String()
+'Dim iWs As Worksheet, iQt As QueryTable, iPt As PivotTable
+'For Each iWs In pWb.Worksheets
+'    If iWs.PivotTables.Count > 0 Then
+'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (PivotTables)", "-")
+'        For Each iPt In iWs.PivotTables
+'            Prt_Ln pFno, PtToStr(iPt)
+'        Next
+'        Prt_Ln pFno
+'    End If
+'    If iWs.QueryTables.Count > 0 Then
+'        Prt_Ln pFno, Fct.UnderlineStr("Worksheet " & iWs.Name & " (QueryTables)", "-")
+'        For Each iQt In iWs.QueryTables
+'            Prt_Ln pFno, QtToStr(iQt)
+'        Next
+'        Prt_Ln pFno
+'    End If
+'Next
 End Function
 
 Function WbNew(Optional Fx$, Optional Vis As Boolean) As Workbook
@@ -227,6 +228,13 @@ For Each W In A.Sheets
 Next
 End Sub
 
+Function WbToStr$(A As Workbook)
+On Error GoTo R
+WbToStr = A.FullName
+Exit Function
+R: WbToStr = "WbToStr error: Msg=" & Err.Description
+End Function
+
 Sub WbVis(A As Workbook)
 A.Application.Visible = True
 End Sub
@@ -235,13 +243,13 @@ Function WbWs(W As Workbook, WsIdx) As Worksheet
 Set WbWs = W.Sheets(WsIdx)
 End Function
 
-Function WbWsAy(A As Workbook) As Worksheet()
+Function WbWsAy(A As Workbook, Optional InclHid) As Worksheet()
 Dim O() As Worksheet
-WbWsAy = ObjCollAy(A.Sheets, O)
+WbWsAy = CollOy(A.Sheets, O)
 End Function
 
-Function WbWsNy(A As Workbook) As String()
-WbWsNy = ObjAyNy(WbWsAy(A))
+Function WbWsNy(A As Workbook, Optional InclHid As Boolean) As String()
+WbWsNy = OyPrp_Nm(WbWsAy(A, InclHid))
 End Function
 
 Sub WbWsNy__Tst()

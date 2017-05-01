@@ -28,7 +28,7 @@ ElseIf pN > 5 Then
 Else
     If pX <> "" And pX <> "x" And pX <> "xx" And pX <> "xxx" Then ss.A 1, "If pN between 1-5, pX must be '','x',..'xxx'", ePrmErr: GoTo E
 End If
-', Optional pForCrt As Boolean = False
+', Optional pForCrt As Boolean
 'If pForCrt Then Exit Function
 If pN = 0 Then
     Dim J%
@@ -39,9 +39,9 @@ If pN = 0 Then
     Exit Function
 End If
 If pX = "xxx" Then
-    mR = Fmt_Str("Ty{0}{1}{2},NmTy{0}{1}{2},DesTy{0}{1}{2}", pItm, pN, pX)
+    mR = Fmt("Ty{0}{1}{2},NmTy{0}{1}{2},DesTy{0}{1}{2}", pItm, pN, pX)
 Else
-    mR = Fmt_Str("Ty{0}{1}{2},NmTy{0}{1}{2},Ty{0}{1}{2}x,DesTy{0}{1}{2}", pItm, pN, pX)
+    mR = Fmt("Ty{0}{1}{2},NmTy{0}{1}{2},Ty{0}{1}{2}x,DesTy{0}{1}{2}", pItm, pN, pX)
 End If
 Bld_Struct_ForTy = mR
 Exit Function
@@ -84,7 +84,7 @@ On Error GoTo R
 mR = "Nm" & pItm
 Dim J%
 For J = 1 To pMaxTy
-    mR = mR & Fmt_Str(",NmTy{0}{1},NmTy{0}{1}x,NmTy{0}{1}xx,NmTy{0}{1}xxx", pItm, J)
+    mR = mR & Fmt(",NmTy{0}{1},NmTy{0}{1}x,NmTy{0}{1}xx,NmTy{0}{1}xxx", pItm, J)
 Next
 Bld_Struct_ForTy_Import = mR
 Exit Function
@@ -107,7 +107,7 @@ Dim N2%: N2 = Sz(mAv)
 If N1 <> N2 Then Er "Count in pLp & pVayv mismatch", "Cnt in pLp, Cnt in pVayv", N1, N2
 Dim J%: For J = 0 To N1 - 1
     Dim mA$: mA = mAn(J) & " in (" & mAv(J) & ")"
-    OWhere = Add_Str(OWhere, mA, " and ")
+    OWhere = Push(OWhere, mA, " and ")
 Next
 If OWhere <> "" Then OWhere = " Where " & OWhere
 WhereBld = OWhere

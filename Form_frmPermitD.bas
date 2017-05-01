@@ -32,7 +32,7 @@ End Sub
 Private Sub CmdDlt_Click()
 AppaSavRec
 If IsNull(Me.Sku.Value) Then Exit Sub
-SqlRun Fmt_Str("Delete From PermitD where Permit={0} and Sku='{1}'", x_Permit, Me.Sku.Value)
+SqlRun Fmt("Delete From PermitD where Permit={0} and Sku='{1}'", x_Permit, Me.Sku.Value)
 Me.Requery
 End Sub
 
@@ -160,7 +160,7 @@ mSku = Me.Sku.Value
 mBchNo = Me.BchNo.Value
 MRate = Me.Rate.Value
 If IsNull(mSku) Or IsNull(mBchNo) Or IsNull(MRate) Then Exit Sub
-With CurrentDb.OpenRecordset(Fmt_Str("Select * from SkuB where Sku='{0}' and BchNo='{1}'", mSku, mBchNo))
+With CurrentDb.OpenRecordset(Fmt("Select * from SkuB where Sku='{0}' and BchNo='{1}'", mSku, mBchNo))
     If .EOF Then
         .AddNew
         !Sku = mSku

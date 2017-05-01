@@ -12,7 +12,7 @@ If Sz(Nod) <> 2 Then O = ErNew("Given Nod-{Sz} should be 2", Sz(Nod)): Exit Func
 If Not VarIsStr(Nod(0)) Then O = ErNew("Given Nod(0)-{Ty} should be Str", TypeName(Nod(0)))
 If Not VarIsSy(Nod(1)) Then O = ErApd(O, "Given Nod(1)-{Ty} should be StrAy", TypeName(Nod(1)))
 If Trim(Nod(0)) = "" Then O = ErApd(O, "Given Nod(0) should not be *Blank")
-If AyHasDup(Nod(1)) Then O = ErApd(O, "Given Nod(1) should not have dup item", AyJn(AyDupItm(Nod(1)), " "))
+If AyHasDup(Nod(1)) Then O = ErApd(O, "Given Nod(1) should not have dup item", Jn(AyDupItm(Nod(1)), " "))
 NodChkVdt = O
 End Function
 
@@ -28,7 +28,7 @@ End Function
 
 Function NodNew(RelLin) As Variant()
 Dim O(1)
-With StrBrk(RelLin, ":")
+With Brk(RelLin, ":")
     O(0) = .S1
     O(1) = LvsSplit(.S2)
 End With
@@ -50,5 +50,5 @@ Debug.Assert Chd(2) = "D"
 End Sub
 
 Function NodToStr$(Nod())
-NodToStr = Nod(0) & " : " & AyJn(Nod(1), " ")
+NodToStr = Nod(0) & " : " & Jn(Nod(1), " ")
 End Function

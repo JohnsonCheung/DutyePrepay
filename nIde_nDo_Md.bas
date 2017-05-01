@@ -89,7 +89,7 @@ End Sub
 Sub MdRenPfx(FmPfx$, ToPfx$, Optional Pj As vbproject)
 Dim P As vbproject: Set P = PjNz(Pj)
 Dim FmAy1$(): FmAy1 = PjMdNy(P)                         ' FmAy = From Module-Name-Array
-Dim FmAy$():   FmAy = AyLik(FmAy1, FmPfx & "*")
+Dim FmAy$():   FmAy = AySelLik(FmAy1, FmPfx & "*")
 Dim ToNm$, J%, ToNm1$
 For J = 0 To UB(FmAy)
     ToNm1 = ToPfx & RmvPfx(FmAy(J), FmPfx)
@@ -191,10 +191,7 @@ With P
     MdNz(A).CodePane.SetSelection .L1, .C1, .L2, .C2
 End With
 End Sub
-Function MdFnd(S$, Optional A As CodeModule) As Variant()
 
-
-End Function
 Sub MdShw(A As CodeModule)
 A.CodePane.Show
 End Sub

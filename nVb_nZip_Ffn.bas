@@ -8,9 +8,9 @@ FfnAsstExt Ffn, ".zip", "FfnUnzip"
 Dim Fzip$
     Fzip = FfnRplExt(Ffn, ".zip")
 FfnAsstNotExist Fzip, "FfnUnZip"
-Dim OCmd$
-OCmd = FmtQQ("""?"" x -p20071122 ""?"" ""?""", Pgm, Fzip, Ffn)
-Shell OCmd, vbHide
+Dim oCmd$
+oCmd = FmtQQ("""?"" x -p20071122 ""?"" ""?""", Pgm, Fzip, Ffn)
+Shell oCmd, vbHide
 End Sub
 
 Sub FfnZip(Ffn)
@@ -18,9 +18,9 @@ If Right(Ffn, 4) = ".zip" Then Er "Given {Ffn} cannot end with .zip", Ffn
 FfnAsstExist Ffn, "FfnZip"
 Dim Fzip$
     Fzip = FfnRplExt(Ffn, ".zip")
-Dim OCmd$
-    OCmd = FmtQQ("""?"" a -p20071122 ""?"" ""?""", Pgm, Fzip, Ffn)
-Shell OCmd, vbHide
+Dim oCmd$
+    oCmd = FmtQQ("""?"" a -p20071122 ""?"" ""?""", Pgm, Fzip, Ffn)
+Shell oCmd, vbHide
 End Sub
 
 Sub FfnZip__Tst()

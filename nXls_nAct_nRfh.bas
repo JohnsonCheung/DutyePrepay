@@ -2,15 +2,26 @@ Attribute VB_Name = "nXls_nAct_nRfh"
 Option Compare Database
 Option Explicit
 
+Sub ChtObjRfh(A As ChartObject)
+On Error Resume Next
+If IsNothing(A.Chart) Then Exit Sub
+ChtRfh A.Chart
+End Sub
+
+Sub ChtRfh(A As Chart)
+On Error Resume Next
+If IsNothing(A.PivotLayout) Then Exit Sub
+PtRfh A.PivotLayout.PivotTable
+End Sub
+
 Function LoRfh(A As ListObject)
 On Error Resume Next
 QtRfh A.QueryTable
 End Function
 
-
 Sub PcRfh(A As PivotCache)
 If A.SourceType <> xlDatabase Then Exit Sub
-A.Connection = CnnStrFbOle(CurrentDb.Name)
+A.Connection = CnnStrLnkFbOle(CurrentDb.Name)
 A.BackgroundQuery = False
 A.MissingItemsLimit = xlMissingItemsNone
 'If pLExpr <> "" Then
@@ -20,6 +31,23 @@ A.MissingItemsLimit = xlMissingItemsNone
 'End If
 On Error Resume Next
 A.Refresh
+End Sub
+
+Sub PtRfh(A As PivotTable)
+On Error Resume Next
+A.RefreshTable
+End Sub
+
+Sub QtRfh(A As QueryTable)
+On Error Resume Next
+'If pLExpr <> "" Then
+'    If .CommandType <> xlCmdSql Then ss.A 4, "Given Command Type must be Sql": GoTo E
+'    If InStr(.CommandText, "where") > 0 Then ss.A 5, "Given Sql should have have where": GoTo E
+'    .CommandText = .CommandText & " WHERE " & pLExpr
+'End If
+A.Connection = CnnStrLnkFbOle(CurrentDb.Name)
+A.BackgroundQuery = False
+A.Refresh False
 End Sub
 
 Sub WbRfh(A As Workbook)
@@ -55,39 +83,6 @@ For Each Pc In A.PivotCaches
     PcRfh Pc
 Next
 End Sub
-
-Sub QtRfh(A As QueryTable)
-On Error Resume Next
-'If pLExpr <> "" Then
-'    If .CommandType <> xlCmdSql Then ss.A 4, "Given Command Type must be Sql": GoTo E
-'    If InStr(.CommandText, "where") > 0 Then ss.A 5, "Given Sql should have have where": GoTo E
-'    .CommandText = .CommandText & " WHERE " & pLExpr
-'End If
-A.Connection = CnnStrFbOle(CurrentDb.Name)
-A.BackgroundQuery = False
-A.Refresh False
-End Sub
-
-
-Sub ChtRfh(A As Chart)
-On Error Resume Next
-If IsNothing(A.PivotLayout) Then Exit Sub
-PtRfh A.PivotLayout.PivotTable
-End Sub
-
-
-Sub ChtObjRfh(A As ChartObject)
-On Error Resume Next
-If IsNothing(A.Chart) Then Exit Sub
-ChtRfh A.Chart
-End Sub
-
-
-Sub PtRfh(A As PivotTable)
-On Error Resume Next
-A.RefreshTable
-End Sub
-
 
 Sub WsRfh(A As Worksheet)
 WsRfhLo A

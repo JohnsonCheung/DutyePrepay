@@ -4,9 +4,9 @@ Option Explicit
 
 Sub DtfCrt(Dtf$, Sql$, IP$ _
     , Optional Lib$ = "RBPCSF" _
-    , Optional IsByXls As Boolean = False _
-    , Optional IsRun As Boolean = False _
-    , Optional ONrec& = 0 _
+    , Optional IsByXls As Boolean _
+    , Optional IsRun As Boolean _
+    , Optional oNRec& = 0 _
     )
 'Aim: Build a file [Dtf]  by [{Sql}, {IP}, {Lib}] with optional to run it.
 '     which will download data to [FfnDownload] with Fdf in same directory as Dtf.  If no data is download empty Txt or empty Xls will be created according to FDF
@@ -26,7 +26,7 @@ If IsRun Then
         Dim A$
             A = IIf(IsByXls, ".xls", ".txt")
         FfnDownload = FfnRplExt(Dtf, A)
-    DtfRun Dtf, FfnDownload, ONrec
+    DtfRun Dtf, FfnDownload, oNRec
 End If
 End Sub
 
@@ -74,7 +74,7 @@ Dim S$
 DtfCxt = FmtNm(Tp, "IP,Lib,Sql,ConvTy,Fdf,FfnDownload,PCFilTy,SavFDF", IP, Lib, S, ConvTy, Fdf, FfnDownload, PCFilTy, SavFDF)
 End Function
 
-Function DtfRun(Dtf$, FfnDownload$, Optional ONrec& = 0) As Boolean
+Function DtfRun(Dtf$, FfnDownload$, Optional oNRec& = 0) As Boolean
 'Aim:   Run {Dtf}, which assume to download data to {FfnDownload} & create [mFfnFdf] & return {oNRec}
 'Side Effects:
 ''    Delete:
@@ -96,20 +96,20 @@ Do
     Dim mDir$: mDir = Fct.Nam_DirNam(Dtf)
     mFfnBat = mDir & "Download.Bat"
     mFfnDownloadEnd = mDir & "DownloadEnd"
-    If Dlt_Fil(mDir & "EndDownload") Then ss.A 2: GoTo E
+    FfnDlt mDir & "EndDownload"
 
     mFfnDtfMsg = Dtf & ".txt"
     Dim mFno As Byte: If Opn_Fil_ForOutput(mFno, mFfnBat, True) Then ss.A 3: GoTo E
-    Print #mFno, Fmt_Str("rtopcb /s ""{0}"" >""{1}""", Dtf, mFfnDtfMsg)
-    Print #mFno, Fmt_Str("echo >""{0}""", mFfnDownloadEnd)
+    Print #mFno, Fmt("rtopcb /s ""{0}"" >""{1}""", Dtf, mFfnDtfMsg)
+    Print #mFno, Fmt("echo >""{0}""", mFfnDownloadEnd)
     Close #mFno
 Loop Until True
 'Do Run {mFfnBat} to download data to {FfnDownload} & with msg send to {mFfnDtfMsg}
 Do
-    If Dlt_Fil(FfnDownload) Then ss.A 1: GoTo E
+    FfnDlt FfnDownload
     Shell """" & mFfnBat & """", vbHide
     If Fct.WaitFor(mFfnDownloadEnd, "[" & FfnDownload & "] <--Downloading File" & vbCrLf & "[" & Dtf & "] <--By Dtf File") Then ss.A 1, "User has cancelled to wait": GoTo E
-    Dlt_Fil mFfnBat
+    FfnDlt mFfnBat
 Loop Until True
 
 'Find {oNRec} from {mFfnDtfMsg}
@@ -120,7 +120,7 @@ Stop
 Dim mFfnFdf$: mFfnFdf = Cut_Ext(Dtf) & ".Fdf"
 Do
     If VBA.Dir(FfnDownload) = "" Then
-        If ONrec > 0 Then ss.A 5, "No FfnDownload is found, but NRec>0", eImpossibleReachHere: GoTo E
+        If oNRec > 0 Then ss.A 5, "No FfnDownload is found, but NRec>0", eImpossibleReachHere: GoTo E
         Select Case Right(FfnDownload, 4)
         Case ".xls"
             Dim mWb As Workbook: If Crt_Xls_FmFDF(FfnDownload, mFfnFdf) Then ss.A 6: GoTo E
@@ -132,7 +132,7 @@ Do
         End Select
     End If
 Loop Until True
-If ONrec > 0 Then Dlt_Fil Dtf
+If oNRec > 0 Then FfnDlt Dtf
 Exit Function
 R: ss.R
 E:

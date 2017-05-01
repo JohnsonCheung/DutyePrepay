@@ -126,7 +126,7 @@ Dim Rate@
 PermitDAy = RR_2BchCurrentDb_3AyPermitD(OH, PermitDAy, RateAy, QtyAy, Rate) ' Find continuous PermitD's of same rate with quantity can cover bOH(J).
 '                                                                          ' After found, return mAyPermitD, Rate, oIdx and set QtyAy to zero
 If Sz(PermitDAy) > 0 Then
-    ZRun "Update PermitD set BchNo='?' where PermitD in (?) and SKU='?'", BchNo, AyJnComma(PermitDAy), Sku
+    ZRun "Update PermitD set BchNo='?' where PermitD in (?) and SKU='?'", BchNo, JnComma(PermitDAy), Sku
     ZRun "Insert into SkuB (Sku,BchNo,DutyRateB) values ('?','?',?)", Sku, BchNo, Rate
 End If
 End Sub
@@ -272,7 +272,7 @@ Dim OIns_TblSkuB$()
         Idx = AyCoverIdx(QtyAy, OH) ' Find those Lot's quantity can cover OHAy(J)
         If Idx >= 0 Then
             PermitDAy = SqlLngAy("Select PermitD from `#Assign_LotD` where Lot=" & LotAy(Idx))
-            Push OUpd_TblPermitD, FmtQQ("Update PermitD set BchNo='?' where PermitD in (?) and SKU='?'", BchNo, AyJnComma(PermitDAy), Sku)
+            Push OUpd_TblPermitD, FmtQQ("Update PermitD set BchNo='?' where PermitD in (?) and SKU='?'", BchNo, JnComma(PermitDAy), Sku)
             Push OIns_TblSkuB, FmtQQ("Insert into SkuB (Sku,BchNo,DutyRateB) values ('?','?',?)", Sku, BchNo, RateAy(Idx))
         End If
     Next

@@ -77,72 +77,6 @@ Next
 DbQny = O
 End Function
 
-Function DbRelCrt(pNmRel$, TFm$, TTo$, pLmFld$ _
-    , Optional pIsIntegral As Boolean = False, Optional pIsCascadeUpd As Boolean = False, Optional pIsCascadeDlt As Boolean = False, Optional A As database) As Boolean
-'Aim: Create a relation. {pLmFld} is format of xx=yy,cc,dd=ee
-Const cSub$ = "DbRelCrt"
-On Error GoTo R
-Dim mDb As database: Set mDb = DbNz(A)
-If IsRel(pNmRel) Then ss.A 1: GoTo E
-Dim mAm() As tMap: mAm = Get_Am_ByLm(pLmFld)
-If Siz_Am(mAm) = 0 Then ss.A 3, "pLmFld given 0 siz Am()": GoTo E
-On Error GoTo R
-Dim mRelAtr As DAO.RelationAttributeEnum
-If Not pIsIntegral Then mRelAtr = dbRelationDontEnforce
-If pIsCascadeUpd Then mRelAtr = mRelAtr Or dbRelationUpdateCascade
-If pIsCascadeDlt Then mRelAtr = mRelAtr Or dbRelationDeleteCascade
-Dim mRel As DAO.Relation: Set mRel = mDb.CreateRelation(pNmRel, TFm, TTo, mRelAtr)
-Dim J%
-For J = 0 To Siz_Am(mAm) - 1
-    With mAm(J)
-        mRel.Fields.Append mRel.CreateField(.F1)
-        mRel.Fields(.F1).ForeignName = .F2
-    End With
-Next
-mDb.Relations.Append mRel
-Exit Function
-R: ss.R
-E:
-End Function
-
-Function DbRelCrt__Tst()
-DbRelCrt "xxx#xx", "0Rec", "1Rec", "x", True, True, True
-End Function
-
-Function DbRelCrt_FmTbl(T$) As Boolean
-'Aim: Create Relation for each record in {T}: Fb,NmTbl,NmTblTo,RelNo,IsCascadeDlt,IsCascadeUpd,LmFld
-Const cSub$ = "DbRelCrt_FmTbl"
-If Chk_Struct_Tbl(T, "Fb,NmTbl,NmTblTo,RelNo,IsCascadeDlt,IsCascadeUpd,LmFld") Then ss.A 1: GoTo E
-On Error GoTo R
-Dim mNmt$: mNmt = Q_SqBkt(T)
-Dim mAyFb$(): mAyFb = SqlSy("Select Distinct Fb from " & mNmt)
-Dim J%
-For J = 0 To Sz(mAyFb) - 1
-    Dim mDb As database: If Opn_Db_RW(mDb, mAyFb(J)) Then ss.A 3: GoTo E
-    Dim mRs As DAO.Recordset, mSql$
-    mSql = Bld_SqlSel( _
-        "NmTbl,NmTblTo,RelNo,IsCascadeDlt,IsCascadeUpd,LmFld" _
-        , mNmt _
-        , "Fb='" & mAyFb(J) & "'" _
-        , "NmTbl,RelNo")
-    If Opn_Rs(mRs, mSql) Then ss.A 4: GoTo E
-    With mRs
-        While Not .EOF
-            If DbRelCrt(!NmTbl & "R" & Format(!RelNo, "00"), "$" & !NmTbl, "$" & !NmTblTo, !LmFld, True, !IsCascadeUpd, !IsCascadeDlt, mDb) Then ss.A 5: GoTo E
-            .MoveNext
-        Wend
-        .Close
-    End With
-    Cls_Db mDb
-Next
-GoTo X
-R: ss.R
-E:
-X:
-    RsCls mRs
-    Cls_Db mDb
-End Function
-
 Sub DbRunSql(Sql, Optional A As database)
 DbNz(A).Execute Sql
 End Sub
@@ -157,15 +91,6 @@ Dim Ly$(), D As database: Set D = DbNz(A)
 Dim T$(): T = DbTny(D)
 Ly = AyMapInto(T, Ly, "TblStru", D)
 DbStru = LyJn(Ly)
-End Function
-
-Function DbTblDefAy(D As database) As TableDef()
-Dim O() As TableDef
-Dim I As TableDef, J%
-For Each I In D.TableDefs
-    PushObj O, I
-Next
-DbTblDefAy = O
 End Function
 
 Function DbTblFldDt(A As database) As Dt

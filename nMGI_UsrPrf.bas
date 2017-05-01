@@ -25,8 +25,8 @@ End Sub
 Sub LetXXX()
 'Property Let UsrPrf_{B}(p{B}&)
 'Const cSub$ = "UsrPrf_{B}"
-'If Run_Sql_ByDbExec(Fmt_Str("Update tblUsr SET {B}={B} Where Usr={1}", p{B}, X.UsrPrf_Usr), CodeDb) Then ss.A 1: GoTo E
-'Dim mA$: If Fnd_ValFmSql(mA, Fmt_Str("Select Nm{B} from tbl{B} where {B}={B}", p{B}), CodeDb) Then ss.A 2: GoTo E
+'If Run_Sql_ByDbExec(Fmt("Update tblUsr SET {B}={B} Where Usr={1}", p{B}, X.UsrPrf_Usr), CodeDb) Then ss.A 1: GoTo E
+'Dim mA$: If Fnd_ValFmSql(mA, Fmt("Select Nm{B} from tbl{B} where {B}={B}", p{B}), CodeDb) Then ss.A 2: GoTo E
 'X.Nm{B} = mA
 'X.{B} = p{B}
 'Exit Function

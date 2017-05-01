@@ -29,7 +29,7 @@ End Function
 
 Function ApJnComma$(ParamArray Ap())
 Dim Av(): Av = Ap
-ApJnComma = AyJn(Av, CtComma)
+ApJnComma = Jn(Av, CtComma)
 End Function
 
 Function ApLngAy(ParamArray Ap()) As Long()

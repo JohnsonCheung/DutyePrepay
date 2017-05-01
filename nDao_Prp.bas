@@ -14,3 +14,11 @@ For Each I In A
     If I.Name = PrpNm Then PrpIsExist = True: Exit Function
 Next
 End Function
+
+Function PrpToStr$(A As DAO.Property)
+On Error GoTo R
+Dim mNm$: mNm = A.Name
+PrpToStr = mNm & "=[" & A.Value & "]"
+Exit Function
+R: PrpToStr = ErStr("PrpToStr")
+End Function

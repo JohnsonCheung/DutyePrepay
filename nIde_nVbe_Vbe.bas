@@ -2,14 +2,6 @@ Attribute VB_Name = "nIde_nVbe_Vbe"
 Option Compare Database
 Option Explicit
 
-Function VbeNz(Optional A As Vbe) As Vbe
-If IsNothing(A) Then
-    Set VbeNz = Application.Vbe
-Else
-    Set VbeNz = Vbe
-End If
-End Function
-
 Function Pj(PjNm$, Optional A As Vbe) As vbproject
 If PjNm = "" Then
     Set Pj = VbeNz(A).ActiveVBProject
@@ -32,6 +24,14 @@ Dim N%: N = V.VBProjects.Count
 Set VbeLasPj = V.VBProjects(N)
 End Function
 
+Function VbeNz(Optional A As Vbe) As Vbe
+If IsNothing(A) Then
+    Set VbeNz = Application.Vbe
+Else
+    Set VbeNz = Vbe
+End If
+End Function
+
 Function VbePjAy(Optional A As VBIDE.Vbe) As vbproject()
 Dim O() As vbproject, I As vbproject
 For Each I In VbeNz(A).VBProjects
@@ -41,5 +41,5 @@ VbePjAy = O
 End Function
 
 Function VbePjNy(Optional A As VBIDE.Vbe) As String()
-VbePjNy = ObjAyPrp(VbePjAy(A), "Name", ApSy)
+VbePjNy = OyPrp_Nm(VbePjAy(A))
 End Function

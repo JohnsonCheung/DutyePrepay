@@ -254,7 +254,7 @@ Sub WsFmtOL_ByCol(Rg As Range, Optional pCithOL As Byte = 1, Optional pCithIns A
 'Rg(1, pCithOL).EntireColumn.ColumnWidth = 5
 'Exit Sub
 'R: ss.R
-'E: WsFmtOL_ByCol = True: ss.B cSub, cMod, "Rg,pCithOL,pCithIns", ToStr_Rge(Rg), pCithOL, pCithIns
+'E: WsFmtOL_ByCol = True: ss.B cSub, cMod, "Rg,pCithOL,pCithIns", RgToStr(Rg), pCithOL, pCithIns
 End Sub
 
 Sub WsFmtOutLine(A As Worksheet)  '(P As WsFmtOL)

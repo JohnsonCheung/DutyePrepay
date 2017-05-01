@@ -32,7 +32,7 @@ End Type
 
 Function OptSy(SyOpt) As String()
 If VarIsStr(SyOpt) Then
-    OptSy = NmstrBrk(SyOpt)
+    OptSy = NmBrk(SyOpt)
 ElseIf VarIsSy(SyOpt) Then
     OptSy = SyOpt
 ElseIf IsMissing(SyOpt) Then

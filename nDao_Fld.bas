@@ -4,9 +4,9 @@ Option Explicit
 
 Function FldNew(OFld As DAO.Field, pNmFld$, pTyp As DAO.DataTypeEnum _
     , Optional pSiz As Byte = 0 _
-    , Optional pIsAuto As Boolean = False _
-    , Optional pAlwZerLen As Boolean = False _
-    , Optional pIsReq As Boolean = False _
+    , Optional pIsAuto As Boolean _
+    , Optional pAlwZerLen As Boolean _
+    , Optional pIsReq As Boolean _
     , Optional pDftVal$ _
     , Optional pFmtTxt$ = "" _
     , Optional pVdtTxt$ = "" _
@@ -70,6 +70,19 @@ End Function
 Function FldNew_FmRsTblF__Tst()
 End Function
 
+Function FldRelToStr$(A As DAO.Field)
+On Error GoTo R
+With A
+    If .Name = .ForeignName Then
+        FldRelToStr = .Name
+    Else
+        FldRelToStr = .Name & "=" & .ForeignName
+    End If
+End With
+Exit Function
+R: FldRelToStr = ErStr("FldRelToStr")
+End Function
+
 Function FldToDclStr$(Fld As DAO.Field)
 Dim O$
 Select Case Fld.Type
@@ -79,5 +92,38 @@ Case Else
                               O = DaoTySql(Fld.Type)
 End Select
 FldToDclStr = O
+End Function
+
+Function FldToStr$(A As DAO.Field, Optional InclTy As Boolean, Optional InclVal As Boolean)
+With A
+    If InclTy Then
+        If InclVal Then FldToStr = .Name & ":" & FldTyToStr(A) & "=" & FldToStrVal(A): Exit Function
+        FldToStr = .Name & ":" & FldTyToStr(A)
+        Exit Function
+    End If
+    If InclVal Then FldToStr = .Name & "=" & Nz(.ValidateOnSet, "Null"): Exit Function
+    FldToStr = .Name
+End With
+End Function
+
+Function FldToStr_Dcl$(A As DAO.Field)
+FldToStr_Dcl = A.Name & " " & Cv_Fld2Dcl(A)
+End Function
+
+Function FldToStrVal$(A As DAO.Field)
+On Error GoTo R
+FldToStrVal = A.Value
+Exit Function
+R: FldToStrVal = ErStr("FldToStrVal")
+End Function
+
+Function FldTyToStr$(A As DAO.Field)
+With A
+    If .Type = dbText Then
+        FldTyToStr = DaoTyToStr(.Type) & .Size
+    Else
+        FldTyToStr = DaoTyToStr(.Type)
+    End If
+End With
 End Function
 

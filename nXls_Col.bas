@@ -2,8 +2,8 @@ Attribute VB_Name = "nXls_Col"
 Option Compare Database
 Option Explicit
 
-Function ColNxtN$(Col$, NCol%)
-If NCol = 0 Then ColNxtN = Col: Exit Function
+Function ColNxtN$(Col$, nCol%)
+If nCol = 0 Then ColNxtN = Col: Exit Function
 Dim A$
     A = UCase(Col)
 If Len(A) = 1 Then

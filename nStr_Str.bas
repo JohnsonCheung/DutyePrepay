@@ -20,6 +20,36 @@ Function AddSpcBef$(S)
 AddSpcBef = AddItmBef(S, " ")
 End Function
 
+Function ExpdSeq(Beg&, N&, Optional FmtStr$ = "{N}", Optional MacroStr$ = "{N}") As String()
+'Aim: Build a string to repeating {pFmtStr} {pN} times from {pBeg} with separated by {pSepChr}.  {pFmtStr} has {N} as the Idx.
+Dim O$()
+Dim J&
+For J = Beg To Beg + N - 1
+    Push O, Replace(FmtStr, MacroStr, J)
+Next
+ExpdSeq = O
+End Function
+
+Sub ExpdSeq__Tst()
+Dim mExpr$
+mExpr = "ExpdSeq(0, 10, ""a{N} as xx{N}"")"
+Debug.Print "================="
+Debug.Print mExpr
+AyDmp Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
+Debug.Print
+mExpr = "ExpdSeq(1, 10, ""a{N} as xx{N}"")"
+Debug.Print mExpr
+AyDmp Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
+End Sub
+
+Function ExpdSeq1$(A%, Optional B% = 2)
+ExpdSeq1 = "AA" & A & B
+End Function
+
+Sub ExpdSeq1__Tst()
+Dim A$(): A = Eval("ExpdSeq(1,10)")
+End Sub
+
 Function FstAsc%(S)
 FstAsc = Asc(Left(S, 1))
 End Function
@@ -149,28 +179,6 @@ Sy = Split("<Itm1>,<Itm2>,<Itm3>,<Itm4>", ",")
 Debug.Print StrExpd(mLines, Sy, vbCrLf)
 End Sub
 
-Function StrExpdSeq$(pBeg As Byte, pN As Byte, Optional pFmtStr$ = "{N}", Optional pSepChr$ = CtComma, Optional pMacroStr$ = "{N}")
-'Aim: Build a string to repeating {pFmtStr} {pN} times from {pBeg} with separated by {pSepChr}.  {pFmtStr} has {N} as the Idx.
-Const cSub$ = "StrExpdSeq"
-Dim mA$, J As Byte
-For J = pBeg To pBeg + pN - 1
-    mA = Add_Str(mA, Replace(pFmtStr, pMacroStr, J), pSepChr)
-Next
-StrExpdSeq = mA
-End Function
-
-Sub StrExpdSeq__Tst()
-Dim mExpr$
-mExpr = "StrExpdSeq(0, 10, ""a{N} as xx{N}"")"
-Debug.Print "================="
-Debug.Print mExpr
-Debug.Print Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
-Debug.Print
-mExpr = "StrExpdSeq(1, 10, ""a{N} as xx{N}"")"
-Debug.Print mExpr
-Debug.Print Eval(mExpr) ' StrExpdSeq(1, 10, "a{N} as xx{N}")
-End Sub
-
 Function StrExpdToSy(S, SyOpt, Optional MacroStr$ = "{?}") As String()
 'Aim: Format a string with {?} by repeatly join it after substitue {?} by pAn$(0 to N)
 Dim OSy$(): OSy = OptSy(SyOpt)
@@ -253,24 +261,6 @@ Function StrLik(S, LikStr) As Boolean
 'Debug.Print S, LikStr, S Like LikStr
 StrLik = S Like LikStr
 End Function
-
-Function StrMacroAy(S, Optional ExclBkt As Boolean) As String()
-Dim A$(): A = Split(S, "{")
-Dim O$(), J&, P&
-For J = 1 To UB(A)
-    P = InStr(A(J), "}")
-    If P > 1 Then
-        PushNoDup O, Left(A(J), P - 1)
-    End If
-Next
-If Not ExclBkt Then O = AyQuote(O, "{}")
-StrMacroAy = O
-End Function
-
-Sub StrMacroAy__Tst()
-AyAsstEq StrMacroAy("{a} b {d} {cccc}dd", ExclBkt:=True), ApSy("a", "d", "cccc")
-AyAsstEq StrMacroAy("{a} b {d} {cccc}dd"), ApSy("{a}", "{d}", "{cccc}")
-End Sub
 
 Function StrNz$(S, Nz)
 If S = "" Then StrNz = Nz Else StrNz = S

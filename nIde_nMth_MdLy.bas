@@ -51,7 +51,7 @@ End Function
 
 Function MdLyToMthBIdxAy(MdLy$(), MthNm$, Optional PrpTy$, Optional FmI&) As Long()
 Dim M(): M = MdLy_ToMthTy_BIdx_DrAy(MdLy, MthNm, PrpTy, FmI)
-MdLyToMthBIdxAy = DrAyCol_LngAy(M)
+MdLyToMthBIdxAy = DrAyCol_Lng(M)
 End Function
 
 Private Function MdLy_ToMthTy_BIdx_DrAy(MdLy$(), MthNm$, Optional PrpTy$, Optional FmI&) As Variant()

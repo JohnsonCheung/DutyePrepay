@@ -2,6 +2,10 @@ Attribute VB_Name = "nDao_Flds"
 Option Compare Database
 Option Explicit
 
+Function Flds(T, Optional A As database) As DAO.Fields
+Set Flds = Tbl(T, A).Fields
+End Function
+
 Function FldsDr(A As DAO.Fields, Optional FstNFld% = 0) As Variant()
 Dim N%:
     If FstNFld <= 0 Then
@@ -35,7 +39,7 @@ FldsFldAy = O
 End Function
 
 Function FldsFny(Flds As DAO.Fields, Optional FstNFld%) As String()
-FldsFny = ObjAyPrp(FldsFldAy(Flds, FstNFld), "Name", ApSy)
+FldsFny = OyPrp_Nm(FldsFldAy(Flds, FstNFld))
 End Function
 
 Sub FldsFny__Tst()
@@ -47,4 +51,13 @@ Dim I As Field
 For Each I In Flds
     If I.Name = F Then FldsHasFld = True: Exit Function
 Next
+End Function
+
+Function FldsToStr$(F As DAO.Fields, Optional InclTy As Boolean, Optional InclVal As Boolean)
+Dim O$(), I, II As Field
+For Each I In F
+    Set II = I
+    Push O, FldToStr(II, InclTy, InclVal)
+Next
+FldsToStr = Jn(O, vbCrLf)
 End Function

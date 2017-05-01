@@ -27,5 +27,5 @@ DrAyBrw DrAy
 End Sub
 
 Function DimLinTrim$(DimLin)
-DimLinTrim = StrBrk1(SrcLinRmvRmk(Trim(DimLin)), ":").S1
+DimLinTrim = Brk1(SrcLinRmvRmk(Trim(DimLin)), ":").S1
 End Function

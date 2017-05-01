@@ -4,7 +4,7 @@ Option Explicit
 
 Function NmExpd(Nm, Ay$()) As String()
 If StrHas(Nm, "*") Then
-    NmExpd = AyLik(Ay, Nm)
+    NmExpd = AySelLik(Ay, Nm)
 Else
     If AyHas(Ay, Nm) Then
         NmExpd = ApSy(Nm)

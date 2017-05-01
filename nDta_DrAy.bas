@@ -69,9 +69,9 @@ AyAsstEqExa A, ApIntAy(1, 5), "DrAyAsg__Tst Er"
 AyAsstEqExa B, ApLngAy(2, 6), "DrAyAsg__Tst Er"
 End Sub
 
-Sub DrAyBrw(DrAy(), Optional NoIdx As Boolean, Optional Pfx$ = "DrAy", Optional BrkAtColIdx% = -1)
+Sub DrAyBrw(DrAy(), Optional NoIdx As Boolean, Optional Fx$ = "DrAy", Optional BrkAtColIdx% = -1)
 If Not NoIdx Then DrAy = DrAyAddCol_Idx(DrAy)
-AyBrw DrAyLy(DrAy, BrkAtColIdx), Pfx
+AyBrw DrAyLy(DrAy, BrkAtColIdx), Fx
 End Sub
 
 Function DrAyChkEq(DrAy1(), DrAy2()) As Variant()
@@ -119,26 +119,43 @@ D2 = Array(Array(1, 2, 3, 4), Array(2, 3, 4, 6))
 ErBrw DrAyChkEq(D1, D2)
 End Sub
 
-Function DrAyCol(DrAy(), Optional ColIdx&, Optional OAy)
-Dim UR&: UR = UB(DrAy)
-Dim O
-    If IsMissing(OAy) Then
-        Dim Av()
-        O = Av
-    Else
-        O = OAy
-    End If
-    ReSz O, UR
-Dim J&
-For J = 0 To UR
-    O(J) = DrAy(J)(ColIdx)
-Next
-DrAyCol = O
+Function DrAyCol(DrAy(), Optional ColIdx&) As Variant()
+DrAyCol = DrAyCol_Into(DrAy, EmptyVarAy, ColIdx)
 End Function
 
-Function DrAyCol_LngAy(DrAy(), Optional ColIdx&) As Long()
-Dim O&()
-DrAyCol_LngAy = DrAyCol(DrAy, ColIdx, O)
+Function DrAyCol_Bool(DrAy(), Optional ColIdx&) As Boolean()
+DrAyCol_Bool = DrAyCol_Into(DrAy, EmptyBoolAy, ColIdx)
+End Function
+
+Function DrAyCol_Dte(DrAy(), Optional ColIdx&) As Date()
+DrAyCol_Dte = DrAyCol_Into(DrAy, EmptyDteAy, ColIdx)
+End Function
+
+Function DrAyCol_Int(DrAy(), Optional ColIdx&) As Integer()
+DrAyCol_Int = DrAyCol_Into(DrAy, EmptyIntAy, ColIdx)
+End Function
+
+Function DrAyCol_Into(DrAy(), OIntoAy, Optional ColIdx&)
+Dim UR&: UR = UB(DrAy)
+ReSz OIntoAy, UR
+If Not AyIsEmpty(DrAy) Then
+    Dim J&, Dr
+    For J = 0 To UR
+        Dr = DrAy(J)
+        If UB(Dr) >= ColIdx Then
+            OIntoAy(J) = DrAy(J)(ColIdx)
+        End If
+    Next
+End If
+DrAyCol_Into = OIntoAy
+End Function
+
+Function DrAyCol_Lng(DrAy(), Optional ColIdx&) As Long()
+DrAyCol_Lng = DrAyCol_Into(DrAy, EmptyLngAy, ColIdx)
+End Function
+
+Function DrAyCol_Str(DrAy(), Optional ColIdx&) As String()
+DrAyCol_Str = DrAyCol_Into(DrAy, EmptySy, ColIdx)
 End Function
 
 Function DrAyColSz&(DrAy())
@@ -180,7 +197,7 @@ DrAyNew_AyAp = O
 End Function
 
 Function DrAyNewKVByFldAp(FnStr$, ParamArray Ap()) As Variant
-Dim F$(): F = NmstrBrk(FnStr)
+Dim F$(): 'F = NmstrBrk(FnStr)
 Dim J%, O()
 For J = 0 To UB(F)
     Push O, Array(F(J), Ap(J))

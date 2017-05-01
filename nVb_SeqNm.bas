@@ -14,7 +14,7 @@ Dim J&, I
 '    ReDim P2(OU)
 '    J = 0
 '    For Each I In SeqNy
-'        With StrBrk1(I, "_")
+'        With Brk1(I, "_")
 '            P1(J) = .S1
 '            P2(J) = .S2
 '            J = J + 1
@@ -33,14 +33,14 @@ Dim J&, I
 
 Dim OSrtP1$() ' Part1 Sorted and renamed
 Dim OSrtP2$() ' Part1 Sorted and renamed
-Dim OIdx&() ' OIdx is binding OSrt & OP1 in this way OP1(i) is renamed as OSrt(OIdx(i))
+Dim oIdx&() ' OIdx is binding OSrt & OP1 in this way OP1(i) is renamed as OSrt(OIdx(i))
 Dim OU&
     OU = UB(SeqNy)
 '---------------------------
 Dim O$()
     ReDim O(OU)
     J = 0
-    For Each I In OIdx
+    For Each I In oIdx
         O(J) = OSrtP1(I) & "_" & OSrtP2(I)
         J = J + 1
     Next

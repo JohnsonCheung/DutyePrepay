@@ -29,7 +29,7 @@ Debug.Assert UBound(B.TyAy) = 2
 Debug.Assert B.TyAy(0).Ty = DAO.dbText
 Debug.Assert B.TyAy(1).Ty = DAO.dbDouble
 Debug.Assert B.TyAy(2).Ty = DAO.dbDate
-AyAsstEq B.TyAy(0).F, NmstrBrk("A B [C D]")
+AyAsstEq B.TyAy(0).F, NmBrk("A B [C D]")
 AyAsstEq B.TyAy(1).F, LvsSplit("E F")
 AyAsstEq B.TyAy(2).F, LvsSplit("X Y")
 End Sub
@@ -45,9 +45,9 @@ End Function
 
 Function FldTySngBrk(FldTySngStr) As FldTySng
 Dim O As FldTySng
-With StrBrk(FldTySngStr, ":")
+With Brk(FldTySngStr, ":")
     O.Ty = DaoTyNew(.S1)
-    O.F = NmstrBrk(.S2)
+    O.F = NmBrk(.S2)
 End With
 FldTySngBrk = O
 End Function

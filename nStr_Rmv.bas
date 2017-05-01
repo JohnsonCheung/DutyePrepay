@@ -51,6 +51,15 @@ Debug.Assert RmvPfx("Tst_aaa", "Tst_") = "aaa"
 Debug.Assert RmvPfx("Tst__aaa", "Tst__") = "aaa"
 End Sub
 
+Function RmvPfxAll$(S, Pfx)
+Dim O$: O = S
+Dim P%: P = Len(Pfx) + 1
+While IsPfx(O, Pfx)
+    O = Mid(O, P)
+Wend
+RmvPfxAll = O
+End Function
+
 Function RmvSfx$(S, Sfx)
 If IsSfx(S, Sfx) Then
     RmvSfx = Left(S, Len(S) - Len(Sfx))

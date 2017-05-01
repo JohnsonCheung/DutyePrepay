@@ -10,6 +10,11 @@ For J = 1 To Len(ChrStr)
 Next
 End Function
 
+Function ParseFstChr$(A$)
+ParseFstChr = FstChr(A)
+A = RmvFstChr(A)
+End Function
+
 Function ParseNm$(A$)
 Dim J%, C$
 C = Left(A, 1)

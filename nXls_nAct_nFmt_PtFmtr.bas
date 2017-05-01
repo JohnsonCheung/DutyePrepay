@@ -34,17 +34,13 @@ Type PtFmtr
     Er()        As Variant
 End Type
 
-Function PtFmtrByFt(PtFmtrFt$) As PtFmtr
-PtFmtrByFt = PtFmtr(FtLy(PtFmtrFt))
-End Function
-
 Function PtFmtr(PtFmtrLy$()) As PtFmtr
 Dim L, A As S1S2, S2$
 Dim Ly$(): Ly = AyExcl(PtFmtrLy, "StrIsBlank")
 '-------------
 Dim Fny$()
     For Each L In Ly
-        A = StrBrk(L, ":")
+        A = Brk(L, ":")
         S2 = A.S2
         Select Case A.S1
         Case "Fny": Fny = Split(S2, " "): Exit For
@@ -62,7 +58,7 @@ Dim O As PtFmtr
     With O
         .Fny = Fny
         For Each L In Ly
-            A = StrBrk(L, ":")
+            A = Brk(L, ":")
             S2 = A.S2
             Select Case A.S1
             Case "Fny":
@@ -140,6 +136,10 @@ AyBrw PtFmtrLy(Act)
 Stop
 End Sub
 
+Function PtFmtrByFt(PtFmtrFt$) As PtFmtr
+PtFmtrByFt = PtFmtr(FtLy(PtFmtrFt))
+End Function
+
 Function PtFmtrLy(A As PtFmtr) As String()
 Dim O$()
 Dim J%
@@ -159,34 +159,6 @@ With A
     PushAy O, ZLy_Tot_OpnInd(.OpnInd)
 End With
 PtFmtrLy = O
-End Function
-Function ZLy_Tot_DtaSum(Fld$(), Fmt$(), Fun() As XlConsolidationFunction) As String()
-
-End Function
-Function ZLy_Tot_SubTot(Fld$()) As String()
-ZLy_Tot_SubTot = ApSy("SubTot : " & Join(Fld, " "))
-End Function
-Function ZLy_Tot_GrandColTot(Tot As Boolean, Wdt%) As String()
-ZLy_Tot_GrandColTot = ApSy("GrandColTot : " & Tot & " " & Wdt)
-End Function
-Function ZLy_Tot_GrandRowTot(Tot As Boolean) As String()
-ZLy_Tot_GrandRowTot = ApSy("GrandRowTot : " & Tot)
-End Function
-Function ZLy_Tot_OpnInd(OpnInd As Boolean) As String()
-ZLy_Tot_OpnInd = ApSy("OpnInd : " & OpnInd)
-End Function
-
-Function ZLy_Fmt_Wdt(Fld$(), Wdt%()) As String()
-
-End Function
-Function ZLy_Fmt_OutLin(Fld$(), Lvl() As Byte) As String()
-
-End Function
-Function ZLy_Fmt_Lbl(Fld$(), Lbl$()) As String()
-
-End Function
-Function ZLy_Ori(Fld$(), Ori$) As String()
-
 End Function
 
 Sub PtFmtrTpBrw()
@@ -210,10 +182,46 @@ Push A, "Push F, ""GrandRowTot: True"""
 AyBrw A
 End Sub
 
+Function ZLy_Fmt_Lbl(Fld$(), Lbl$()) As String()
+
+End Function
+
+Function ZLy_Fmt_OutLin(Fld$(), Lvl() As Byte) As String()
+
+End Function
+
+Function ZLy_Fmt_Wdt(Fld$(), Wdt%()) As String()
+
+End Function
+
+Function ZLy_Ori(Fld$(), Ori$) As String()
+
+End Function
+
+Function ZLy_Tot_DtaSum(Fld$(), Fmt$(), Fun() As XlConsolidationFunction) As String()
+
+End Function
+
+Function ZLy_Tot_GrandColTot(Tot As Boolean, Wdt%) As String()
+ZLy_Tot_GrandColTot = ApSy("GrandColTot : " & Tot & " " & Wdt)
+End Function
+
+Function ZLy_Tot_GrandRowTot(Tot As Boolean) As String()
+ZLy_Tot_GrandRowTot = ApSy("GrandRowTot : " & Tot)
+End Function
+
+Function ZLy_Tot_OpnInd(OpnInd As Boolean) As String()
+ZLy_Tot_OpnInd = ApSy("OpnInd : " & OpnInd)
+End Function
+
+Function ZLy_Tot_SubTot(Fld$()) As String()
+ZLy_Tot_SubTot = ApSy("SubTot : " & Join(Fld, " "))
+End Function
+
 Private Function ZBrk_Fmt_Fmt(S2$, Fny$()) As Variant()
 Dim OEr(), OFmtFld$(), OFmtVal$()
 Dim F$(), Fmt$
-With StrBrk(S2, ":")
+With Brk(S2, ":")
     Fmt = .S1
     F = Split(.S2, " ")
 End With
@@ -232,7 +240,7 @@ End Function
 Private Function ZBrk_Fmt_Lbl(S2$, Fny$(), Dta$()) As Variant()
 Dim OEr(), OLblFld$(), OLblDtaFno%(), OLblColFld$(), OLblVal$()
 Dim Fld$, Lbl$
-With StrBrk(S2, ":")
+With Brk(S2, ":")
     Fld = .S1
     Lbl = .S2
 End With
@@ -258,7 +266,7 @@ End Function
 Private Function ZBrk_Fmt_OutLin(S2$, Fny$()) As Variant()
 Dim OEr(), OOutLinFld$(), OOutLinFno%(), OOutLinLvl() As Byte
 Dim F$(), Lvl As Byte
-With StrBrk(S2, ":")
+With Brk(S2, ":")
     Lvl = .S1
     F = Split(.S2, " ")
 End With
@@ -278,7 +286,7 @@ End Function
 Private Function ZBrk_Fmt_Wdt(S2$, Fny$()) As Variant()
 Dim OEr(), OWdtFld$(), OWdtFno%(), OWdtVal%()
 Dim F$(), Wdt%
-With StrBrk(S2, ":")
+With Brk(S2, ":")
     Wdt = .S1
     F = Split(.S2, " ")
 End With
@@ -378,19 +386,6 @@ Msg = FmtQQ("Lin-[?] must be convertable to boolean", LinPfx$)
 ZBrkBool = Array(ErNew(Msg), False)
 End Function
 
-Private Function ZFldIdx(Fld$(), Fny$()) As Integer()
-If AyIsEmpty(Fld) Then Exit Function
-Dim U%
-Dim O%()
-U = UB(Fld)
-ReDim O(U)
-Dim J%
-For J = 0 To U
-    O(J) = AyIdx(Fny, Fld(J)) + 1
-Next
-ZFldIdx = O
-End Function
-
 Private Function ZBrkFld(FnStr$, Fny$(), LinPfx$, IsDup%) As Variant()
 Dim OFld$(), OEr()
 If IsDup Then
@@ -410,5 +405,18 @@ Else
     Next
 End If
 ZBrkFld = Array(OEr, OFld)
+End Function
+
+Private Function ZFldIdx(Fld$(), Fny$()) As Integer()
+If AyIsEmpty(Fld) Then Exit Function
+Dim U%
+Dim O%()
+U = UB(Fld)
+ReDim O(U)
+Dim J%
+For J = 0 To U
+    O(J) = AyIdx(Fny, Fld(J)) + 1
+Next
+ZFldIdx = O
 End Function
 

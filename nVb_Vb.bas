@@ -7,9 +7,11 @@ Public Const C_Lib$ = "DutyPrepay5"
 Function AskQuit() As Boolean
 If MsgBox("Quit?", vbYesNo + vbDefaultButton2) = vbYes Then Application.Quit
 End Function
+
 Function Cfn(Msg$) As Boolean
 Stop
 End Function
+
 Function DigCnt%(A&)
 DigCnt = Len(CStr(A))
 End Function

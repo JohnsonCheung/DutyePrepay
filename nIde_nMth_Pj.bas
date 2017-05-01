@@ -17,7 +17,7 @@ PjMthNy = O
 End Function
 
 Sub PjMthNyBrw(Optional A As vbproject)
-DrAyBrw AyStrBrk(PjMthNy(A)), BrkAtColIdx:=1
+DrAyBrw AyBrk(PjMthNy(A)), BrkAtColIdx:=1
 End Sub
 
 Function PjMthNyNotMatchWithMdNm(Optional A As vbproject) As String()
@@ -37,5 +37,5 @@ PjMthNyNotMatchWithMdNm = O
 End Function
 
 Sub PjMthNyNotMatchWithMdNm__Tst()
-DrAyBrw AyStrBrk(PjMthNyNotMatchWithMdNm, ".")
+DrAyBrw AyBrk(PjMthNyNotMatchWithMdNm, ".")
 End Sub

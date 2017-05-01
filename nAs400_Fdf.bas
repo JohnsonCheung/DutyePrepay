@@ -2,9 +2,9 @@ Attribute VB_Name = "nAs400_Fdf"
 Option Compare Database
 Option Explicit
 
-Function FdfCrtFx(pFxTar$, pFfnFdf$) As Boolean
+Function FdfCrtFx(FxTar$, pFfnFdf$) As Boolean
 Const cSub$ = "FdfCrtFx"
-'Aim: Create a 2 rows Xls {pFxTar} from {pFfnFDF}.  All numeric fields will set zero.
+'Aim: Create a 2 rows Xls {FxTar} from {pFfnFDF}.  All numeric fields will set zero.
 'PCFDF
 'PCFT 16
 'PCFO 1, 1, 5, 1, 1
@@ -41,8 +41,8 @@ Dim mL$, mA
 Line Input #mF, mL: mA = "PCFDF":          If mL <> mA Then ss.A 2, "[" & mA & "] is expected", , "Current Line Value", mL: GoTo E
 Line Input #mF, mL: mA = "PCFT 16":        If mL <> mA Then ss.A 3, "[" & mA & "] is expected", , "Current Line Value", mL: GoTo E
 Line Input #mF, mL: mA = "PCFO 1,1,5,1,1": If mL <> mA Then ss.A 4, "[" & mA & "] is expected", , "Current Line Value", mL: GoTo E
-Dim mWb As Workbook: If Crt_Wb(mWb, pFxTar) Then ss.A 5, "Cannot create pFxTar": GoTo E
-Dim mDir$, mFnn$, mExt$: If Brk_Ffn_To3Seg(mDir, mFnn, mExt, pFxTar) Then ss.A 6: GoTo E
+Dim mWb As Workbook: If Crt_Wb(mWb, FxTar) Then ss.A 5, "Cannot create FxTar": GoTo E
+Dim mDir$, mFnn$, mExt$: If Brk_Ffn_To3Seg(mDir, mFnn, mExt, FxTar) Then ss.A 6: GoTo E
 mWb.Sheets(1).Name = mFnn
 Dim J%
 For J = mWb.Worksheets.Count - 1 To 2 Step -1

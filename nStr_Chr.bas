@@ -35,3 +35,12 @@ End Function
 Sub ChrIsPun__Tst()
 Debug.Assert ChrIsPun(".") = True
 End Sub
+
+Function ChrIsUcas(S) As Boolean
+Const cA As Byte = 65
+Const cZ As Byte = 90
+Dim C%: C = Asc(C)
+If cA > C Then Exit Function
+If C > cZ Then Exit Function
+ChrIsUcas = True
+End Function

@@ -11,7 +11,7 @@ AyBrw TthNy_Md(A)
 End Sub
 
 Sub TthBrw_Pj(Optional A As vbproject)
-DrAyBrw AyStrBrk(TthNy_Pj(A), ".")
+DrAyBrw AyBrk(TthNy_Pj(A), ".")
 End Sub
 
 Sub TthBrw_Pj__Tst()

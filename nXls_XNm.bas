@@ -24,11 +24,11 @@ If XNmCpyToCell(mWbSrc, "DefTbl", mWsTar) Then Stop
 mWbTar.Application.Visible = True
 End Function
 
-Function XNmCpyToFx(pWbSrc As Workbook, pXlsNmSrc$, pFxTar$, Optional pWsNmTar$ = "", Optional OvrWrt As Boolean = False) As Boolean
+Function XNmCpyToFx(pWbSrc As Workbook, pXlsNmSrc$, FxTar$, Optional pWsNmTar$ = "", Optional OvrWrt As Boolean) As Boolean
 Const cSub$ = "XNmCpyToFx"
-'Aim: Copy the range as defined in {pXlsNmSrc} in {pWbSrc} to of {pWsNmTar} in {pFxTar}.  If {pWsNmTar} is '', use {pXlsNmSrc}
+'Aim: Copy the range as defined in {pXlsNmSrc} in {pWbSrc} to of {pWsNmTar} in {FxTar}.  If {pWsNmTar} is '', use {pXlsNmSrc}
 On Error GoTo R
-Dim mWbTar As Workbook: If Crt_Wb(mWbTar, pFxTar, OvrWrt) Then ss.A 1: GoTo E
+Dim mWbTar As Workbook: If Crt_Wb(mWbTar, FxTar, OvrWrt) Then ss.A 1: GoTo E
 If Dlt_AllWs_Except1(mWbTar) Then ss.A 2: GoTo E
 
 If pWsNmTar = "" Then pWsNmTar = pXlsNmSrc

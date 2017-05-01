@@ -2,7 +2,6 @@ Attribute VB_Name = "nXls_TpFx"
 Option Compare Text
 Option Explicit
 Option Base 0
-Const cMod$ = cLib & ".xClr"
 
 Sub TpFxClr()
 Const cSub$ = "Clr_Tp"
@@ -38,20 +37,19 @@ R: ss.R
 E:
 End Sub
 
-Function TpFxExp() As Boolean
-Const cSub$ = "TpFxExp"
+Sub TpFxWrtFt()
 Dim mF As Byte, mOFil$
 mOFil = Sdir_Doc & "Tp_Doc.csv"
 If Opn_Fil_ForOutput(mF, mOFil, True) Then ss.A 1: GoTo E
 
 Dim mDirTp$: mDirTp = Sdir_Tp
-If TpFxExp_InDir(mDirTp, mF) Then ss.A 2: GoTo E
+If TpFxWrtFt_InDir(mDirTp, mF) Then ss.A 2: GoTo E
 
 Dim iSubFolder As Folder
 For Each iSubFolder In G.gFso.GetFolder(mDirTp).SubFolders
     Dim mDir As String
     mDir = iSubFolder.Name
-    If mDir <> "." And mDir <> ".." Then If TpFxExp_InDir(mDirTp & mDir, mF) Then ss.A 3: GoTo E
+    If mDir <> "." And mDir <> ".." Then If TpFxWrtFt_InDir(mDirTp & mDir, mF) Then ss.A 3: GoTo E
 Next
 Close #mF
 'Format the csv to xls
@@ -61,17 +59,17 @@ Set mWs = mWb.Worksheets(1)
 If WsFmtOL(mWs, 3) Then ss.A 5: GoTo E
 mWs.Columns(3).ColumnWidth = 40
 mWs.Columns(4).ColumnWidth = 15
-If Dlt_Fil(Left(mOFil, Len(mOFil) - 4) & ".xls") Then ss.A 5: GoTo E
+FfnDlt Left(mOFil, Len(mOFil) - 4) & ".xls"
 mWb.SaveAs Left(mOFil, Len(mOFil) - 4) & ".xls", Excel.XlFileFormat.xlWorkbookNormal
 mWb.Application.Visible = True
-Exit Function
+Exit Sub
 R: ss.R
-E: TpFxExp = True: ss.B cSub, cMod
-End Function
+E:
+End Sub
 
-Function TpFxExp_InDir(pDirTp$, pF As Byte) As Boolean
+Function TpFxWrtFt_InDir(pDirTp$, pF As Byte) As Boolean
 'Aim: Exp all the datasource of all xls files in {pDir} to <pF>
-Const cSub$ = "TpFxExp_InDir"
+Const cSub$ = "TpFxWrtFt_InDir"
 '==Start==
 Dim mAyFn$(): If Fnd_AyFn(mAyFn, pDirTp) Then ss.A 1: GoTo E
 Dim J%
@@ -110,5 +108,5 @@ For J = 0 To Sz(mAyFn) - 1
 Next
 Exit Function
 R: ss.R
-E: TpFxExp_InDir = True: ss.B cSub, cMod, "pDirTp", pDirTp
+E:
 End Function

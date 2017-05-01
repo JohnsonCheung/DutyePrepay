@@ -20,29 +20,29 @@ Dim OFldAy() As DAO.Field
         If OFldAy(0).Type = dbLong Then FldAy(0).Attributes = DAO.FieldAttributeEnum.dbAutoIncrField
     End If
     
-Dim OTbl As DAO.TableDef: Set OTbl = D.CreateTableDef(T, TblAtr)
+Dim oTbl As DAO.TableDef: Set oTbl = D.CreateTableDef(T, TblAtr)
    
-Dim OIdx As DAO.Index
+Dim oIdx As DAO.Index
     If NPk > 0 Then
-        Set OIdx = OTbl.CreateIndex("PrimaryKey")
-        OIdx.Unique = True
-        OIdx.Primary = True
+        Set oIdx = oTbl.CreateIndex("PrimaryKey")
+        oIdx.Unique = True
+        oIdx.Primary = True
         Dim J%
         For J = 0 To NPk - 1
-            OIdx.Fields.Append OFldAy(J)
+            oIdx.Fields.Append OFldAy(J)
         Next
     End If
 '----
 Dim F
 For Each F In OFldAy
-    OTbl.Fields.Append F
+    oTbl.Fields.Append F
 Next
 
-If NPk > 0 Then OTbl.Indexes.Append OIdx
+If NPk > 0 Then oTbl.Indexes.Append oIdx
 
 TblDrp T, D
 With D.TableDefs
-    .Append OTbl
+    .Append oTbl
     .Refresh
 End With
 End Sub
@@ -139,7 +139,7 @@ For mCase = 1 To 4
     End Select
     TblCrt_FmDSN_Sql mNmtTar, mDsn, mSql
     Debug.Print mCase; "-----------------------"
-    Debug.Print ToStr_LpAp(vbLf, "mRslt,mDsn,mSql,mNmtTar,mFbTar,mDteBeg,mDteEnd,mNRec", mRslt, mDsn, mSql, mNmtTar, mFbTar, mDteBeg, mDteEnd, mNRec)
+    Debug.Print LpApToStr(vbLf, "mRslt,mDsn,mSql,mNmtTar,mFbTar,mDteBeg,mDteEnd,mNRec", mRslt, mDsn, mSql, mNmtTar, mFbTar, mDteBeg, mDteEnd, mNRec)
 Next
 End Function
 
@@ -147,11 +147,11 @@ Sub TblCrt_FmDTF_Nmt(T, IP$, Lib$ _
     , Optional SrcT$ _
     , Optional IsByXls As Boolean _
     , Optional IsKeepDownloadFfn As Boolean _
-    , Optional ONrec& _
+    , Optional oNRec& _
     , Optional A As database)
 'Aim: Create {TarTn} in {TarFb} from {pIP},{pLib},{T} by meaning DTF download through {pIsByXls} or by Text
 Dim S$: S = SqsOfSel(IIf(SrcT = "", T, SrcT))
-TblCrt_FmDTF_Sql T, IP, S, Lib, IsByXls, IsKeepDownloadFfn, ONrec, A
+TblCrt_FmDTF_Sql T, IP, S, Lib, IsByXls, IsKeepDownloadFfn, oNRec, A
 End Sub
 
 Function TblCrt_FmDTF_Nmt__Tst()
@@ -172,19 +172,19 @@ For J = 1 To 4
         Case 4: T = "IIC_ByTxt": IsByXls = False
     End Select
     TblCrt_FmDTF_Nmt T, "192.168.103.14", "RBPCSF", "IIC", IsByXls, , mNRec, Db
-    Debug.Print ToStr_LpAp(vbTab, "IsByXls, mNRec", IsByXls, mNRec)
+    Debug.Print LpApToStr(vbTab, "IsByXls, mNRec", IsByXls, mNRec)
 Next
 End Function
 
 Sub TblCrt_FmDTF_Sql(T, IP$, Lib$, Sql$ _
     , Optional IsByXls As Boolean _
     , Optional IsKeepDownloadFfn As Boolean _
-    , Optional ONrec& _
+    , Optional oNRec& _
     , Optional A As database)
 'Aim: Create {TarTn} in {TarFb} from {pIP},{pLib},{Sql} with time stamped & Rec count {oDteBeg,oDteEnd,oNRec&}.
 
 Dim Dtf$: Dtf = TmpFil(".dtf", , Lib)
-DtfCrt Dtf, Sql, IP, Lib, IsByXls, IsRun:=True, ONrec:=ONrec
+DtfCrt Dtf, Sql, IP, Lib, IsByXls, IsRun:=True, oNRec:=oNRec
 
 Dim Ext$: Ext = IIf(IsByXls, ".xls", ".txt")
 Dim F$: F = FfnRplExt(Dtf, Ext)
@@ -208,7 +208,7 @@ For mCase = 3 To 3
         Case 4: mNmt = "IIC_ByTxt": mIsByXls = False: mFbTar = ""
     End Select
     TblCrt_FmDTF_Sql "192.168.103.13", "Select * from IIC where ICLAS='07'", mNmt, mFbTar, "BPCSF", mIsByXls, mNRec
-    Debug.Print ToStr_LpAp(vbLf, "mRslt, mFbTar, mIsByXls, mDteBeg, mDteEnd, mNRec", mRslt, mFbTar, mIsByXls, mDteBeg, mDteEnd, mNRec)
+    Debug.Print LpApToStr(vbLf, "mRslt, mFbTar, mIsByXls, mDteBeg, mDteEnd, mNRec", mRslt, mFbTar, mIsByXls, mDteBeg, mDteEnd, mNRec)
 Next
 End Function
 
@@ -229,7 +229,7 @@ Dim SrcT$
     SrcT = FfnFnn(Ft) & "#Txt"
 
 Dim Sel$:
-    Sel = AyJnComma(FdfFny(Fdf))
+    Sel = JnComma(FdfFny(Fdf))
 
 Dim CnnStr$
     CnnStr = "Text;Database=" & Pth
@@ -255,7 +255,7 @@ TblCrt_FmFt_n_FDF T, FfnRplExt(Dtf, ".txt")
 End Function
 
 Sub TblCrt_FmFx(T, Fx$, Optional IsKeepFx As Boolean, Optional A As database)
-'Aim: Create a table {TarTn} in {TarFb} by import an Xls file {pFx} with referring CutExt{pFx}.Fdf
+'Aim: Create a table {TarTn} in {TarFb} by import an Xls file {Fx} with referring CutExt{Fx}.Fdf
 Dim D As database: Set D = DbNz(A)
 
 FfnAsstExist Fx, "TblCrt_FmFx_n_Fdf"
@@ -284,10 +284,10 @@ Dim SrcT$
     SrcT = FfnFnn(Fx)
 
 Dim Sel$:
-    Sel = AyJnComma(FdfFny(Fdf))
+    Sel = JnComma(FdfFny(Fdf))
 
 Dim CnnStr$
-    CnnStr = CnnStrFx(Fx)
+'    CnnStr = CnnStrLnkFx(Fx)
 Dim S$
     S = FmtQQ("Select ? into [?] from [?] in '' [?]", Sel, T, SrcT, CnnStr)
 
@@ -334,7 +334,7 @@ Function TblCrt_FmLnkAs400Dsn(T, Optional pLib$ = "RBPCSF", Optional pAs400Dsn$ 
 'Aim: Create NonBlank({TNew},{pLib}_{T}) in {pInDb} by linking {T} through {pAs400Dsn}.  Dsn must use *SQL Naming Convertion, ie
 Const cSub$ = "TblCrt_FmLnkAs400Dsn"
 Dim mNmt$: mNmt = NonBlank(TNew, pLib & "_" & T)
-Dim mCnn$: mCnn = Fmt_Str("ODBC;DSN={0};", pAs400Dsn)
+Dim mCnn$: mCnn = Fmt("ODBC;DSN={0};", pAs400Dsn)
 Dim mNmtSrc$: mNmtSrc = pLib & "." & T
 TblCrt_FmLnkAs400Dsn = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
@@ -356,7 +356,7 @@ On Error GoTo R
 With mTbl
     Dim mDir$, mFnn$, mExt$
     Call Brk_Ffn_To3Seg(mDir, mFnn, mExt, pFfnCsv)
-    .Connect = Fmt_Str("Text;DSN=Import Link Specification;FMT=Delimited;HDR=NO;IMEX=2;CharacterSet=936;DATABASE={0};TABLE={1}#{2}", mDir, mFnn, Mid(mExt, 2))
+    .Connect = Fmt("Text;DSN=Import Link Specification;FMT=Delimited;HDR=NO;IMEX=2;CharacterSet=936;DATABASE={0};TABLE={1}#{2}", mDir, mFnn, Mid(mExt, 2))
     .Name = mNmtNew
     .SourceTableName = mFnn & mExt
     Db.TableDefs.Append mTbl
@@ -472,13 +472,13 @@ End Select
 mResult = TblCrt_FmLnkLnt(mFbSrc, mSetNmt, mPfxNmt)
 End Function
 
-Function TblCrt_FmLnkSetWs(Pfx$, pSetWs$, Optional pPfxNmt$ = "", Optional pInDb As database) As Boolean
-'Aim: Create table using pPfx + ws name in {pInDb} by linking {pFx}!{pSetWs}.
+Function TblCrt_FmLnkSetWs(Fx$, pSetWs$, Optional pPfxNmt$ = "", Optional pInDb As database) As Boolean
+'Aim: Create table using pPfx + ws name in {pInDb} by linking {Fx}!{pSetWs}.
 Const cSub$ = "TblCrt_FmLnkSetWs"
-StsShw "Linking [" & Pfx & "]![" & pSetWs & "]......"
-Dim mWb As Workbook: If Opn_Wb_R(mWb, Pfx) Then ss.A 1: GoTo E
+StsShw "Linking [" & Fx & "]![" & pSetWs & "]......"
+Dim mWb As Workbook: If Opn_Wb_R(mWb, Fx) Then ss.A 1: GoTo E
 Dim mAnWs$(): If Fnd_AnWs_BySetWs(mAnWs, mWb, pSetWs) Then ss.A 2: GoTo E
-Dim mCnn$: mCnn = CnnStr_Xls(Pfx)
+Dim mCnn$: mCnn = CnnStr_Xls(Fx)
 Dim J%
 For J = 0 To Sz(mAnWs) - 1
     Dim mNmtSrc$: mNmtSrc = mAnWs(J) & "$"
@@ -493,12 +493,12 @@ X:
     Cls_Wb mWb, False, True
 End Function
 
-Function TblCrt_FmLnkWs(Pfx$, Optional pWsNm$ = "", Optional TNew$ = "", Optional pInDb As database) As Boolean
-'Aim: Create NonBlank({TNew},{pWsNm}) in {pInDb} by linking {pFx}!{pWsNm}.  If {pWsNm} is not given, use FileName(pFx).
+Function TblCrt_FmLnkWs(Fx$, Optional pWsNm$ = "", Optional TNew$ = "", Optional pInDb As database) As Boolean
+'Aim: Create NonBlank({TNew},{pWsNm}) in {pInDb} by linking {Fx}!{pWsNm}.  If {pWsNm} is not given, use FileName(Fx).
 Const cSub$ = "TblCrt_FmLnkWs"
-If pWsNm = "" Then pWsNm = Cut_Ext(Fct.Nam_FilNam(Pfx))
+If pWsNm = "" Then pWsNm = Cut_Ext(Fct.Nam_FilNam(Fx))
 Dim mNmt$: mNmt = NonBlank(TNew, pWsNm)
-Dim mCnn$: mCnn = CnnStr_Xls(Pfx)
+Dim mCnn$: mCnn = CnnStr_Xls(Fx)
 Dim mNmtSrc$: mNmtSrc = pWsNm & "$"
 TblCrt_FmLnkWs = TblCrt_FmLnk(mNmt, mNmtSrc, mCnn, pInDb)
 Exit Function
@@ -518,15 +518,15 @@ If Cls_Wb(mWb, True) Then Stop
 If TblCrt_FmLnkWs(cFx, cWsNm) Then Stop
 End Function
 
-Function TblCrt_FmLnkXls(Pfx$, Optional pPfx$ = "", Optional A As database) As Boolean
-'Aim: Link all worksheets in {pFx} as tables in {A}
+Function TblCrt_FmLnkXls(Fx$, Optional pPfx$ = "", Optional A As database) As Boolean
+'Aim: Link all worksheets in {Fx} as tables in {A}
 Const cSub$ = "TblCrt_FmLnkXls"
-StsShw "Create tables by linking [" & Pfx & "]...."
-Dim AnWs$():  If Fnd_AnWs(AnWs, Pfx) Then ss.A 1: GoTo E
+StsShw "Create tables by linking [" & Fx & "]...."
+Dim AnWs$():  If Fnd_AnWs(AnWs, Fx) Then ss.A 1: GoTo E
 Dim iWsNm, mA$
 For Each iWsNm In AnWs
     Dim mWsNm$: mWsNm = iWsNm
-    If TblCrt_FmLnkWs(Pfx, mWsNm, pPfx & mWsNm, A) Then mA = Add_Str(mA, mWsNm)
+    If TblCrt_FmLnkWs(Fx, mWsNm, pPfx & mWsNm, A) Then mA = Push(mA, mWsNm)
 Next
 If Len(mA) <> 0 Then ss.A 1, "Some ws {mA} in xls file cannot be linked", "mA", mA: GoTo E
 GoTo X
@@ -550,26 +550,26 @@ Const cSub$ = "TblCrt_FmMgeNRec_To1Fld"
 Dim mF1$: mF1 = CurrentDb.TableDefs(T).Fields(0).Name
 Dim mF2$: mF2 = CurrentDb.TableDefs(T).Fields(1).Name
 Dim mSql$
-mSql = Fmt_Str("Select {0} into {1}_Lst from {1} where false", mF1, T)
+mSql = Fmt("Select {0} into {1}_Lst from {1} where false", mF1, T)
 If Run_Sql(mSql) Then ss.A 1: GoTo E
-mSql = Fmt_Str("Alter table {0}_Lst Add COLUMN {1}_Lst Memo", T, mF2)
+mSql = Fmt("Alter table {0}_Lst Add COLUMN {1}_Lst Memo", T, mF2)
 If Run_Sql(mSql) Then ss.A 2: GoTo E
 If Not pFillDta Then Exit Function
 Dim mLasF1$, mF2Lst$
-With CurrentDb.OpenRecordset(Fmt_Str("Select {0},{1} from {2} order by {0},{1}", mF1, mF2, T))
+With CurrentDb.OpenRecordset(Fmt("Select {0},{1} from {2} order by {0},{1}", mF1, mF2, T))
     If .AbsolutePosition <> -1 Then mLasF1 = .Fields(0).Value
     While Not .EOF
         If mLasF1 = .Fields(0).Value Then
-            mF2Lst = Add_Str(mF2Lst, CStr(Nz(.Fields(1).Value, "")), pSepChr)
+            mF2Lst = Push(mF2Lst, CStr(Nz(.Fields(1).Value, "")), pSepChr)
         Else
-            mSql = Fmt_Str("Insert into {0}_Lst ({1},{2}_Lst) values ('{3}','{4}')", T, mF1, mF2, mLasF1, mF2Lst)
+            mSql = Fmt("Insert into {0}_Lst ({1},{2}_Lst) values ('{3}','{4}')", T, mF1, mF2, mLasF1, mF2Lst)
             If Run_Sql(mSql) Then ss.A 3: GoTo E
             mLasF1 = .Fields(0).Value
             mF2Lst = .Fields(1).Value
         End If
         .MoveNext
     Wend
-    mSql = Fmt_Str("Insert into {0}_Lst ({1},{2}_Lst) values ('{3}','{4}')", T, mF1, mF2, mLasF1, mF2Lst)
+    mSql = Fmt("Insert into {0}_Lst ({1},{2}_Lst) values ('{3}','{4}')", T, mF1, mF2, mLasF1, mF2Lst)
     If Run_Sql(mSql) Then ss.A 3: GoTo E
     .Close
 End With
@@ -585,9 +585,9 @@ Const cNmt_x$ = "tmpMPS_SKUFacParam_x"
 Const cSub$ = "TblCrt_FmMgeNRec_To1Fld_Tst"
 DoCmd.CopyObject , cNmt_x, acTable, cNmt
 Dim mSql$
-mSql = Fmt_Str("Update {0} set SKU_FacParam=Fac & ': ' & SKU_FacParam", cNmt_x)
+mSql = Fmt("Update {0} set SKU_FacParam=Fac & ': ' & SKU_FacParam", cNmt_x)
 If Run_Sql(mSql) Then ss.A 1: GoTo E
-mSql = Fmt_Str("Alter table {0} Drop Column Fac", cNmt_x)
+mSql = Fmt("Alter table {0} Drop Column Fac", cNmt_x)
 If Run_Sql(mSql) Then ss.A 1: GoTo E
 
 Dim mRslt As Boolean: mRslt = TblCrt_FmMgeNRec_To1Fld(cNmt_x, vbCrLf)
@@ -597,21 +597,21 @@ R: ss.R
 E:
 End Sub
 
-Function TblCrt_ForEdtTbl(Qry_or_Tbl_NmSrc$, NPk As Byte, Optional TarTn$ = "", Optional pStructOnly As Boolean = False) As Boolean
-'Aim: Create table {mNmtTar} from {Qry_or_Tbl_NmSrc}.  {mNmtTar}'s content comes from {Qry_or_Tbl_NmSrc}.
-'{mNmTar} fmt: first {NPk} is same as {Qry_or_Tbl_NmSrc}, then a field [Change], then list of pair fields [xx] and [New xx]
+Function TblCrt_ForEdtTbl(Qn_or_TnSrc$, NPk As Byte, Optional TarTn$ = "", Optional pStructOnly As Boolean) As Boolean
+'Aim: Create table {mNmtTar} from {Qn_or_TnSrc}.  {mNmtTar}'s content comes from {Qn_or_TnSrc}.
+'{mNmTar} fmt: first {NPk} is same as {Qn_or_TnSrc}, then a field [Change], then list of pair fields [xx] and [New xx]
 Const cSub$ = "TblCrt_ForEdtTbl"
-If NPk = 0 Then ss.A 1, "NPk must > 0", , "Qry_or_Tbl_NmSrc,mNmTar", Qry_or_Tbl_NmSrc, TarTn: GoTo E
-Dim mNmTar$: mNmTar = NonBlank(TarTn, "tmpEdt_" & Qry_or_Tbl_NmSrc)
+If NPk = 0 Then ss.A 1, "NPk must > 0", , "Qn_or_TnSrc,mNmTar", Qn_or_TnSrc, TarTn: GoTo E
+Dim mNmTar$: mNmTar = NonBlank(TarTn, "tmpEdt_" & Qn_or_TnSrc)
 If Dlt_Tbl(mNmTar) Then ss.A 1: GoTo E
 
 Dim mLnFld$
-If IsTbl(Qry_or_Tbl_NmSrc) Then
-    mLnFld = ToStr_Flds(CurrentDb.TableDefs(Qry_or_Tbl_NmSrc).Fields)
-ElseIf IsQry(Qry_or_Tbl_NmSrc) Then
-    mLnFld = ToStr_Flds(CurrentDb.QueryDefs(Qry_or_Tbl_NmSrc).Fields)
+If IsTbl(Qn_or_TnSrc) Then
+    mLnFld = FldsToStr(CurrentDb.TableDefs(Qn_or_TnSrc).Fields)
+ElseIf IsQry(Qn_or_TnSrc) Then
+    mLnFld = FldsToStr(CurrentDb.QueryDefs(Qn_or_TnSrc).Fields)
 Else
-    ss.A 1, "Given Qry_or_Tbl_NmSrc is not table or query": GoTo E
+    ss.A 1, "Given Qn_or_TnSrc is not table or query": GoTo E
 End If
 Dim mAnFld$(): mAnFld = Split(mLnFld, CtComma)
 Dim A$: A = mAnFld(0)
@@ -622,17 +622,17 @@ A = A & ", " & "'' AS Changed"
 Dim B$
 For J = NPk To UBound(mAnFld)
     A = A & ", [" & mAnFld(J) & "],'' as [New " & mAnFld(J) & "]"
-    B = Add_Str(B, "[New " & mAnFld(J) & "]=Null")
+    B = Push(B, "[New " & mAnFld(J) & "]=Null")
 Next
 A = A & ", '' As [Error During Import]"
 Dim mSql$
-mSql = Fmt_Str("Select {0} into {1} from {2}", A, mNmTar, Qry_or_Tbl_NmSrc)
+mSql = Fmt("Select {0} into {1} from {2}", A, mNmTar, Qn_or_TnSrc)
 If pStructOnly Then
     If Run_Sql(mSql & " Where False") Then ss.A 2: GoTo E
     Exit Function
 End If
 If Run_Sql(mSql) Then ss.A 3: GoTo E
-mSql = Fmt_Str("Update {0} set {1}", mNmTar, B)
+mSql = Fmt("Update {0} set {1}", mNmTar, B)
 If Run_Sql(mSql) Then ss.A 4: GoTo E
 Exit Function
 R: ss.R
@@ -769,7 +769,7 @@ If VBA.Dir(pFt) = "" Then ss.A 1, "Given txt file not found": GoTo E
 Dim mDir$: mDir = Fct.Nam_DirNam(pFt)
 Dim mNmtSrc$:  mNmtSrc = Fct.Nam_FilNam(pFt)
 Dim mFn$: mFn = Replace(mNmtSrc, ".", "#")
-Dim mCnn$: mCnn = Fmt_Str("Text;DSN={0};FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE={1};TABLE={2}", SpecNm, mDir, mFn)
+Dim mCnn$: mCnn = Fmt("Text;DSN={0};FMT=Fixed;HDR=NO;IMEX=2;CharacterSet=20127;DATABASE={1};TABLE={2}", SpecNm, mDir, mFn)
 TblCrtFmLnkTxt = TblCrt_FmLnk(T, mNmtSrc, mCnn, pInDb)
 Exit Function
 R: ss.R
@@ -786,7 +786,7 @@ Dim Db As database:: If Crt_Db(Db, mFb, True) Then Stop
 If Dlt_Tbl(mNmt, Db) Then Stop
 If Dlt_TxtSpec(mNmSpec, Db) Then Stop
 TxtSpecCrt_Fix mNmSpec, mTxtSpec, Db
-If Dlt_Fil(mFt) Then Stop
+FfnDlt mFt
 Open mFt For Output As #1
 Close #1
 If TblCrtFmLnkTxt(mNmt, mFt, mNmSpec, Db) Then Stop
@@ -805,12 +805,12 @@ Dim iFb%
 For iFb = 0 To Sz(mAyFb) - 1
     Dim Db As database: If Opn_Db_RW(Db, mAyFb(iFb)) Then ss.A 2: GoTo E
     Dim mAyNPk() As Byte, mAyStopAutoInc() As Boolean, mAyTblAtr&(), mAnt$()
-    Dim mSql$: mSql = Fmt_Str("Select Distinct NPk,StopAutoInc,TblAtr,NmTbl from {0} where Pth & NmDb='{1}' order by NmTbl", mNmtTblF, mAyFb(iFb))
+    Dim mSql$: mSql = Fmt("Select Distinct NPk,StopAutoInc,TblAtr,NmTbl from {0} where Pth & NmDb='{1}' order by NmTbl", mNmtTblF, mAyFb(iFb))
     If Fnd_LoAyV_FmSql(mSql, "NPk,StopAutoInc,TblAtr,NmTbl", mAyNPk, mAyStopAutoInc, mAyTblAtr, mAnt) Then ss.A 2: GoTo E
     Dim iNmt%
     For iNmt = 0 To Sz(mAnt) - 1
         StsShw "Creating Table " & mAnt(iNmt) & " ..."
-        mSql = Fmt_Str("Select NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal from {0} where NmTbl='{1}' order by SnoTblF", mNmtTblF, mAnt(iNmt))
+        mSql = Fmt("Select NmFld,DaoTy,FldLen,FmtTxt,IsReq,IsAlwZerLen,VdtTxt,VdtRul,DftVal from {0} where NmTbl='{1}' order by SnoTblF", mNmtTblF, mAnt(iNmt))
         Dim mRs As DAO.Recordset: If Opn_Rs(mRs, mSql) Then ss.A 3: GoTo E
         Dim J%: J = 0
         With mRs
@@ -835,7 +835,7 @@ For iFb = 0 To Sz(mAyFb) - 1
                     mLnFld = mLnFld & "," & mAnFld(I)
                     mLnVal = mLnVal & ",'-'"
                 Next
-                mSql = Fmt_Str("Insert into [${0}] ({0}{1}) values (0{2})", Mid(mAnt(iNmt), 2), mLnFld, mLnVal)
+                mSql = Fmt("Insert into [${0}] ({0}{1}) values (0{2})", Mid(mAnt(iNmt), 2), mLnFld, mLnVal)
                 If Run_Sql_ByDbExec(mSql, Db) Then ss.A 4: GoTo E
             End If
         End If
@@ -861,7 +861,7 @@ Function TblCrtPk(T$, FnStr$, Optional A As database) As Boolean
 Const cSub$ = "TblCrtPk"
 On Error GoTo R
 If Dlt_Idx(T, "PrimaryKey", A) Then ss.A 1: GoTo E
-Dim mSql$: mSql = Fmt_Str("Create Index PrimaryKey on {0} ({1}) Primary", Q_SqBkt(T), FnStr)
+Dim mSql$: mSql = Fmt("Create Index PrimaryKey on {0} ({1}) Primary", Q_SqBkt(T), FnStr)
 If Run_Sql_ByDbExec(mSql, A) Then ss.A 2: GoTo E
 Exit Function
 R: ss.R
@@ -871,10 +871,10 @@ End Function
 Sub TblCrtSubDtaSheet(MstTn$, ChdTn$, MstFnStr$, Optional ChdFnStr$, Optional A As database)
 Dim O As TableDef: Set O = DbNz(A).TableDefs(MstTn)
 Dim OMst$
-    OMst = AyJnComma(NmstrBrk(MstFnStr))
+    OMst = JnComma(NmBrk(MstFnStr))
 Dim OChd$
     OChd = IIf(ChdFnStr = "", MstFnStr, ChdFnStr)
-    OChd = AyJnComma(NmstrBrk(OChd))
+    OChd = JnComma(NmBrk(OChd))
 TblSetPrp O, "SubdatasheetName", ChdTn
 TblSetPrp O, "LinkChildFields", OChd
 TblSetPrp O, "LinkMasterFields", OMst
@@ -887,6 +887,37 @@ End Function
 Sub TblDrpPrp(T As TableDef, PrpNm$)
 PrpDrp PrpNm, T.Properties
 End Sub
+
+Function TblFny1(Qn_or_Tn$, Optional InclTyFld As Boolean, Optional A As database) As String()
+'Aim: Find {oLnFld} by {Qn_or_Tn} in {pDb} to return if {InclTyFld} & with {pSepChr}
+Dim Db As database: Set Db = DbNz(A)
+'If IsTbl(Qn_or_Tn, Db) Then TblFny1 = FldsToStr(Db.TableDefs(Qn_or_Tn).Fields, InclTyFld): Exit Function
+'If IsQry(Qn_or_Tn, Db) Then TblFny1 = FldsToStr(Db.QueryDefs(Qn_or_Tn).Fields, InclTyFld): Exit Function
+ss.A 1, "Given Qn_or_Tn not exist in pDb"
+GoTo E
+R: ss.R
+E:
+End Function
+
+Function TblRecCnt&(Qn_or_Tn$, Optional LExpr$, Optional A As database)
+Dim Sql$: Sql = FmtQQ("select count(*) from [{0}]{1}", Qn_or_Tn, SqsWhere(LExpr))
+TblRecCnt = SqlLng(Sql, A)
+End Function
+
+Function TblRecCnt__Tst()
+Dim aa&
+Debug.Print Fnd_RecCnt_ByNmtq(aa, "mstAllBrand")
+Debug.Print aa
+'
+Const cFb$ = "c:\aa.mdb"
+Dim mDb As database: If Crt_Db(mDb, cFb, True) Then Stop
+'TblCrt_ByFldDclStr "aa", "aa Text 10", , , mDb) Then Stop
+Call mDb.Execute("Insert into aa values('abc')")
+Call mDb.Execute("Insert into aa values('abc')")
+If Fnd_RecCnt_ByNmtq(aa, "aa", , mDb) Then Stop
+Debug.Print aa
+Shw_DbgWin
+End Function
 
 Sub TblSetPrp(T As TableDef, PrpNm$, V)
 If VarIsBlank(V) Then
@@ -918,7 +949,7 @@ Private Function TblCrt_ParChd_OneRoot(ByVal pRoot&, oAyPth&(), oLvl As Byte, pR
 '     Assume TSrc has no []
 oLvl = oLvl + 1
 
-Dim mSql$: mSql = Fmt_Str("Select {0} from [{1}] where {2}={3} order by {0}", pChd, TSrc, pPar, pRoot)
+Dim mSql$: mSql = Fmt("Select {0} from [{1}] where {2}={3} order by {0}", pChd, TSrc, pPar, pRoot)
 Dim mAyId&(): mAyId = SqlIntoAy(mSql, mAyId)
 
 Dim J%

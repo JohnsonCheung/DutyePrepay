@@ -17,7 +17,7 @@ Case eFctTy.eSub: O = "Sub "
 Case eFctTy.eGet: O = "Property Get "
 Case eFctTy.eLet: O = "o Let "
 Case eFctTy.eSet: FctTyToStr = "Property Set "
-Case Else: O = "Unknown TypFct(" & pTypFct & ")"
+Case Else: O = "Unknown TypFct(" & A & ")"
 End Select
 FctTyToStr = O
 End Function

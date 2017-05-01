@@ -10,27 +10,8 @@ Enum eSimTy
     eSimOth = 5
 End Enum
 
-Function DaoTySzFmSql(Sql$) As Variant()
-Dim OTy As DAO.DataTypeEnum
-Dim OSz%
-If Left(Sql, 5) = "TEXT " Then
-    OTy = dbText
-    OSz = CByte(Mid(Sql, 6))
-    Exit Function
-End If
-Select Case Sql
-Case "CURRENCY":     OTy = dbCurrency
-Case "LONG", "AUTO": OTy = dbLong
-Case "INT":          OTy = dbInteger
-Case "BYTE":         OTy = dbByte
-Case "DATE":         OTy = dbDate
-Case "SINGLE":       OTy = dbSingle
-Case "DOUBLE":       OTy = dbDouble
-Case "MEMO":         OTy = dbMemo
-Case "YESNO":        OTy = dbBoolean
-Case Else: Er "Invalid Fld-Dcl-Sql-Phrase"
-End Select
-DaoTySzFmSql = Array(OTy, OSz)
+Function DaoTy2QChr$(A As DatabaseTypeEnum)
+DaoTy2QChr = SimTyQChr(DaoTyToSim(A))
 End Function
 
 Function DaoTySql$(A As DAO.DataTypeEnum, Optional Sz%)
@@ -70,24 +51,27 @@ End Select
 DaoTySql = O
 End Function
 
-Function VarByStr(Str$, Ty As eSimTy)
-Dim O
-Select Case Ty
-Case eSimBool: O = CBool(Str)
-Case eSimDte: O = CDate(Str): If O < #1/1/1990# Then ss.A 1, "Date is less <1990/1/1": GoTo E
-Case eSimNum: O = CDbl(Str)
-Case eSimOth: ss.A 2, "SimTy(Other) is not handled", "Vraw", Str: GoTo E
-Case eSimStr: O = Str
-Case Else: ss.A 3, "Unexpected SimTy", "Vraw,SimTy", Str, Ty: GoTo E
+Function DaoTySzFmSql(Sql$) As Variant()
+Dim OTy As DAO.DataTypeEnum
+Dim OSz%
+If Left(Sql, 5) = "TEXT " Then
+    OTy = dbText
+    OSz = CByte(Mid(Sql, 6))
+    Exit Function
+End If
+Select Case Sql
+Case "CURRENCY":     OTy = dbCurrency
+Case "LONG", "AUTO": OTy = dbLong
+Case "INT":          OTy = dbInteger
+Case "BYTE":         OTy = dbByte
+Case "DATE":         OTy = dbDate
+Case "SINGLE":       OTy = dbSingle
+Case "DOUBLE":       OTy = dbDouble
+Case "MEMO":         OTy = dbMemo
+Case "YESNO":        OTy = dbBoolean
+Case Else: Er "Invalid Fld-Dcl-Sql-Phrase"
 End Select
-VarByStr = O
-Exit Function
-R: ss.R
-E:
-End Function
-
-Function DaoTy2QChr$(A As DatabaseTypeEnum)
-DaoTy2QChr = SimTyQChr(DaoTyToSim(A))
+DaoTySzFmSql = Array(OTy, OSz)
 End Function
 
 Function DaoTyToSim(pDaoTy As DAO.DataTypeEnum) As eSimTy
@@ -118,6 +102,24 @@ Case Else
 End Select
 End Function
 
+Function SimTyChr$(A As eSimTy)
+Select Case A
+Case eSimBool: SimTyChr = "B"
+Case eSimDte: SimTyChr = "D"
+Case eSimNum: SimTyChr = "N"
+Case eSimOth: SimTyChr = "O"
+Case eSimStr: SimTyChr = "S"
+Case Else: SimTyChr = "?"
+End Select
+End Function
+
+Function SimTyQChr$(A As eSimTy)
+Select Case A
+Case eSimStr: SimTyQChr = CtSngQ
+Case eSimDte: SimTyQChr = "#"
+Case Else: SimTyQChr = ""
+End Select
+End Function
 
 Function SimTyToStr$(A As eSimTy)
 Dim O$
@@ -131,28 +133,25 @@ End Select
 SimTyToStr = O
 End Function
 
+Function VarByStr(Str$, Ty As eSimTy)
+Dim O
+Select Case Ty
+Case eSimBool: O = CBool(Str)
+Case eSimDte: O = CDate(Str): If O < #1/1/1990# Then ss.A 1, "Date is less <1990/1/1": GoTo E
+Case eSimNum: O = CDbl(Str)
+Case eSimOth: ss.A 2, "SimTy(Other) is not handled", "Vraw", Str: GoTo E
+Case eSimStr: O = Str
+Case Else: ss.A 3, "Unexpected SimTy", "Vraw,SimTy", Str, Ty: GoTo E
+End Select
+VarByStr = O
+Exit Function
+R: ss.R
+E:
+End Function
+
 Function VarSimTy(V) As eSimTy
 VarSimTy = VbTySim(VarType(V))
 End Function
-Function SimTyQChr$(A As eSimTy)
-Select Case A
-Case eSimStr: SimTyQChr = CtSngQ
-Case eSimDte: SimTyQChr = "#"
-Case Else: SimTyQChr = ""
-End Select
-End Function
-
-Function SimTyChr$(A As eSimTy)
-Select Case A
-Case eSimBool: SimTyChr = "B"
-Case eSimDte: SimTyChr = "D"
-Case eSimNum: SimTyChr = "N"
-Case eSimOth: SimTyChr = "O"
-Case eSimStr: SimTyChr = "S"
-Case Else: SimTyChr = "?"
-End Select
-End Function
-
 
 Function VbTySim(pVbVarTyp As VbVarType) As eSimTy
 Select Case pVbVarTyp

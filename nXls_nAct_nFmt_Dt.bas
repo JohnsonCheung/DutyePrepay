@@ -37,7 +37,7 @@ If WithHdr Then
     SqPutCell HdrSq, Cell
 End If
 SqPutCell DtaSq, DtaCell
-ListObjFmt ListObjCrt(DtaRg), Fmtr
+ListObjFmt RgLo(DtaRg), Fmtr
 End Sub
 
 Sub DtPutCellWithFmt__Tst()

@@ -1,4 +1,4 @@
-Attribute VB_Name = "ZZ_modResStr"
+Attribute VB_Name = "nVb_ResStr"
 'Option Compare Text
 'Option Explicit
 'Sub Shw_MnuWb()

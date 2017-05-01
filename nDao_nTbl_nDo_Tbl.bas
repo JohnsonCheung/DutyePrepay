@@ -56,7 +56,7 @@ Dim mSqlAdd$, mSqlUpd$, mSqlDlt$
 'mSqlAdd, mSqlUpd, mSqlDlt,
 'SqsOfAddUpdDlt TarTn, pNmtSrc, pNKFld, pNKFldRmv '
 Stop
-StsShw Fmt_Str("TblApdFmTbl: Adding [{0}] to [{1}] with pNKFld=[{2}] & pNKFldRmv=[{3}]", pNmtSrc, TarTn, pNKFld, pNKFldRmv)
+StsShw Fmt("TblApdFmTbl: Adding [{0}] to [{1}] with pNKFld=[{2}] & pNKFldRmv=[{3}]", pNmtSrc, TarTn, pNKFld, pNKFldRmv)
 Run_Sql mSqlAdd
 Run_Sql mSqlUpd
 If pNKFldRmv > 0 Then
@@ -100,11 +100,11 @@ Do
 
     Dim mSql$
     For J% = 0 To cNRecTar - 1
-        mSql = Fmt_Str("Insert into [{0}] values ({1})", cNmtTar, mAyRec_Tar(J))
+        mSql = Fmt("Insert into [{0}] values ({1})", cNmtTar, mAyRec_Tar(J))
         If Run_Sql(mSql) Then Stop
     Next
     For J% = 0 To cNRecSrc - 1
-        mSql = Fmt_Str("Insert into [{0}] values ({1})", cNmtSrc, mAyRec_Src(J))
+        mSql = Fmt("Insert into [{0}] values ({1})", cNmtSrc, mAyRec_Src(J))
         If Run_Sql(mSql) Then Stop
     Next
 Loop Until True
@@ -117,7 +117,18 @@ Sub TblBrw(T, Optional D As database)
 DbAppa(D).DoCmd.OpenTable T, acViewNormal, acReadOnly
 End Sub
 
-Sub TblCrtIdx(T, IdxNm$, FnStr$, Optional IsUniq As Boolean = False, Optional A As database)
+Sub TblCpy(Src, Tar, FldDic As Dictionary, A As database)
+Dim Db As database: Set Db = DbNz(A)
+TblAsstExist Src, Db
+TblDrpEns Tar, Db
+Dim Ay$(): Ay = DicSy(FldDic, "{K} as {V}")
+Dim Sel$: Sel = JnComma(Ay)
+Const C$ = "Select ? into [?] from [?]"
+Dim S$: S = FmtQQ(C, Sel, Tar, Src)
+SqlRun S, Db
+End Sub
+
+Sub TblCrtIdx(T, IdxNm$, FnStr$, Optional IsUniq As Boolean, Optional A As database)
 'Aim: Create {pIdx} on {T} by {FnStr}
 TblDrpIdx T, IdxNm, A
 Dim S$:
@@ -142,10 +153,48 @@ Dim Db As database: Set Db = DbNz(A)
 If DbHasTbl(T, Db) Then Db.Execute FmtQQ("Drop Table [?]", T)
 End Sub
 
+Sub TblDrpByPfx(Fx$, Optional A As database)
+Dim Db As database: Set Db = DbNz(A)
+Dim L%: L = Len(Fx)
+Dim mColl As New VBA.Collection
+Dim iTbl As TableDef: For Each iTbl In Db.TableDefs
+    If Left(iTbl.Name, L) = Fx Then mColl.Add iTbl.Name
+Next
+Dim mA$
+Dim mNmt: For Each mNmt In mColl
+    If Dlt_Tbl(CStr(mNmt), Db) Then mA = Push(mA, CStr(mNmt))
+Next
+Db.TableDefs.Refresh
+If Len(mA) <> 0 Then ss.A 1, "These tables cannot be deleted: " & mA: GoTo E
+Exit Sub
+E:
+End Sub
+
+Sub TblDrpEns(T, Optional A As database)
+If DbHasTbl(T, A) Then TblDrp T, A
+End Sub
+
 Sub TblDrpIdx(T, IdxNm$, Optional A As DAO.database)
 If Not TblHasIdx(T, IdxNm, A) Then Exit Sub
 Dim S$: S = FmtQQ("Drop Index [{0}] on [{1}]", IdxNm, T)
 DbRunSql S, A
+End Sub
+
+Function TblFld(T, F, A As database) As DAO.Field
+Set TblFld = A.TableDefs(T).Fields(F)
+End Function
+
+Sub TblFldSetAuto(T, F, Optional A As database)
+Dim D As database: Set D = DbNz(A)
+With TblFld(T, F, D)
+    Dim B&: B = .Attributes
+    .Attributes = B Or DAO.FieldAttributeEnum.dbAutoIncrField
+End With
+End Sub
+
+Sub TblFldSetDftV(T, F, DftV, Optional A As database)
+Dim D As database: Set D = DbNz(A)
+TblFld(T, F, A).DefaultValue = DftV
 End Sub
 
 Function TblHasPrp(T As TableDef, PrpNm$) As Boolean
@@ -161,7 +210,7 @@ Function TblInsRecBy2Id(pNmt$, pNmFld_Pk1$, pNmFld_Pk2$, pId1&, pId2&, FnStr$, P
 '     Assume {pNmt} has  Id fields as Pk
 Const cSub$ = "TblInsRecBy2Id"
 Dim mRs As DAO.Recordset
-Dim mSql$: mSql = Fmt_Str("Select * from {0} where {1}={2} and {3}={4}", pNmt, pNmFld_Pk1, pId1, pNmFld_Pk2, pId2)
+Dim mSql$: mSql = Fmt("Select * from {0} where {1}={2} and {3}={4}", pNmt, pNmFld_Pk1, pId1, pNmFld_Pk2, pId2)
 If Opn_Rs(mRs, mSql) Then ss.A 1: GoTo E
 With mRs
     If .AbsolutePosition = -1 Then
@@ -186,7 +235,7 @@ Sub TblInsRecByUKey(oId&, pNmt$, pUKey_NmFld$, pUKey_Val)
 '     Assume first field is the Id & AutoField field and with be returned in {oId}
 Const cSub$ = "TblInsRecByUKey"
 Dim mRs As DAO.Recordset
-Dim mSql$: mSql = Fmt_Str("Select * from {0} where {1}='{2}'", pNmt, pUKey_NmFld, pUKey_Val)
+Dim mSql$: mSql = Fmt("Select * from {0} where {1}='{2}'", pNmt, pUKey_NmFld, pUKey_Val)
 If Opn_Rs(mRs, mSql) Then ss.A 1: GoTo E
 With mRs
     If .AbsolutePosition = -1 Then
@@ -214,7 +263,7 @@ Const cSub$ = "TblInsRecUKey_n_LpAp"
 '     Assume {pNmt} has an unique key of a string field {pUKey_NmFld}
 '     Assume first field is the Id & AutoField field and with be returned in {oId}
 Dim mRs As DAO.Recordset
-Dim mSql$: mSql = Fmt_Str("Select * from {0} where {1}='{2}'", pNmt, pUKey_NmFld, pUKey_Val)
+Dim mSql$: mSql = Fmt("Select * from {0} where {1}='{2}'", pNmt, pUKey_NmFld, pUKey_Val)
 If Opn_Rs(mRs, mSql) Then ss.A 1: GoTo E
 With mRs
     If .AbsolutePosition = -1 Then
@@ -242,14 +291,14 @@ Function TblJnRec(pNmtFm$, pNmtTo$, pLoKey$, pNmFld_NRec$, Optional pSepChr$ = C
 Const cSub$ = "TblJnRec"
 'Build Empty {pNmtTo}
 If Dlt_Tbl(pNmtTo) Then ss.A 1: GoTo E
-Dim mSql$: mSql = Fmt_Str("Select Distinct {0} into {1} from {2} where False", pLoKey, pNmtTo, pNmtFm)
+Dim mSql$: mSql = Fmt("Select Distinct {0} into {1} from {2} where False", pLoKey, pNmtTo, pNmtFm)
 If Run_Sql(mSql) Then ss.A 1: GoTo E
-mSql = Fmt_Str("Alter table {0} Add COLUMN Lst{1} Memo", pNmtTo, pNmFld_NRec)
+mSql = Fmt("Alter table {0} Add COLUMN Lst{1} Memo", pNmtTo, pNmFld_NRec)
 If Run_Sql(mSql) Then ss.A 2: GoTo E
 'Loop {pNmtFmt} having break @ mAnFldKey()
 Dim mAnFldKey$(): mAnFldKey = Split(pLoKey, CtComma)
 Dim NKey%: NKey = Sz(mAnFldKey)
-Dim mRs As DAO.Recordset: Set mRs = CurrentDb.OpenRecordset(Fmt_Str("Select {0},{1} from {2} order by {0},{1}", pLoKey, pNmFld_NRec, pNmtFm))
+Dim mRs As DAO.Recordset: Set mRs = CurrentDb.OpenRecordset(Fmt("Select {0},{1} from {2} order by {0},{1}", pLoKey, pNmFld_NRec, pNmtFm))
 With mRs
     If .AbsolutePosition = -1 Then .Close: Exit Function
     ReDim mAyLasKeyVal(NKey - 1)
@@ -260,14 +309,14 @@ With mRs
     If Fnd_LvFmRs(mLasKeyVal, mRs, pLoKey) Then ss.A 3: GoTo E
 
     Dim mLst$
-    Dim mSql_Tp$: mSql_Tp = Fmt_Str("Insert into {0} ({1},Lst{2}) values ", pNmtTo, pLoKey, pNmFld_NRec) & "({0},'{1}')"
+    Dim mSql_Tp$: mSql_Tp = Fmt("Insert into {0} ({1},Lst{2}) values ", pNmtTo, pLoKey, pNmFld_NRec) & "({0},'{1}')"
     While Not .EOF
         'If !Dte = #2/22/2007# And !Txt = "1010" And !InstId = 10 Then Stop
         If IsSamKey_ByAnFldKey(mRs, mAnFldKey, mAyLasKeyVal) Then
-            mLst = Add_Str(mLst, .Fields(pNmFld_NRec).Value, pSepChr)
+            mLst = Push(mLst, .Fields(pNmFld_NRec).Value, pSepChr)
         Else
             '
-            mSql = Fmt_Str(mSql_Tp, mLasKeyVal, mLst)
+            mSql = Fmt(mSql_Tp, mLasKeyVal, mLst)
             If Run_Sql(mSql) Then ss.A 4: GoTo E
 
             For J = 0 To NKey - 1
@@ -278,7 +327,7 @@ With mRs
         End If
         .MoveNext
     Wend
-    mSql = Fmt_Str(mSql_Tp, mLasKeyVal, mLst)
+    mSql = Fmt(mSql_Tp, mLasKeyVal, mLst)
     If Run_Sql(mSql) Then ss.A 5: GoTo E
     .Close
 End With
@@ -298,12 +347,12 @@ Dim mSepChr$: mSepChr = CtComma
 Dim mBldTstTbl As Boolean: mBldTstTbl = False
 If mBldTstTbl Then
     If Dlt_Tbl(mNmtFm) Then ss.A 1: GoTo E
-    If Run_Sql(Fmt_Str("Create table {0} (InstId Long, Dte Date, Txt Text(10), Num Long)", mNmtFm)) Then ss.A 1: GoTo E
+    If Run_Sql(Fmt("Create table {0} (InstId Long, Dte Date, Txt Text(10), Num Long)", mNmtFm)) Then ss.A 1: GoTo E
     Dim iInstId%: For iInstId = 0 To 10
         Dim iDte%: For iDte = 0 To 10
             Dim iTxt%: For iTxt = 1000 To 1010
                 Dim iNum%: For iNum = 2000 To 2010
-                    If Run_Sql(Fmt_Str("insert into {0} (InstId, Dte, Txt, Num) values ({1}, #{2}#, '{3}', {4})", mNmtFm, iInstId, Date + iDte, iTxt, iNum)) Then ss.A 1: GoTo E
+                    If Run_Sql(Fmt("insert into {0} (InstId, Dte, Txt, Num) values ({1}, #{2}#, '{3}', {4})", mNmtFm, iInstId, Date + iDte, iTxt, iNum)) Then ss.A 1: GoTo E
                 Next
             Next
         Next
@@ -315,9 +364,9 @@ R: ss.R
 E:
 End Function
 
-Function TblPutCell(Qry_or_Tbl_Nm$, Rg As Range _
+Function TblPutCell(Qn_or_Tn$, Rg As Range _
     , Optional SrcFb$ = "" _
-    , Optional pNoExpTim As Boolean = False _
+    , Optional pNoExpTim As Boolean _
     ) As Boolean
 'Aim: Read data from table {SrcFb}!{QryNmt} to QryNmt.Destination
 Const cSub$ = "TblPutCell"
@@ -334,7 +383,7 @@ Else
 End If
 Dim mQt As QueryTable: Set mQt = mWs.QueryTables.Add(CnnStr_Mdb(mFbSrc), Rg)
 With mQt
-    Dim mSql$: If BldSql_Qt(mSql, Rg, Qry_or_Tbl_Nm, SrcFb) Then ss.A 2: GoTo E
+    Dim mSql$: If BldSql_Qt(mSql, Rg, Qn_or_Tn, SrcFb) Then ss.A 2: GoTo E
     .CtCommandType = xlCmdSql
     .CtCommandText = mSql
     .BackgroundQuery = False
@@ -389,20 +438,6 @@ Dim iTbl As TableDef: For Each iTbl In CurrentDb.TableDefs
     End If
 Next
 End Function
-Sub TblCpy(Src, Tar, FldDic As Dictionary, A As database)
-Dim Db As database: Set Db = DbNz(A)
-TblAsstExist Src, Db
-TblDrpEns Tar, Db
-Dim Ay$(): Ay = DicSy(FldDic, "{K} as {V}")
-Dim Sel$: Sel = JnComma(Ay)
-Const C$ = "Select ? into [?] from [?]"
-Dim S$: S = FmtQQ(C, Sel, Tar, Src)
-SqlRun S, Db
-End Sub
-
-Sub TblDrpEns(T, Optional A As database)
-If TblIsExist(T, A) Then TblDrp T, A
-End Sub
 
 Function TblRenToBackup(ToPfx$) As Boolean
 'Aim: Rename all linked table by adding {ToPfx}
@@ -418,11 +453,91 @@ R: ss.R
 E:
 End Function
 
+Sub TblSetDblFldToDft0(T, Optional A As database)
+'Aim: set all double fields in {pNmt} to have 0 as default value
+Dim J%, D As database: Set D = DbNz(A)
+Dim F As Field
+For Each F In Tbl(T, D).Fields
+    If F.Type = dbDouble Then F.DefaultValue = 0
+Next
+End Sub
+
+Sub TblSetSno(T, Optional SnoFldNm$ = "Sno", Optional OrdBy$ = "")
+'-- Fill in <<pNmSeqFld>> starting from 1 by using PrimaryKey as the key
+Dim Rs As DAO.Recordset: Set Rs = SqlRs(FmtQQ("Select ? from ??", SnoFldNm, T, SqsOrdBy(OrdBy)))
+RsSetSno Rs, SnoFldNm
+End Sub
+
+Sub TblSetSno__Tst()
+TblCrt_ByFldDclStr "#Tmp", "aa Text 10, Sno Long"
+Dim J%
+For J = 0 To 10
+    SqlRun "Insert into [#Tmp] (aa) values ('{0}')"
+Next
+TblSetSno "#Tmp"
+End Sub
+
+Sub TblSetSnoWithG(T, FnStrGp$, Optional pOrdBy$ = "", Optional pNmFldSeq$ = "Sno", Optional A As database)
+Dim mNmt$: mNmt = T ' Q_SqBkt(T)
+Dim mSql$: mSql = Fmt("Select {2},{0} from {1} Order by {2}{3}", pNmFldSeq, mNmt, FnStrGp, Cv_Str(pOrdBy, ","))
+Dim mRs As DAO.Recordset: If Opn_Rs(mRs, mSql) Then ss.A 1: GoTo E
+Dim mAnFldGp$(): mAnFldGp = Split(FnStrGp, ",")
+Dim NGp%: NGp = Sz(mAnFldGp)
+ReDim mAyKvLas(NGp - 1)
+Dim mSno%: mSno = 0
+With mRs
+    While Not .EOF
+        If Not IsSamKey(mRs, mAyKvLas) Then
+            If Set_AyKv_ByRs(mAyKvLas, mRs) Then ss.A 2: GoTo E
+            mSno = 0
+        End If
+        mSno = mSno + 10
+        .Edit
+        .Fields(pNmFldSeq).Value = mSno
+        .Update
+        .MoveNext
+    Wend
+End With
+GoTo X
+R: ss.R
+E:
+X:
+    RsCls mRs
+End Sub
+
+Sub TblSetZero2Null(T, FnStr, Optional A As database)
+Dim mAnFld_SubStr$(): mAnFld_SubStr = Split(FnStr, CtComma)
+Dim Db As database: Set Db = DbNz(A)
+With Tbl(T, Db).OpenRecordset
+    While Not .EOF
+        Dim iSubStr As Byte: For iSubStr = LBound(mAnFld_SubStr) To UBound(mAnFld_SubStr)
+            Dim iFld As DAO.Field: For Each iFld In .Fields
+                .Edit
+                If InStr(iFld.Name, mAnFld_SubStr(iSubStr)) > 0 Then
+                    If iFld.Value = 0 Then iFld.Value = Null
+                End If
+                .Update
+            Next
+        Next
+        .MoveNext
+    Wend
+    .Close
+End With
+End Sub
+
 Function TblToFxmll__Tst()
 TblWrtFxml "permit", "c:\tmp\mstBrand.xml"
 End Function
 
-Sub TblWrtFb(TnyOpt, TarFb$, Optional pCrtIfNotExist As Boolean = False, Optional A As database)
+Sub TblUpdTbl(Tar$, Src$, NKeyFld%, Optional A As database)
+'Aim: Upd {pNmtSrc} to {TarTn} for records exist in both tables
+'     assuming first {pNKFld} are common primary in both tables
+Dim O$
+O = SqsOfUpd1(Tar, Src, NKeyFld, , A)
+DbRunSql O, A
+End Sub
+
+Sub TblWrtFb(TnyOpt, TarFb$, Optional pCrtIfNotExist As Boolean, Optional A As database)
 
 'Aim: Currentdb db's {pLikNmt} tables to {TarFb}
 Const cSub$ = "Snd_Tbl_ToMdb"
@@ -433,7 +548,7 @@ End If
 Dim mAnt$(): ' If Fnd_Ant_ByLik(mAnt, pLikNmt) Then ss.A 4: GoTo E
 Dim J%
 For J = 0 To Sz(mAnt) - 1
-    Dim mSql$: mSql = Fmt_Str("Select * into {0} in '{1}' from {0}", mAnt(J), TarFb)
+    Dim mSql$: mSql = Fmt("Select * into {0} in '{1}' from {0}", mAnt(J), TarFb)
     If Run_Sql(mSql) Then ss.A 5: GoTo E
 Next
 Exit Sub

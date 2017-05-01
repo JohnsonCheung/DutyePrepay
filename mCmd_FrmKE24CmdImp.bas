@@ -6,7 +6,7 @@ Sub CmdKE24Clear(pY As Byte, pM As Byte)
 If VdtYr(pY) Then Exit Sub
 If VdtMth(pM) Then Exit Sub
 If Not Start("Clear sales history data (KE24) for Year[" & pY + 2000 & "] Month[" & pY & "]?", "Clear?") Then Exit Sub
-Dim mCndn$: mCndn = Fmt_Str("Yr={0} and Mth={1}", pY, pM)
+Dim mCndn$: mCndn = Fmt("Yr={0} and Mth={1}", pY, pM)
 SqlRun "Delete From KE24 where " & mCndn
 SqlRun "Update KE24H set NCopaOrd=0,NCopaLin=0,NCus=0,NSKU=0,Qty=0,Tot=0,DteUpd=Now() where " & mCndn
 Done
@@ -35,13 +35,13 @@ Sub CmdKE24Import__Tst()
 CmdKE24Import 10, 1
 End Sub
 
-Private Sub CmdKE24Import_1ImpFx(Pfx$, pY As Byte, pM As Byte)
-'Aim: Import pFx$ into KE24 of pY, pM
-If Dir(Pfx) = "" Then MsgBox "make sure this exists" & vbLf & Pfx: Exit Sub
-If TblCrt_FmLnkWs(Pfx, "Sheet1", TNew:=">KE24") Then MsgBox "Cannot create link table [>KE24] to Xls" & vbLf & Pfx: Exit Sub
+Private Sub CmdKE24Import_1ImpFx(Fx$, pY As Byte, pM As Byte)
+'Aim: Import Fx$ into KE24 of pY, pM
+If Dir(Fx) = "" Then MsgBox "make sure this exists" & vbLf & Fx: Exit Sub
+If TblCrt_FmLnkWs(Fx, "Sheet1", TNew:=">KE24") Then MsgBox "Cannot create link table [>KE24] to Xls" & vbLf & Fx: Exit Sub
 With CurrentDb.OpenRecordset("Select Count(*) from [>KE24] where Year([Posting Date])<>" & 2000 + pY & " or Month([Posting Date])<>" & pM)
     If Nz(.Fields(0).Value, 0) <> 0 Then
-        MsgBox "There are [" & .Fields(0).Value & "] records with Posting Date not in " & pY + 2000 & "/" & pM & vbLf & vbLf & Pfx, vbCritical, "Error in import file"
+        MsgBox "There are [" & .Fields(0).Value & "] records with Posting Date not in " & pY + 2000 & "/" & pM & vbLf & vbLf & Fx, vbCritical, "Error in import file"
         .Close
         Exit Sub
     End If
@@ -67,14 +67,14 @@ SqlRun "INSERT INTO KE24 (CopaNo,   CopaLNo,   PostDate,   Sku,   Cus,   Qty,   
 End Sub
 
 Private Sub CmdKE24Import_2UpdKE24H(pY As Byte, pM As Byte)
-SqlRun Fmt_Str("SELECT Yr,Mth,Sum(x.Qty) AS Qty, Sum(x.Tot) AS Tot, Count(CopaLNo) AS NLin INTO [#Sum]        FROM KE24 x        WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth;", pY, pM)
-SqlRun Fmt_Str("SELECT Yr,Mth, CopaNo                                                      INTO [#SumOrdList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,CopaNo;", pY, pM)
+SqlRun Fmt("SELECT Yr,Mth,Sum(x.Qty) AS Qty, Sum(x.Tot) AS Tot, Count(CopaLNo) AS NLin INTO [#Sum]        FROM KE24 x        WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth;", pY, pM)
+SqlRun Fmt("SELECT Yr,Mth, CopaNo                                                      INTO [#SumOrdList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,CopaNo;", pY, pM)
         SqlRun "SELECT Yr,Mth, Count(CopaNo) AS NOrd                                       INTO [#SumOrdCnt]  FROM [#SumOrdList]                          GROUP BY Yr,Mth;"
-SqlRun Fmt_Str("SELECT Yr,Mth, Cus                                                         INTO [#SumCusList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,Cus;", pY, pM)
-SqlRun Fmt_Str("SELECT Yr,Mth, Count(Cus) AS NCus                                          INTO [#SumCusCnt]  FROM [#SumCusList]                          GROUP BY Yr,Mth;", pY, pM)
-SqlRun Fmt_Str("SELECT Yr,Mth, Sku                                                         INTO [#SumSkuList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,Sku;", pY, pM)
-SqlRun Fmt_Str("SELECT Yr,Mth, Count(Sku) AS NSku                                          INTO [#SumSkuCnt]  FROM [#SumSkuList]                          GROUP BY Yr,Mth;", pY, pM)
-SqlRun Fmt_Str("UPDATE (((KE24H x" & _
+SqlRun Fmt("SELECT Yr,Mth, Cus                                                         INTO [#SumCusList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,Cus;", pY, pM)
+SqlRun Fmt("SELECT Yr,Mth, Count(Cus) AS NCus                                          INTO [#SumCusCnt]  FROM [#SumCusList]                          GROUP BY Yr,Mth;", pY, pM)
+SqlRun Fmt("SELECT Yr,Mth, Sku                                                         INTO [#SumSkuList] FROM KE24          WHERE Yr={0} And Mth={1} GROUP BY Yr,Mth,Sku;", pY, pM)
+SqlRun Fmt("SELECT Yr,Mth, Count(Sku) AS NSku                                          INTO [#SumSkuCnt]  FROM [#SumSkuList]                          GROUP BY Yr,Mth;", pY, pM)
+SqlRun Fmt("UPDATE (((KE24H x" & _
                               " INNER JOIN [#Sum]       a ON x.Mth=a.Mth AND x.Yr=a.Yr)" & _
                               " INNER JOIN [#SumCusCnt] b ON x.Mth=b.Mth AND x.Yr=b.Yr)" & _
                               " INNER JOIN [#SumOrdCnt] c ON x.Mth=c.Mth AND x.Yr=c.Yr)" & _

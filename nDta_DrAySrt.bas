@@ -2,9 +2,9 @@ Attribute VB_Name = "nDta_DrAySrt"
 Option Compare Database
 Option Explicit
 
-Function DrAySrt(DrAy(), ColIdxAy%()) As Variant()
+Function DrAySrt(DrAy(), ColIdxAy%(), Optional IsDesAy) As Variant()
 Dim UR&: UR = UB(DrAy): If UR = -1 Then Exit Function
-Dim I&(): I = DrAySrtIdx(DrAy, ColIdxAy)
+Dim I&(): I = DrAySrtIdx(DrAy, ColIdxAy, IsDesAy)
 Dim O(): ReDim O(UR)
 Dim R&
 For R = 0 To UR
@@ -14,11 +14,11 @@ DrAySrt = O
 End Function
 
 Function DrAySrtIdx(DrAy(), Optional ByVal ColIdxAy, Optional ByVal IsDesAy) As Long()
-Dim UC%:               UC = UB(ColIdxAy):               If UC = -1 Then Exit Function
-Dim Des() As Boolean: Des = GetDesAy(IsDesAy, UC)
-Dim CIdx&():         CIdx = Prm_CIdx(ColIdxAy)
-Dim ColP():          ColP = DrAyCol(DrAy, CIdx(0), ColP) ' First Column of DrAy
-Dim O&():               O = AySrtIdx(ColP, Des(0))
+Dim UC%:                     UC = UB(ColIdxAy):               If UC = -1 Then Exit Function
+Dim PrmDes() As Boolean: PrmDes = Prm_Des(IsDesAy, UC)
+Dim PrmCol&():           PrmCol = Prm_ColIdx(ColIdxAy)
+Dim ColP():          ColP = DrAyCol(DrAy, PrmCol(0)) ' Prv Column of DrAy
+Dim O&():               O = AySrtIdx(ColP, PrmDes(0))
 Dim GpAyP():        GpAyP = Array(ApLngAy(0, UB(DrAy)))
 Dim ColPS():        ColPS = Fnd_Col(ColP, O, GpAyP)      ' P=Prv S=Sorted
 Dim ICol%
@@ -26,9 +26,9 @@ Dim GpAy()
 For ICol = 1 To UC
     GpAy = Fnd_GpAy(ColPS, GpAyP)
            If AyIsEmpty(GpAy) Then DrAySrtIdx = O: Exit Function
-    ColP = DrAyCol(DrAy, CIdx(ICol))
+    ColP = DrAyCol(DrAy, PrmCol(ICol))
    ColPS = Fnd_Col(ColP, O, GpAyP)                       ' Sort {Col} in order of {O} only those elements in {GpAy}
-       O = Srt(ColPS, GpAy, Des(ICol), O)
+       O = Srt(ColPS, GpAy, PrmDes(ICol), O)
    GpAyP = GpAy
 Next
 DrAySrtIdx = O
@@ -110,7 +110,17 @@ Next
 Fnd_GpAy = O
 End Function
 
-Private Function GetDesAy(IsDesAy, UC%) As Boolean()
+Private Function Prm_ColIdx(ColIdxAy) As Long()
+Dim O&()           'ColIdx of each col to be sorted
+If IsMissing(ColIdxAy) Then
+    ReDim O(0): O(0) = 0
+Else
+    O = ColIdxAy
+End If
+Prm_ColIdx = O
+End Function
+
+Private Function Prm_Des(IsDesAy, UC%) As Boolean()
 Dim O() As Boolean
 If IsMissing(IsDesAy) Then
     ReDim O(UC)
@@ -118,17 +128,7 @@ Else
     O = IsDesAy
     If UB(O) <> UC Then Er "Given IsDesAy has {UB} should equal {IdxAy-UB}", UB(O), UC
 End If
-GetDesAy = O
-End Function
-
-Private Function Prm_CIdx(ColIdxAy) As Long()
-Dim O&()           'ColIdx of each col to be sorted
-If IsMissing(ColIdxAy) Then
-    ReDim O(0): O(0) = 0
-Else
-    O = ColIdxAy
-End If
-Prm_CIdx = O
+Prm_Des = O
 End Function
 
 Private Function Srt(Col(), GpAy(), IsDes As Boolean, Idx&()) As Long()

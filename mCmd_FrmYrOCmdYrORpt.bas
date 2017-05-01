@@ -10,7 +10,7 @@ Dim mFxTo$: mFxTo = zzFxYrRpt(Y)
 Dim mWb As Workbook
 If Dir(mFxTo) <> "" Then
     If Not Start("Report exist, Regenerate?") Then
-        xOpn.Opn_Wb mWb, mFxTo
+        Set mWb = FxWb(mFxTo)
         mWb.Application.Visible = True
         Exit Sub
     End If
@@ -30,12 +30,12 @@ OupRptM       ' Create @RptM from #TmpMge
 OupRptY Y    ' Create @RptY
 
 Dim mFxFm$: mFxFm = zzFxYrRptTp
-Cpy_Fil mFxFm, mFxTo
+FfnCpy mFxFm, mFxTo
 Dim mWs As Worksheet
-Opn_Wb mWb, mFxTo       ' The Tp contain query to @QryRptY & @QryRptM which will put additional columns to table @RptY & @RptM
-xRfh.Rfh_Wb mWb
-xSav.Sav_Wb mWb
-mWb.Application.Visible = True
+Set mWb = FxWb(mFxTo)       ' The Tp contain query to @QryRptY & @QryRptM which will put additional columns to table @RptY & @RptM
+WbRfh mWb
+WbSav mWb
+WbVis mWb
 End Sub
 
 Sub RunCmdYrORpt__Tst()
@@ -69,7 +69,7 @@ SqlRun "SELECT Yr,Sku,YpIO,Sum(x.Q) AS Q, Sum(x.A) AS A INTO [#TmpMgeIO] FROM [#
 End Sub
 
 Private Sub OupRptY_2MaxClsMth(Y As Byte)
-SqlRun Fmt_Str("SELECT Yr,YpIO,Max(Mth) AS MaxClsMth INTO [#MaxClsMth] FROM [@RptM] WHERE Yr={0} And YpIO=4 GROUP BY Yr,YpIO;", Y)
+SqlRun FmtQQ("SELECT Yr,YpIO,Max(Mth) AS MaxClsMth INTO [#MaxClsMth] FROM [@RptM] WHERE Yr=? And YpIO=4 GROUP BY Yr,YpIO;", Y)
 End Sub
 
 Private Sub TmpMge(Y As Byte)
@@ -87,19 +87,19 @@ TmpMge_8AllYpIO Y
 End Sub
 
 Private Sub TmpMge_1YrOD(Y As Byte)
-SqlRun Fmt_Str("SELECT Yr, CByte(1) AS Mth, Sku, CByte(1) AS YpIO, Sum(OpnQty) AS Q, Sum(OpnTot) AS A INTO [#TmpMge] FROM YrOD Where Yr={0} GROUP BY Yr,Sku", Y)
+SqlRun FmtQQ("SELECT Yr, CByte(1) AS Mth, Sku, CByte(1) AS YpIO, Sum(OpnQty) AS Q, Sum(OpnTot) AS A INTO [#TmpMge] FROM YrOD Where Yr=? GROUP BY Yr,Sku", Y)
 End Sub
 
 Private Sub TmpMge_2In(Y As Byte)
-SqlRun Fmt_Str("INSERT INTO `#TmpMge` (Yr,Mth,Sku,YpIO,Q,A)" & _
+SqlRun FmtQQ("INSERT INTO `#TmpMge` (Yr,Mth,Sku,YpIO,Q,A)" & _
 " SELECT Year(PostDate)-2000, Month(PostDate), Sku, 2, Sum(a.Qty), Sum(a.Amt)" & _
 " FROM Permit x INNER JOIN PermitD a ON a.Permit = x.Permit" & _
-" Where Year(PostDate)-2000={0}" & _
+" Where Year(PostDate)-2000=?" & _
 " GROUP BY Year(PostDate)-2000, Month(PostDate), Sku", Y)
 End Sub
 
 Private Sub TmpMge_3Out(Y As Byte)
-SqlRun Fmt_Str("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,Mth,Sku,3,Sum(Qty),Sum(Tot) FROM KE24 x WHERE Yr={0} GROUP BY Yr,Mth,Sku", Y)
+SqlRun Fmt("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,Mth,Sku,3,Sum(Qty),Sum(Tot) FROM KE24 x WHERE Yr={0} GROUP BY Yr,Mth,Sku", Y)
 End Sub
 
 Private Sub TmpMge_4JanCls()
@@ -109,14 +109,14 @@ End Sub
 Private Sub TmpMge_5OpnCls(Y As Byte)
 Dim J%
 For J = 2 To zM(Y) ' If Y is current year, return current month else return 12
-    SqlRun Fmt_Str("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,{0},Sku,1,Sum(Q),Sum(A) FROM [#TmpMge] WHERE Mth={1} and YpIO=4 GROUP BY Yr,Sku;", J, J - 1)
-    SqlRun Fmt_Str("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,{0},Sku,4,Sum(Q),Sum(A) FROM [#TmpMge] WHERE Mth={0}            GROUP BY Yr,Sku;", J)
+    SqlRun Fmt("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,{0},Sku,1,Sum(Q),Sum(A) FROM [#TmpMge] WHERE Mth={1} and YpIO=4 GROUP BY Yr,Sku;", J, J - 1)
+    SqlRun Fmt("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,Q,A) SELECT Yr,{0},Sku,4,Sum(Q),Sum(A) FROM [#TmpMge] WHERE Mth={0}            GROUP BY Yr,Sku;", J)
 Next
 End Sub
 
 Private Sub TmpMge_6AdjYrD(Y As Byte)
 'Aim: Insert #TmpMge from AdjYrD
-SqlRun Fmt_Str("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,A) SELECT Yr,13,Sku,5,Sum(AdjTot) FROM YrAdjD WHERE Yr={0} GROUP BY Yr,Sku;", Y)
+SqlRun Fmt("INSERT INTO [#TmpMge] (Yr,Mth,Sku,YpIO,A) SELECT Yr,13,Sku,5,Sum(AdjTot) FROM YrAdjD WHERE Yr={0} GROUP BY Yr,Sku;", Y)
 End Sub
 
 Private Sub TmpMge_7NewCls()

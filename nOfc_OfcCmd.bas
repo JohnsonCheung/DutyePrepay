@@ -11,7 +11,7 @@ Dim BActCmdBarCtl As CommandBarControl:
 Dim AToolBarNm$
 Dim CMd$
     AToolBarNm = BActCmdBarCtl.Parent.Name
-    CMd = BActCmdBarCtl.parameter
+    CMd = BActCmdBarCtl.Parameter
     'React on cmdBack
     Select Case CMd
     Case "cmdBack"

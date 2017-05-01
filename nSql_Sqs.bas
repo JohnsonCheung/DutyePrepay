@@ -52,8 +52,8 @@ Do
 Loop Until True
 
 Dim mSql$
-oSqlUpd = Fmt_Str("Update [{0}] t inner join [{1}] s on {2} set {3} ", mNmtTar, mNmtSrc, mJoin, mSet)
-oSqlAdd = Fmt_Str("Insert into [{0}] Select s.* from [{1}] s left join [{0}] t on {2} where IsNull(t.{3})", mNmtTar, mNmtSrc, mJoin, mAnKey1(0))
+oSqlUpd = Fmt("Update [{0}] t inner join [{1}] s on {2} set {3} ", mNmtTar, mNmtSrc, mJoin, mSet)
+oSqlAdd = Fmt("Insert into [{0}] Select s.* from [{1}] s left join [{0}] t on {2} where IsNull(t.{3})", mNmtTar, mNmtSrc, mJoin, mAnKey1(0))
 oSqlDlt = ""
 'Find & Run {mSql} for Delete
 End Function
@@ -91,7 +91,7 @@ Dim mExpr1stNFld$: mExpr1stNFld = Join(KeyFny$, " & ")
 'From [$MdbS]
 'WHERE Mdb In (Select Mdb from [#MdbS])
 ' AND Mdb & Schm Not In (Select Mdb & Schm from [#MdbS])
-SqsOfDlt = Fmt_Str("delete *" & _
+SqsOfDlt = Fmt("delete *" & _
     " from [{0}]" & _
     " where {2} in (Select {2} from [{1}])" & _
     " and {3} not in (Select {3} from [{1}])" _
@@ -100,7 +100,7 @@ End Function
 
 Function SqsOfIns$(T, FnStr$, Av())
 Const C = "Insert into [?] (?) values (?)"
-Dim F$: F = Join(NmstrBrk(FnStr), ",")
+Dim F$: F = Join(NmBrk(FnStr), ",")
 Dim U%: U = UB(Av)
 Dim VV$(): ReDim VV(U)
 Dim J%
@@ -124,19 +124,19 @@ oLExpr = ""
 Dim J%: For J = 0 To pRsUlSrc.Fields.Count - 1
     If pRsUlSrc.Fields(J).Name = "Changed" Then
         Dim I%: For I = J + 1 To pRsUlSrc.Fields.Count - 1 - 5 Step 2 'Skip 5 columns at end
-            mSel = Add_Str(mSel, pRsUlSrc.Fields(I).Name)
+            mSel = Push(mSel, pRsUlSrc.Fields(I).Name)
         Next
         Exit For
     End If
     With pRsUlSrc.Fields(J)
         Dim mA$: If Join_NmV(mA, .Name, .Value) Then ss.A 1: GoTo E
     End With
-    oLExpr = Add_Str(oLExpr, mA, " and ")
+    oLExpr = Push(oLExpr, mA, " and ")
 Nxt:
 Next
 If mSel = "" Then ss.A 1, "mSel should be blank": GoTo E
 If oLExpr = "" Then ss.A 2, "oLExpr should be blank": GoTo E
-oSql = Fmt_Str("Select {0} from {1} where {2}", mSel, pNmtHost, oLExpr)
+oSql = Fmt("Select {0} from {1} where {2}", mSel, pNmtHost, oLExpr)
 Exit Function
 R: ss.R
 E:
@@ -144,7 +144,7 @@ End Function
 
 Function SqsOfSel1$(pSel$, pFm$, Optional pWhere$ = "", Optional pOrdBy$ = "")
 Const cSqlSel$ = "Select {0} from {1}{2}{3}"
-SqsOfSel1 = Fmt_Str(cSqlSel, pSel, Q_S(pFm, "[]"), SqsWhere(pWhere), SqsOrdBy(pOrdBy))
+SqsOfSel1 = Fmt(cSqlSel, pSel, Q_S(pFm, "[]"), SqsWhere(pWhere), SqsOrdBy(pOrdBy))
 End Function
 
 Function SqsOfUpd$(T, SetList$, Optional Where$)
@@ -156,7 +156,7 @@ Function SqsOfUpd_ByRs(oSqlUpd$, pRs As DAO.Recordset, TarTn$, pLmPk$, Optional 
 '      If {FnStr} is given, only those fields in the list will be Updated.
 '      If {FnStr} is not given, all fields in {pRs} will be Updated
 'Const cSub$ = "SqsOfUpd_ByRs"
-'Dim mLnFld$: If Substract_Lst(mLnFld, ToStr_Flds(pRs.Fields), pLmPk) Then ss.A 1: GoTo E
+'Dim mLnFld$: If Substract_Lst(mLnFld, FldsToStr(pRs.Fields), pLmPk) Then ss.A 1: GoTo E
 'Dim mSet$: If RsSel(mSet, pRs, mLnFld) Then ss.A 1: GoTo E
 'Dim mCndn$: If RsSel(mCndn, pRs, pLmPk$, , " and ") Then ss.A 1: GoTo E
 'oSqlUpd = ToSql_Upd(TarTn, mSet, mCndn)
@@ -177,7 +177,7 @@ Dim J%: For J = 0 To Fct.MinInt(10, pRsUlSrc.Fields.Count - 1)
             If Not IsNull(mFld.Value) Then
                 If Left(mFld.Name, 4) <> "New " Then ss.A 1, "The I-th field is not beging [New ]", , "I,NmFld", I, mFld.Name: GoTo E
                 If Join_NmV(mA, Mid(mFld.Name, 5), mFld.Value) Then ss.A 2, "The I-th field cannot build 'Set xx=xx'", , "I,NmFld", I, mFld.Name: GoTo E
-                mSet = Add_Str(mSet, mA)
+                mSet = Push(mSet, mA)
             End If
         Next
         Exit For
@@ -185,12 +185,12 @@ Dim J%: For J = 0 To Fct.MinInt(10, pRsUlSrc.Fields.Count - 1)
     With pRsUlSrc.Fields(J)
         If Join_NmV(mA, .Name, .Value) Then ss.A 1: GoTo E
     End With
-    mCndn = Add_Str(mCndn, mA, " and ")
+    mCndn = Push(mCndn, mA, " and ")
 Nxt:
 Next
 If mSet = "" Then ss.A 3, "mSet should be blank": GoTo E
 If mCndn = "" Then ss.A 4, "mCndn should be blank": GoTo E
-oSqlUpd = Fmt_Str("Update {0} set {1} where {2}", pNmtHost, mSet, mCndn)
+oSqlUpd = Fmt("Update {0} set {1} where {2}", pNmtHost, mSet, mCndn)
 Exit Function
 R: ss.R
 E:
@@ -309,7 +309,7 @@ End Function
 
 Function SqsToAnt__Tst()
 Const cFt$ = "c:\aa.csv"
-If Dlt_Fil(cFt) Then Stop: GoTo E
+FfnDlt cFt
 Dim mF As Byte: mF = FreeFile: Open cFt For Output As #mF
 Print #mF, "Nmq,Lnt,Sql"
 Dim mAnq$(), mAnt$(): If Fnd_Anq_ByLik(mAnq, "q*") Then Stop: GoTo E
@@ -320,7 +320,7 @@ For J = 0 To Sz(mAnq) - 1
     If SqsToAnt(mAnt, mSql) Then Stop: GoTo E
     Dim I%
     For I = 0 To Sz(mAnt) - 1
-        Write #mF, mAnq(J), ToStr_Ays(mAnt), mSql
+        Write #mF, mAnq(J), Jn(mAnt, ","), mSql
     Next
 Next
 Close #mF
@@ -349,7 +349,7 @@ End Function
 
 Sub SqsToKwAy__Tst()
 Const cFt$ = "c:\aa.csv"
-If Dlt_Fil(cFt) Then Stop: GoTo E
+FfnDlt cFt
 
 Dim mF As Byte: mF = FreeFile: Open cFt For Output As #mF
 Print #mF, "Nmq,TypKw,Kw,Lnt,CleanLnt,Sql"
@@ -366,7 +366,7 @@ For J = 0 To Sz(mAnq) - 1
     For I = 0 To Sz(mAnKw) - 1
         Dim mLnt$: mLnt = Mid(mAnKw(I), mAyKwLen(I))
         Dim mAnt$(): If Brk_Lnt(mAnt, mLnt) Then Stop: GoTo E
-        Write #mF, mAnq(J), mAyTypKw(I), mAnKw(I), mLnt, ToStr_Ays(mAnt), mSql
+        Write #mF, mAnq(J), mAyTypKw(I), mAnKw(I), mLnt, JnComma(mAnt), mSql
     Next
 Next
 Close #mF

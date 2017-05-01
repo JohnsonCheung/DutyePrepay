@@ -2,12 +2,22 @@ Attribute VB_Name = "nStr_Fmt"
 Option Compare Database
 Option Explicit
 
+Function Fmt$(FmtStr$, ParamArray Ap())
+Dim O$, I%, V
+O = Replace(FmtStr, "|", vbCrLf)
+I = 0
+For Each V In Ap
+    O = Replace(O, "{" & I & "}", Nz(V, "Null")): I = I + 1
+Next
+Fmt = O
+End Function
+
 Function Fmt_yMmmWww(Dte As Date) As String
 If Dte < Date Then
     Fmt_yMmmWww = " Past"
     Exit Function
 End If
-Fmt_yMmmWww = Right(Year(Dte), 1) & "M" & Format(Month(Dte), "00") & "W" & Format(MGIWeekNum(Dte), "00")
+Fmt_yMmmWww = Right(Year(Dte), 1) & "M" & Format(Month(Dte), "00") & "W" & Format(DteWkNo(Dte), "00")
 End Function
 
 Function FmtDic$(NmMacro$, Dic As Dictionary)
@@ -35,7 +45,7 @@ End Sub
 
 Function FmtNmAv$(MacroStr, Av())
 Dim O$: O = MacroStr
-Dim A$(): A = StrMacroAy(O)
+Dim A$(): A = BrkMacroStr(O)
 Dim J&
 For J = 0 To UB(A)
     O = Replace(O, A(J), Av(J))

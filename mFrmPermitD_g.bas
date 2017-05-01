@@ -15,7 +15,7 @@ End Function
 Function gTblSkuBRateB@(Sku, BchNo)     ' Used by frmPermitD
 If IsNull(Sku) Then Exit Function         ' Rate     is PermitD->Rate which is user input
 If IsNull(BchNo) Then Exit Function     ' RateDuty is ZHT0 rate
-With CurrentDb.OpenRecordset(Fmt_Str("Select DutyRateB from SkuB where Sku='{0}' and BchNo='{1}'", Sku, BchNo))
+With CurrentDb.OpenRecordset(Fmt("Select DutyRateB from SkuB where Sku='{0}' and BchNo='{1}'", Sku, BchNo))
     If .EOF Then .Close: Exit Function
     gTblSkuBRateB = Nz(.Fields(0).Value, 0)
     .Close

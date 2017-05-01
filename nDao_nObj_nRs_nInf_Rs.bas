@@ -1,4 +1,4 @@
-Attribute VB_Name = "nDao_Rs"
+Attribute VB_Name = "nDao_nObj_nRs_nInf_Rs"
 Option Compare Database
 Option Explicit
 
@@ -23,7 +23,7 @@ For J = 0 To N - 1
     Dim mV_FrmOld: mV_FrmOld = pFrm.Controls(mNmFld_Frm).OldValue
     Dim mV_Rs: mV_Rs = pRs.Fields(mNmFld_Rs).Value
     If IfEq(mIsEq, mV_FrmOld, mV_Rs) Then ss.A 1: GoTo E
-    If Not mIsEq Then mA = Add_Str(mA, Fmt_Str("Rs({0})=[{1}] Frm({2}).New=[{3}] .Old=[{4}]", mNmFld_Rs, mV_Rs, mNmFld_Frm, pFrm.Controls(mNmFld_Frm).Value, mV_FrmOld), vbCrLf)
+    If Not mIsEq Then mA = Push(mA, Fmt("Rs({0})=[{1}] Frm({2}).New=[{3}] .Old=[{4}]", mNmFld_Rs, mV_Rs, mNmFld_Frm, pFrm.Controls(mNmFld_Frm).Value, mV_FrmOld), vbCrLf)
 Next
 If mA <> "" Then ss.A 1, "There is some fields OldValue not same as the host", "The fields", mA: Exit Function
 oIsSam = True
@@ -51,6 +51,10 @@ With A
     Wend
 End With
 RsCol = O
+End Function
+
+Function RsCol_Int(A As DAO.Recordset, Optional FldNm$) As Integer()
+RsCol_Int = AyIntAy(RsCol(A, FldNm))
 End Function
 
 Function RsDic(A As DAO.Recordset) As Dictionary
@@ -167,78 +171,19 @@ R: ss.R
 E:
 End Function
 
-Sub RsRbr(A As DAO.Recordset, pStart As Byte, pStp As Byte)
-Dim I&: I = pStart
-With A
-    While Not .EOF
-        .Edit
-        .Fields(0).Value = I: I = I + pStp
-        .Update
-        .MoveNext
-    Wend
-    .Close
-End With
-End Sub
-
-Function RsRmv_Cummulation(pRs As DAO.Recordset, FnStrKey$, pNmFldCum$, pNmFldSet$) As Boolean
-Const cSub$ = "Rmv_Cummulation"
-'   Output: the field pRs->pNmFldSet will be Updated
-'   Input : pRs         assume it has been sorted in proper order
-'           FnStrKey      is the list of key fields name used as grouping the records in pRs (records with FnStrKey value considered as a group)
-'           pNmFldCum   is the value fields used to do the cummulation to set the pNmFldSet
-'           pNmFldSet   is the field required to set
-'   Logic:
-'           For each group of records in pRs, the pNmFldSet will be set by removing cummulation in the field VFld.
-'           (Note: Assuming VFld is already in cummulation)
-'
-If Trim(FnStrKey) = "" Then ss.A 1, "FnStrKey is empty string": GoTo E
-Dim mAnFldKey$(): mAnFldKey = Split(FnStrKey, CtComma)
-Dim NKey%: NKey = Sz(mAnFldKey)
-ReDim mAyKvLas(NKey - 1)
-Dim mLasRunningQty As Double
-With pRs
-    While Not .EOF
-        If Not IsSamKey_ByAnFldKey(pRs, mAnFldKey, mAyKvLas) Then
-            mLasRunningQty = 0
-            Dim J%
-            For J = 0 To NKey - 1
-                mAyKvLas(J) = pRs.Fields(mAnFldKey(J)).Value
-            Next
-        End If
-        .Edit
-        .Fields(pNmFldSet).Value = .Fields(pNmFldCum).Value - mLasRunningQty
-        mLasRunningQty = .Fields(pNmFldCum).Value
-        .Update
-        .MoveNext
-    Wend
-End With
-Exit Function
-E:
+Function RsSq(A As Recordset)
+RsSq = DtSq(RsDt(A))
 End Function
 
-Function RsWrtFx(Rs As Recordset, Fx$, Optional WsNm$ = "Data")
-Dim Cell As Range
-    Set Cell = WsA1(WsNew(WsNm))
-RsPutCell Rs, Cell
-WbSavAs RgWb(Cell), Fx
-End Function
-
-Function RsWrtFx__Tst()
-Dim Fx$: Fx = TmpFx
-Dim Rs As Recordset: Set Rs = SqlRs("Select * from Permit")
-RsWrtFx Rs, Fx
-FxWb(Fx).Application.Visible = True
-End Function
-
-Function RsWs(Rs As DAO.Recordset, Optional WsNm$) As Worksheet
+Function RsWsNew(A As DAO.Recordset, Optional WsNm$, Optional NoLo As Boolean) As Worksheet
 Dim O As Worksheet
 Set O = WsNew(WsNm)
-DtWs RsDt(Rs), WsA1(O)
-Set RsWs = O
+DtPutCell RsDt(A), WsA1(O), NoLo
+Set RsWsNew = O
 End Function
 
-Function RsWs__Tst()
+Function RsWsNew__Tst()
 Dim Rs As DAO.Recordset
 Set Rs = CurrentDb.OpenRecordset("Select * from Permit")
-RsWs(Rs).Application.Visible = True
+WsVis RsWsNew(Rs)
 End Function

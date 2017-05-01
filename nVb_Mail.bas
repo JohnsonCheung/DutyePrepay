@@ -2,7 +2,9 @@ Attribute VB_Name = "nVb_Mail"
 Option Compare Text
 Option Explicit
 Option Base 0
-Const cMod$ = cLib & ".xSnd"
+Type Env
+    SndTo As String
+End Type
 Type SmtpCfg
     SmtpServer As String
     SmtpUseSsl As Boolean
@@ -13,7 +15,7 @@ Type SmtpCfg
 End Type
 Public SmtpCfg As SmtpCfg
 
-Function MailSnd(pFm$, pTo$, pCC$, pSubj$, pBody$, Optional pFfnAttach$ = "", Optional pIsBySMTP As Boolean = False) As Boolean
+Function MailSnd(pFm$, pTo$, pCC$, pSubj$, pBody$, Optional pFfnAttach$ = "", Optional pIsBySMTP As Boolean) As Boolean
 Const cSub$ = "MailSnd"
 If pFfnAttach <> "" Then If Not IsFfn(pFfnAttach) Then ss.A 1: GoTo E
 If pIsBySMTP Then GoTo SMTP
@@ -67,7 +69,7 @@ With mMail_CDO
 End With
 Exit Function
 R: ss.R
-E: MailSnd = True: ss.B cSub, cMod, "pFm,pTo,pCC,pSubj,pBody,pFfnAttach", pFm, pTo, pCC, pSubj, pBody, pFfnAttach
+E:
 End Function
 
 Function MailSnd__Tst()
@@ -78,13 +80,13 @@ For J = 1 To 2
 Next
 End Function
 
-Function MailSnd_ByEnv(pEnv As tEnv, Optional pIsBySMTP As Boolean = True) As Boolean
+Function MailSnd_ByEnv(pEnv As Env, Optional pIsBySMTP As Boolean = True) As Boolean
 With pEnv
-    MailSnd_ByEnv = MailSnd(.Fm, .To, .CC, .Subj, .Body, .Ffn, pIsBySMTP)
+ '   MailSnd_ByEnv = MailSnd(.Fm, .To, .CC, .Subj, .Body, .Ffn, pIsBySMTP)
 End With
 End Function
 
-Function MailSnd_ByYahoo(pFm$, pTo$, pCC$, pSubj$, pBody$, Optional pFfnAttach$ = "", Optional pIsBySMTP As Boolean = False) As Boolean
+Function MailSnd_ByYahoo(pFm$, pTo$, pCC$, pSubj$, pBody$, Optional pFfnAttach$ = "", Optional pIsBySMTP As Boolean) As Boolean
 Const cSub$ = "MailSnd_ByYahoo"
 If pFfnAttach <> "" Then If Not IsFfn(pFfnAttach) Then ss.A 1: GoTo E
 If pIsBySMTP Then GoTo SMTP
@@ -125,7 +127,7 @@ With mMail_CDO
 End With
 Exit Function
 R: ss.R
-E: MailSnd_ByYahoo = True: ss.B cSub, cMod, "pFm,pTo,pCC,pSubj,pBody,pFfnAttach", pFm, pTo, pCC, pSubj, pBody, pFfnAttach
+E:
 End Function
 
 Function MailSnd_Sample() As Boolean

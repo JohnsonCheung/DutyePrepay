@@ -121,8 +121,7 @@ PjMdAy_Std = O
 End Function
 
 Function PjMdNy(Optional A As vbproject) As String()
-Dim O$()
-PjMdNy = ObjAyPrp(PjMdAy(A), "Name", O)
+PjMdNy = OyPrp_Nm(PjMdAy(A))
 End Function
 
 Function PjMdPtrAy(Optional A As vbproject) As LongPtr()
@@ -229,6 +228,13 @@ Case Else: Er "{ExtOf-PjFfn} is invalid", FfnExt(F)
 End Select
 Quit
 End Sub
+
+Function PjToStr$(A As vbproject)
+On Error GoTo R
+PjToStr = PjNm(A)
+Exit Function
+R: PjToStr = ErStr("PjToStr")
+End Function
 
 Function PjTyNy(Optional A As vbproject) As String()
 Dim O$(), MdAy() As CodeModule

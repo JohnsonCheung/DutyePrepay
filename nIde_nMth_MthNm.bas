@@ -19,7 +19,7 @@ Function MthNmMdNy(PubMthNm$, Optional A As vbproject) As String()
 'Return {MdNy} which contains Public {MthNm}
 Dim MdAy() As CodeModule: MdAy = PjMdAy(A)
 Dim OMdAy() As CodeModule: OMdAy = AySel(MdAy, "MdHasMth_Pub", PubMthNm)
-MthNmMdNy = ObjAyStrPrp(OMdAy, "Name")
+MthNmMdNy = OyPrp_Nm(OMdAy)
 End Function
 
 Function MthNmNz$(MthNm$, A As CodeModule)

@@ -70,3 +70,7 @@ Sub ErNewMsgAv__Tst()
 Dim Av()
 ErBrw ErNewMsgAv("sdfsdf", Array(1, 2, 3))
 End Sub
+
+Function ErStr$(S)
+ErStr = S & " error[" & Err.Description & "]"
+End Function

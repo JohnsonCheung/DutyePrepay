@@ -16,3 +16,4 @@ Dim R, C
     C = UBound(Sq, 2)
 Set CellReSz = RgRCRC(Cell, 1, 1, R, C)
 End Function
+

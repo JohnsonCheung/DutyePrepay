@@ -31,7 +31,7 @@ Debug.Assert PrmAyToStr(Act) = PrmStr
 End Function
 
 Function PrmAyToStr$(A() As Prm)
-PrmAyToStr = AyJnComma(AyMapIntoSy(A, "PrmToStr"))
+PrmAyToStr = JnComma(AyMapIntoSy(A, "PrmToStr"))
 End Function
 
 Function PrmToStr$(A As Prm)

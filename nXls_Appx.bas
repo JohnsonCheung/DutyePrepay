@@ -73,6 +73,12 @@ Sub AppxShw()
 Appx.Visible = True
 End Sub
 
+Function AppxToStr$(A As Excel.Application)
+AppxToStr = "(" & A.Workbooks.Count & ") Wb. Wb1=" & WbToStr(A.Workbooks(1))
+Exit Function
+R: AppxToStr = "AppxToStr error.  Msg=" & Err.Description
+End Function
+
 Function CrtPjx(PjNm$, Optional Pth$) As vbproject
 Dim F$:  F = PjNm_NewFalm(PjNm, Pth)
 Set CrtPjx = FxlamCrt(F)

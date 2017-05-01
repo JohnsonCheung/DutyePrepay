@@ -7,11 +7,11 @@ FrmPermitCmdGenFx__Tst
 End Sub
 
 Sub FrmPermitCmdGenFx(PermitId&)
-Dim OFx$
-    OFx = ChqReqFx(PermitId)
-    If FfnIsExist(OFx) Then
+Dim oFx$
+    oFx = ChqReqFx(PermitId)
+    If FfnIsExist(oFx) Then
         If Not Start("Form exist, Regenerate?") Then
-            FxWb(OFx).Application.Visible = True
+            FxWb(oFx).Application.Visible = True
             Exit Sub
         End If
     End If
@@ -34,7 +34,7 @@ Dim xGLAc$, xGLAcName$
     End With
 
 Dim Fm$: Fm = FbCurPth & "Template\Template_DutyPrepay_Cheque_Request_Form.xls"
-FfnCpy Fm, OFx, OvrWrt:=True
+FfnCpy Fm, oFx, OvrWrt:=True
 
 Dim xTxAmt@(), xBusArea$()
     Dim Sql$
@@ -58,15 +58,15 @@ Dim xTxAmt@(), xBusArea$()
 
 '' Fill in Ws by Variables
 
-Dim OWb As Workbook
-Dim OWs As Worksheet
-    Set OWb = FxWb(OFx)
-    Set OWs = OWb.Sheets(1)
+Dim oWb As Workbook
+Dim oWs As Worksheet
+    Set oWb = FxWb(oFx)
+    Set oWs = oWb.Sheets(1)
 
 Dim mRge As Range
 Dim mCnoBusArea ' The column with {BusArea}
 Dim mCnoTxAmt   ' The column with {TxAmt}
-    Set mRge = OWb.Names("PrintArea").RefersToRange
+    Set mRge = oWb.Names("PrintArea").RefersToRange
     Dim mRnoBeg& ' The row with {BusArea}
     Dim iCell As Range
     For Each iCell In mRge
@@ -100,17 +100,17 @@ Else
     Dim J%
     Dim mRgeNxt As Range
     For J = 1 To UBound(xTxAmt)
-        Set mRge = OWs.Rows(mRnoBeg)
+        Set mRge = oWs.Rows(mRnoBeg)
         mRge.EntireRow.Select
         Selection.Copy
-        Set mRgeNxt = OWs.Rows(mRnoBeg + 1)
+        Set mRgeNxt = oWs.Rows(mRnoBeg + 1)
         mRgeNxt.EntireRow.Select
-        OWs.Paste
+        oWs.Paste
     Next
     For J = 0 To UBound(xTxAmt)
-        Set mRge = OWs.Cells(J + mRnoBeg, mCnoTxAmt)
+        Set mRge = oWs.Cells(J + mRnoBeg, mCnoTxAmt)
         mRge.Value = xTxAmt(J)
-        Set mRge = OWs.Cells(J + mRnoBeg, mCnoBusArea)
+        Set mRge = oWs.Cells(J + mRnoBeg, mCnoBusArea)
         mRge.Value = xBusArea(J)
     Next
 End If
@@ -118,9 +118,9 @@ SqlRun "SELECT x.Sku, qSKU.[SKU Description], x.Amt, x.Rate, x.Qty INTO [@Permit
 " FROM Permit AS a INNER JOIN (PermitD AS x LEFT JOIN qSKU ON x.Sku = qSKU.Sku) ON a.Permit = x.Permit" & _
 " WHERE x.Permit = " & PermitId & _
 " ORDER BY x.SeqNo;"
-WbRfh OWb
-WbSav OWb
-OWb.Application.Visible = True
+WbRfh oWb
+WbSav oWb
+oWb.Application.Visible = True
 End Sub
 
 Sub FrmPermitCmdGenFx__Tst()

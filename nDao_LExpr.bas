@@ -2,8 +2,23 @@ Attribute VB_Name = "nDao_LExpr"
 Option Compare Database
 Option Explicit
 Const cMod$ = ""
+'[x] [%x:x] [x:x:x] [>x] [>=x] [<x] [<=x] [*x] [x*] [*x*] [!%x:x] [!x:x:x] [!*x] [!x*] [!*x*] [!x]
+Public Enum eOpTyp
+    eEq = 1
+    eRge = 2
+    eLst = 3
+    eGt = 4
+    eGe = 5
+    eLt = 6
+    Ele = 7
+    eLik = 8
+    eNRge = 9
+    eNLst = 10
+    eNLik = 11
+    eNe = 12
+End Enum
 
-Function LExpr(oLExpr$, pNmFld$, pSimTy As eSimTy, pVraw$, Optional pIsOpt As Boolean = False) As Boolean
+Function LExpr(oLExpr$, pNmFld$, pSimTy As eSimTy, pVraw$, Optional pIsOpt As Boolean) As Boolean
 'Aim: Build a sql condition {oLExpr}
 'Prm: {pVraw}   [x] [%x-x] [x,x,x] [>x] [>=x] [<x] [<=x] [*x] [x*] [*x*] [!%x-x] [!x,x,x] [!*x] [!x*] [!*x*] [!x] (16)
 '               Eq  Rge    Lst     Gt   Ge    Lt   Le    ----- Lik ----- NRge    NLst     ------ NLik ------ Ne   (12)
@@ -131,7 +146,7 @@ If AyOpFmtStr(1) = "" Then
     AyOpFmtStr(eOpTyp.eRge) = "({0} between {1} and {2})"
     AyOpFmtStr(eOpTyp.eNe) = "({0}<>{1})"
 End If
-oLExpr = Fmt_Str(AyOpFmtStr(OpTyp), pNmFld, V1, V2)
+oLExpr = Fmt(AyOpFmtStr(OpTyp), pNmFld, V1, V2)
 Exit Function
 R: ss.R
 E: LExpr = True: ss.B cSub, cMod, "pIsOpt,pNmfld,pSimTy,pVraw", pIsOpt, pNmFld, pSimTy, pVraw
@@ -189,23 +204,23 @@ Exit Function
 E:
 End Function
 
-Function LExpr_ByAyNm2V(oLExpr$, pAyNm2V() As tNm2V, Optional pAlwNull As Boolean = False) As Boolean
+Function LExpr_ByAyNm2V(oLExpr$, pAyNm2V(), Optional pAlwNull As Boolean) As Boolean
 'Aim: Build {oLExpr} by NEW value in {pAyNm2V}.  Any Null triggers error.
 Const cSub$ = "LExpr_ByAyNm2V"
 oLExpr = ""
 Dim J%, mIsEq As Boolean
-For J = 0 To Siz_An2V(pAyNm2V) - 1
-    With pAyNm2V(J)
-        If VarType(.NewV) = vbNull Then
-            If Not pAlwNull Then ss.A 1, "The one of the element of .NewV in pAyNm2V is Null", , "The Ele,J", pAyNm2V(J).Nm, J: GoTo E
-            oLExpr = Add_Str(oLExpr, Q_S(.Nm, "IsNull(*)"), " and ")
-        Else
-            oLExpr = Add_Str(oLExpr, .Nm & "=" & Q_V(.NewV), " and ")
-        End If
-    End With
-Next
-Exit Function
-E: LExpr_ByAyNm2V = True: ss.B cSub, cMod, "pAyNm2V", ToStr_AyNm2V(pAyNm2V)
+'For J = 0 To Siz_An2V(pAyNm2V) - 1
+'    With pAyNm2V(J)
+'        If VarType(.NewV) = vbNull Then
+'            If Not pAlwNull Then ss.A 1, "The one of the element of .NewV in pAyNm2V is Null", , "The Ele,J", pAyNm2V(J).Nm, J: GoTo E
+'            oLExpr = Push(oLExpr, Q_S(.Nm, "IsNull(*)"), " and ")
+'        Else
+'            oLExpr = Push(oLExpr, .Nm & "=" & Q_V(.NewV), " and ")
+'        End If
+'    End With
+'Next
+'Exit Function
+'E: LExpr_ByAyNm2V = True: ss.B cSub, cMod, "pAyNm2V", ToStr_AyNm2V(pAyNm2V)
 End Function
 
 Function LExpr_ByLpAp(oLExpr$, pLp$, ParamArray pAp()) As Boolean
@@ -229,7 +244,7 @@ Dim N2%: N2 = Sz(mAyV)
 If N1 <> N2 Then ss.A 1, "Cnt in pLn & pV() not match", , "N1,N2", N1, N2: GoTo E
 Dim J%: For J = 0 To N1 - 1
     Dim mA$: If Join_NmV(mA, mAn(J), mAyV(J)) Then ss.A 2: GoTo E
-    oLExpr = Add_Str(oLExpr, mA, " and ")
+    oLExpr = Push(oLExpr, mA, " and ")
 Next
 Exit Function
 R: ss.R
@@ -254,9 +269,9 @@ End Function
 Function LExpr_InFrm(oLExpr$, pFrm As Form, pLmPk$) As Boolean
 'Aim: Build {oLExpr} by OldValue of {pLmPk$} in {pFrm} with optional to replace the variable name by {pLnNew}
 Const cSub$ = "LExpr_InFrm"
-Dim mAyNm2V() As tNm2V: If Fnd_An2V_ByFrm(mAyNm2V, pFrm, pLmPk) Then ss.A 1: GoTo E
-LExpr_InFrm = LExpr_ByAyNm2V(oLExpr, mAyNm2V)
-Exit Function
-R: ss.R
-E: LExpr_InFrm = True: ss.B cSub, cMod, ""
+'Dim mAyNm2V() As tNm2V: If Fnd_An2V_ByFrm(mAyNm2V, pFrm, pLmPk) Then ss.A 1: GoTo E
+'LExpr_InFrm = LExpr_ByAyNm2V(oLExpr, mAyNm2V)
+'Exit Function
+'R: ss.R
+'E: LExpr_InFrm = True: ss.B cSub, cMod, ""
 End Function

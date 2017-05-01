@@ -18,6 +18,14 @@ Function RgC2&(A As Range)
 RgC2 = A.Column + A.Columns.Count - 1
 End Function
 
+Function RgDicH(A As Range) As Dictionary
+Set RgDicH = SqDic(SqTranspose(A.Value))
+End Function
+
+Function RgDicV(A As Range) As Dictionary
+Set RgDicV = SqDic(A.Value)
+End Function
+
 Function RgEntireC(A As Range, C) As Range
 Set RgEntireC = RgC(A, C).EntireColumn
 End Function
@@ -56,18 +64,15 @@ Dim O As New Dictionary
 Set RgKeyAdrDicH = O
 End Function
 
-Function RgDicH(A As Range) As Dictionary
-Set RgDicH = SqDic(SqTranspose(A.Value))
-End Function
-Function RgDicV(A As Range) As Dictionary
-Set RgDicV = SqDic(A.Value)
-End Function
-
 Function RgLasCnoFmEdge&(A As Range)
 Dim MaxCno&: MaxCno = WsMaxCno(A.Parent)
 Dim Sq(): Sq = A(1, MaxCno - A.Column).Value
 Dim Dr(): Dr = SqDr(Sq, 1)
 RgLasCnoFmEdge = DrLasNonBlankIdx(Dr) + 1
+End Function
+
+Function RgLo(A As Range) As ListObject
+Set RgLo = RgWs(A).ListObjects.Add(xlSrcRange, A)
 End Function
 
 Function RgNCol&(A As Range)
@@ -100,6 +105,13 @@ End Function
 
 Function RgRR(A As Range, R1, R2) As Range
 Set RgRR = RgRCRC(A, R1, 1, R2, RgNCol(A))
+End Function
+
+Function RgToStr$(Rg As Range)
+On Error GoTo R
+RgToStr = Rg.Parent.Name & "!" & Rg.Address
+Exit Function
+R: RgToStr = ErStr("RgToStr")
 End Function
 
 Function RgWb(A As Range) As Workbook

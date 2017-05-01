@@ -79,8 +79,8 @@ Next
 End Sub
 
 Private Sub Form_Open_1BldKE24H_1Y_1M(pY As Byte, pM As Byte)
-With CurrentDb.OpenRecordset(Fmt_Str("Select Yr from KE24H where Yr={0} and Mth={1}", pY, pM))
-    If .EOF Then .Close: SqlRun Fmt_Str("Insert Into KE24H (Yr,Mth) values ({0},{1})", pY, pM): Exit Sub
+With CurrentDb.OpenRecordset(Fmt("Select Yr from KE24H where Yr={0} and Mth={1}", pY, pM))
+    If .EOF Then .Close: SqlRun Fmt("Insert Into KE24H (Yr,Mth) values ({0},{1})", pY, pM): Exit Sub
     .Close
 End With
 End Sub

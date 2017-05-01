@@ -241,7 +241,7 @@ End Function
 
 Function MdSfx$(Optional A As CodeModule)
 Dim B$: B = MdNm(A)
-MdSfx = StrBrk2FmEnd(B, "_").S2
+MdSfx = Brk2FmEnd(B, "_").S2
 End Function
 
 Function MdSrcFfn$(Optional A As CodeModule)
@@ -250,6 +250,13 @@ End Function
 
 Function MdSrcFn$(Optional A As CodeModule)
 MdSrcFn = MdNm(A) & MdExt(A)
+End Function
+
+Function MdToStr$(A As CodeModule)
+On Error GoTo R
+MdToStr = PjNm(MdPj(A)) & "." & MdNm(A)
+Exit Function
+R: MdToStr = ErStr("MdToStr")
 End Function
 
 Function MdTy(Optional A As CodeModule) As vbext_ComponentType

@@ -144,6 +144,16 @@ Dim Av(): Av = MsgAp
 ErAsst AyChkZerOrPos(Ay), Av
 End Sub
 
+Function AyBrk(Ay, Optional BrkChr$ = ".") As Variant()
+Dim O(), U&, J&
+For J = 0 To UB(Ay)
+    With Brk(Ay(J), BrkChr)
+        Push O, Array(.S1, .S2)
+    End With
+Next
+AyBrk = O
+End Function
+
 Sub AyBrw(Ay, Optional Pfx$ = "Ay", Optional WithIdx As Boolean)
 If WithIdx Then
     DrAyBrw AyDrAy(Ay)
@@ -266,7 +276,7 @@ For J = 0 To UB(Ay)
     End If
 Next
 If AyIsEmpty(ErI) Then Exit Function
-AyChkZerOrPos = ErNew("Given {Ay{-of-{U} has {U-Ele} being negative", AyJn(Ay, " "), UB(Ay), UB(ErI))
+AyChkZerOrPos = ErNew("Given {Ay{-of-{U} has {U-Ele} being negative", Jn(Ay, " "), UB(Ay), UB(ErI))
 End Function
 
 Function AyCoverIdx%(QtyAy, OH)
@@ -557,6 +567,14 @@ End If
 AyIdx = -1
 End Function
 
+Function AyIdx_Contain&(Ay, S)
+Dim J&
+For J = 0 To UB(Ay)
+    If InStr(Ay(J), S) > 0 Then AyIdx_Contain = J: Exit Function
+Next
+AyIdx_Contain = -1
+End Function
+
 Function AyIdxAy(Ay, SubAy) As Long()
 If AyIsEmpty(SubAy) Then Exit Function
 Dim U&: U = UB(SubAy)
@@ -619,36 +637,10 @@ Function AyIsSam(Ay1, Ay2) As Boolean
 
 End Function
 
-Function AyJn$(Ay, Optional Sep$)
-AyJn = Join(AySy(Ay), Sep)
-End Function
-
-Function AyJnComma$(Ay)
-AyJnComma = Join(AySy(Ay), CtComma)
-End Function
-Function JnComma$(Ay)
-JnComma = Join(AySy(Ay), CtComma)
-End Function
-
-Function AyJnScl$(Ay)
-AyJnScl = AyJn(Ay, ";")
-End Function
-
-Function AyJnSpc$(Ay)
-AyJnSpc = Join(AySy(Ay), " ")
-End Function
-
 Function AyLasEle(Ay)
 If AyIsEmpty(Ay) Then Er "AyLasEle: Given Ay is empty"
 AyLasEle = Ay(UB(Ay))
 End Function
-
-Function AyLik(Ay, Lik)
-AyLik = AySel(Ay, "StrLik", Lik)
-End Function
-
-Sub AyLik__Tst()
-End Sub
 
 Function AyMak(Ay_or_Itm)
 If IsArray(Ay_or_Itm) Then AyMak = Ay_or_Itm: Exit Function
@@ -888,6 +880,14 @@ Next
 AySel_Idx = O
 End Function
 
+Function AySelLik(Ay, Lik)
+AySelLik = AySel(Ay, "StrLik", Lik)
+End Function
+
+Sub AySelLik__Tst()
+
+End Sub
+
 Sub AySet(OAy, Idx&, V)
 If 0 > Idx Then Er "AySet: {Idx} cannot be -ve", Idx
 Dim U&: U = UB(OAy)
@@ -953,7 +953,7 @@ Next
 AySliceFmU = O
 End Function
 
-Function AySq(Ay, NCol&, Optional NRow&)
+Function AySq(Ay, nCol&, Optional NRow&)
 'Aim: Join {pLoLin} into at most {pMaxLin} lines in column format
 '     Eg. There are 25 lines: Line NN ---.  To join these line by using pMaxLin=10
 '         Gives
@@ -1006,16 +1006,6 @@ End If
 AySrtIdx = O
 End Function
 
-Function AyStrBrk(Ay, Optional BrkChr$ = ".") As Variant()
-Dim O(), U&, J&
-For J = 0 To UB(Ay)
-    With StrBrk(Ay(J), BrkChr)
-        Push O, Array(.S1, .S2)
-    End With
-Next
-AyStrBrk = O
-End Function
-
 Function AySubsetIdxAy(Ay, SubAy) As Long()
 Dim U&: U = UB(SubAy)
 Dim O&(): ReSz O, U
@@ -1024,16 +1014,6 @@ For J = 0 To U
     O(J) = AyIdx(Ay, SubAy(J))
 Next
 AySubsetIdxAy = O
-End Function
-
-Function AySy(Ay) As String()
-Dim U&: U = UB(Ay)
-Dim O$(): ReSz O, U
-Dim J&
-For J = 0 To U
-    O(J) = VarToStr(Ay(J))
-Next
-AySy = O
 End Function
 
 Function AyTakMaxEle(Ay1, Ay2)
@@ -1118,6 +1098,26 @@ End Sub
 Function CInt1%(A)
 On Error Resume Next
 CInt1 = A
+End Function
+
+Function Jn$(Ay, Optional Sep$)
+Jn = Join(AySy(Ay), Sep)
+End Function
+
+Function JnComma$(Ay)
+JnComma = Join(AySy(Ay), CtComma)
+End Function
+
+Function JnCrLf$(Ay)
+JnCrLf = Join(AySy(Ay), vbCrLf)
+End Function
+
+Function JnSemiColon$(Ay)
+JnSemiColon = Jn(Ay, ";")
+End Function
+
+Function JnSpc$(Ay)
+JnSpc = Join(AySy(Ay), " ")
 End Function
 
 Function LasEle(Ay)

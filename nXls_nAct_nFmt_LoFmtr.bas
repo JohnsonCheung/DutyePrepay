@@ -92,10 +92,6 @@ Sub AA5()
 ZFmtrSqBrk__Tst
 End Sub
 
-Function ListObjCrt(A As Range) As ListObject
-Set ListObjCrt = RgWs(A).ListObjects.Add(xlSrcRange, A)
-End Function
-
 Sub ListObjFmt(A As ListObject, Fmtr As LoFmtr)
 Dim Rg As Range
 Dim J&, C, R%
@@ -105,8 +101,8 @@ Dim O As LoFmtr
 
 Dim OHdrA1Cell As Range
 
-Dim OWs As Worksheet
-    Set OWs = A.Parent
+Dim oWs As Worksheet
+    Set oWs = A.Parent
     
 'Align ====================
 For J = 0 To UB(O.Align)
@@ -187,10 +183,10 @@ Next
 '=========================
 'SummaryRow/Col
 Select Case O.SummaryCol
-Case xlSummaryOnLeft, xlSummaryOnRight: OWs.Outline.SummaryColumn = O.SummaryCol
+Case xlSummaryOnLeft, xlSummaryOnRight: oWs.Outline.SummaryColumn = O.SummaryCol
 End Select
 Select Case O.SummaryRow
-Case xlSummaryAbove, xlSummaryBelow: OWs.Outline.SummaryRow = O.SummaryRow
+Case xlSummaryAbove, xlSummaryBelow: oWs.Outline.SummaryRow = O.SummaryRow
 End Select
 '=========================
 If Not AyIsEmpty(O.VLinRightCno) Then
@@ -210,8 +206,8 @@ If Not IsNothing(Rg) Then
     CellAct Rg
 End If
 
-OWs.Activate
-OWs.Outline.ShowLevels 1, 1
+oWs.Activate
+oWs.Outline.ShowLevels 1, 1
 End Sub
 
 Sub LoFmt(A As ListObject, F As LoFmtr)

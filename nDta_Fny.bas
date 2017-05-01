@@ -14,7 +14,7 @@ End Function
 
 Function FnySel(Fny$(), StarFnStr$, Optional IsChkStarFnStrMustGood As Boolean) As String()
 Dim O$()
-    O = NmstrBrk(StarFnStr)
+    O = NmBrk(StarFnStr)
     
 '--- Check Star must be at end
     Dim J%, IsEr As Boolean

@@ -1,14 +1,6 @@
 Attribute VB_Name = "nDta_Dic"
 Option Compare Database
 Option Explicit
-Function DicSy(A As Dictionary, KVNmStr$) As String()
-Dim O$()
-If A.Count = 0 Then Exit Function
-For Each K In A
-    Push O, FmtNm(KVNmStr, "K V", K, A(K))
-Next
-DicSy = O
-End Function
 
 Sub DicAsg(A As Dictionary, FnStr$, O0 _
     , Optional O1 _
@@ -28,7 +20,7 @@ Sub DicAsg(A As Dictionary, FnStr$, O0 _
     , Optional O15 _
     )
 Dim Fny$()
-    Fny = NmstrBrk(FnStr)
+    Fny = NmBrk(FnStr)
 
 Dim K, J%, V
 For Each K In Fny
@@ -108,16 +100,17 @@ Function DicIsEq(D1 As Dictionary, D2 As Dictionary) As Boolean
 DicIsEq = Sz(DicChkEq(D1, D2)) = 0
 End Function
 
-Function DicNew(DicStr$) As Dictionary
-Dim A$(): A = AyRmvBlank(SclSy(DicStr))
+Function DicNew(DicStr$, Optional BrkChr$ = "=", Optional SepChr$ = ";") As Dictionary
+Dim Sy$(): Sy = Split(DicStr, SepChr)
 Dim O As New Dictionary
-If AyIsEmpty(A) Then Set DicNew = O: Exit Function
-Dim I
-For Each I In A
-    With StrBrk(I, "=")
-        O.Add .S1, .S2
-    End With
-Next
+If Not AyIsEmpty(Sy) Then
+    Dim I
+    For Each I In Sy
+        With Brk(I, BrkChr)
+            O.Add .S1, .S2
+        End With
+    Next
+End If
 Set DicNew = O
 End Function
 
@@ -126,6 +119,17 @@ Dim A$: A = TblCnnStr("Permit")
 Dim B As Dictionary: Set B = DicNew(A)
 DicBrw B
 End Sub
+
+Function DicNewLpAp(Lp$, ParamArray Ap()) As Dictionary
+Dim Ay$(): Ay = Split(Lp, " ")
+Dim J&, O As New Dictionary
+Dim I
+For Each I In Ay
+    O.Add I, Ap(J)
+    J = J + 1
+Next
+Set DicNewLpAp = O
+End Function
 
 Function DicNewSyAp(OptSy, ParamArray Ap()) As Dictionary
 Dim O As New Dictionary
@@ -149,18 +153,56 @@ Dim O As New Dictionary
 Set DicNewSyAp = O
 End Function
 
-Function Get_Am_ByLm(pLm$, Optional pBrkChr$ = "=", Optional pSepChr$ = CtSemiColon) As tMap()
-Dim mAmStr$(): mAmStr = Split(pLm, pSepChr$)
-Dim NMap%: NMap = Sz(mAmStr)
-If NMap = 0 Then Exit Function
-ReDim mAm(0 To NMap - 1) As tMap
-Dim I%: For I = 0 To NMap - 1
-    If Brk_Str2Map(mAm(I), mAmStr(I), pBrkChr$) Then Exit Function
-Next
-Get_Am_ByLm = mAm
+Function DicSemiColonKeyStr$(A As Dictionary)
+DicSemiColonKeyStr = JnSemiColon(A.Keys)
 End Function
 
-Function Get_Am_ByLpAp(pLp$, ParamArray pAp()) As tMap()
-Get_Am_ByLpAp = Get_Am_ByLpVv(pLp, CVar(pAp))
+Function DicSemiColonValStr$(A As Dictionary)
+DicSemiColonValStr = JnSemiColon(A.Items)
+End Function
+
+Sub DicSetRs(Dic As Dictionary, oRs As DAO.Recordset)
+'Aim: Set {oRs} by {pLnFld} & {pAyV}.  Assume oRs is already .AddNew or .Edit
+Const cSub$ = "Set_Rs_ByLpVv"
+
+Dim J%, mAnFld$(): 'mAnFld = Split(pLnFld, cComma)
+Dim mNmFld$, mAyV()
+'mAyV = pVayv
+With oRs
+    For J = 0 To UBound(mAnFld$)
+        mNmFld = Trim(mAnFld(J))
+        .Fields(mNmFld).Value = mAyV(J)
+    Next
+End With
+End Sub
+
+Sub DicSetRs__Tst()
+If Dlt_Tbl("xx") Then Stop
+If Run_Sql("Create table xx (aa Long, bb Integer, cc Date)") Then Stop
+Dim mRs As DAO.Recordset
+Set mRs = CurrentDb.TableDefs("xx").OpenRecordset
+mRs.AddNew
+'DicSetRs mRs, "aa,bb,cc", "13", 12, "2007/12/31") Then Stop ' Should have NO error
+mRs.Update
+
+mRs.AddNew
+'If DicSetRs(mRs, "aa,bb,cc", 13, 12, #1/1/2007#) Then Stop ' Should have NO error
+mRs.Update
+
+mRs.AddNew
+'If DicSetRs(mRs, "aa,bb,cc", "13a", 12, #1/1/2007#) Then Stop ' Should have error
+mRs.Update
+mRs.Close
+DoCmd.OpenTable ("xx")
+End Sub
+
+Function DicSy(A As Dictionary, KVNmStr$) As String()
+Dim O$()
+If A.Count = 0 Then Exit Function
+Dim K
+For Each K In A
+    Push O, FmtNm(KVNmStr, "K V", K, A(K))
+Next
+DicSy = O
 End Function
 

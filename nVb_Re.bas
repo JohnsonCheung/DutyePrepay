@@ -1,38 +1,34 @@
 Attribute VB_Name = "nVb_Re"
 Option Compare Database
 Option Explicit
-Private X As New VBScript_RegExp_55.RegExp
+Private X_MdSrchRe As RegExp
 
-Function ReMch(Src, Pattern$, Optional Glob As Boolean, Optional IgnoreCase As Boolean, Optional MulLin As Boolean) As MatchCollection
-ReSetup Pattern, Glob, IgnoreCase, MulLin
-Set ReMch = X.Execute(Src)
+Function ReMch(Re As RegExp, Src) As MatchCollection
+Set ReMch = Re.Execute(Src)
 End Function
 
 Sub ReMch__Tst()
 '1 Declare
+Dim Re As RegExp
 Dim Src
-Dim Pattern$
-Dim Glob As Boolean
-Dim IgnoreCase As Boolean
-Dim MulLin As Boolean
 Dim Act As MatchCollection
+Dim Exp As MatchCollection
 
 '2 Assign
-Src = "abcdef"
-Pattern = "^abc"
-Glob = False
-IgnoreCase = True
-MulLin = False
+Set Re = ReNew("^aa")
+Src = "aaabb"
 
 '3 Calling
-Set Act = ReMch(Src, Pattern, Glob, IgnoreCase, MulLin)
+Set Act = ReMch(Re, Src)
 
 '4 Asst
 Debug.Assert Act.Count = 1
-Dim Act0 As Match: Set Act0 = Act(0)
+Dim Act0 As IMatch2
+Set Act0 = Act(0)
+Debug.Assert Act0.Length = 2
+Debug.Assert Act0.Value = "aa"
 Debug.Assert Act0.FirstIndex = 0
-Debug.Assert Act0.Value = "abc"
-Debug.Assert Act0.Length = 3
+Debug.Assert Act0.SubMatches.Count = 0
 End Sub
 
 Function ReNew(Pattern$, Optional Glob As Boolean, Optional IgnoreCase As Boolean, Optional MulLin As Boolean) As RegExp
@@ -48,19 +44,19 @@ End Function
 
 Function ReRpl$(Src, Rpl, Pattern$, Optional Glob As Boolean, Optional IgnoreCase As Boolean, Optional MulLin As Boolean)
 ReSetup Pattern, Glob, IgnoreCase, MulLin
-ReRpl = X.Replace(Src, Rpl)
+'ReRpl = X.Replace(Src, Rpl)
 End Function
 
 Function ReTest(S, Pattern$, Optional Glob As Boolean, Optional IgnoreCase As Boolean, Optional MulLin As Boolean) As Boolean
 ReSetup Pattern, Glob, IgnoreCase, MulLin
-ReTest = X.Test(S)
+'ReTest = X.Test(S)
 End Function
 
 Private Sub ReSetup(Pattern$, Optional Glob As Boolean, Optional IgnoreCase As Boolean, Optional MulLin As Boolean)
-With X
-    .Pattern = Pattern
-    .Global = Glob
-    .IgnoreCase = IgnoreCase
-    .MultiLine = MulLin
-End With
+'With X
+'    .Pattern = Pattern
+'    .Global = Glob
+'    .IgnoreCase = IgnoreCase
+'    .MultiLine = MulLin
+'End With
 End Sub

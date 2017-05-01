@@ -55,7 +55,7 @@ ZInsPermitD ImpPermitFstNo
 End Sub
 
 Private Sub ZLnk(PermitNo$)
-LnkCrt_Fx ">Permit", ImpPermitFdr & PermitNo & ".xlsx"
+LnkFx ">Permit", ImpPermitFdr & PermitNo & ".xlsx"
 End Sub
 
 Private Sub ZLnk__Tst()

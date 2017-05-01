@@ -162,7 +162,7 @@ For mCase = 1 To 8
     Case 8: mV1 = 1:       mV2 = "1"
     End Select
     mRslt = VarIsEq(mV1, mV2)
-    Debug.Print ToStr_LpAp(vbTab & vbTab, "mRslt,mV1,mV2,mIsEq", mRslt, mV1 & "(" & TypeName(mV1) & ")", mV2 & "(" & TypeName(mV2) & ")", mIsEq)
+    Debug.Print LpApToStr(vbTab & vbTab, "mRslt,mV1,mV2,mIsEq", mRslt, mV1 & "(" & TypeName(mV1) & ")", mV2 & "(" & TypeName(mV2) & ")", mIsEq)
 Next
 Debug.Assert VarIsEq(1, CByte(1)) = True
 Debug.Assert VarIsEq(1, "1") = False
@@ -259,10 +259,6 @@ End Function
 
 Function VarSemiColonFldRev(SemiColonFld$)
 VarSemiColonFldRev = UnEscTab(UnEscCR(UnEscLF(UnEsCtSemiColonColon(SemiColonFld))))
-End Function
-
-Function VarSimTy(V) As eSimTy
-Stop
 End Function
 
 Function VarStr&(V)

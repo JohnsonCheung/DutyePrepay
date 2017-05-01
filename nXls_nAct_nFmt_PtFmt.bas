@@ -3,7 +3,7 @@ Option Compare Database
 Option Explicit
 
 Function PfsFny(A As PivotFields) As String()
-PfsFny = ObjAyNy(A)
+PfsFny = OyPrp_Nm(A)
 End Function
 
 Sub PtFmt(A As PivotTable, F As PtFmtr)

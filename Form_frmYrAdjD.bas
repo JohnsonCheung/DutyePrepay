@@ -59,7 +59,7 @@ End Sub
 Private Sub Form_Close_1UpdYrAdjD()
 'Aim: update YrAdjD by YrAdjDW
 Dim mY As Byte: mY = Me.xYear.Value - 2000
-SqlRun Fmt_Str("SELECT {0} AS Yr, Sku, AdjTot, DteCrt, DteUpd INTO [#YrAdjD] FROM YrAdjDW WHERE AdjTot Is Not Null AND Round(AdjTot,2)<>0", mY)
+SqlRun Fmt("SELECT {0} AS Yr, Sku, AdjTot, DteCrt, DteUpd INTO [#YrAdjD] FROM YrAdjDW WHERE AdjTot Is Not Null AND Round(AdjTot,2)<>0", mY)
         SqlRun "DELETE FROM YrAdjD WHERE Yr=" & mY
         SqlRun "INSERT INTO YrAdjD (Yr,Sku,AdjTot,DteCrt,DteUpd) SELECT Yr,Sku,AdjTot,DteCrt,DteUpd FROM [#YrAdjD];"
 End Sub
@@ -67,7 +67,7 @@ End Sub
 Private Sub Form_Close_2UpdYrAdj()
 'Aim: update YrAdj  by YrAdjD
 Dim mY As Byte: mY = Me.xYear.Value - 2000
-SqlRun Fmt_Str("SELECT Yr, Count(1) AS NSku, Sum(x.AdjTot) AS AdjTot INTO [#YrO_FmYrAdjD] FROM YrAdjD x Where Yr={0} GROUP BY Yr;", mY)
+SqlRun Fmt("SELECT Yr, Count(1) AS NSku, Sum(x.AdjTot) AS AdjTot INTO [#YrO_FmYrAdjD] FROM YrAdjD x Where Yr={0} GROUP BY Yr;", mY)
 SqlRun "UPDATE YrO x INNER JOIN [#YrO_FmYrAdjD] a ON a.Yr=x.Yr SET x.AdjNSku=a.NSku, x.AdjTot=a.AdjTot, x.AdjDteUpd=Now() WHERE Nz(x.AdjNSku,0)<>a.NSku OR Nz(x.AdjTot,0)<>a.AdjTot;"
 End Sub
 

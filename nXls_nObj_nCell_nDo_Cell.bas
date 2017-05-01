@@ -24,7 +24,7 @@ O.PivotCache.MissingItemsLimit = xlMissingItemsNone
 Dim Ay$(), J%, mNmF$, mFCaption$
 With O
     'Set F col
-    Ay = NmstrBrk(ColFnStr)
+    Ay = NmBrk(ColFnStr)
     Dim F As PivotField
     For J = UBound(Ay) To 0 Step -1
         If Brk_ColonAs_ToCaptionNm(mFCaption, mNmF, Ay(J)) Then ss.A 1:
@@ -39,7 +39,7 @@ With O
     Next
 
     'Set F Row
-    Ay = NmstrBrk(RowFnStr)
+    Ay = NmBrk(RowFnStr)
     For J = UBound(Ay) To LBound(Ay) Step -1
         If Brk_ColonAs_ToCaptionNm(mFCaption, mNmF, Ay(J)) Then ss.A 2:
         
@@ -53,7 +53,7 @@ With O
     Next
 
     'Set F Data
-    Ay = NmstrBrk(DtaFnStr)
+    Ay = NmBrk(DtaFnStr)
     For J = UBound(Ay) To LBound(Ay) Step -1
         If Brk_Str_Both(mNmF, mFCaption, Ay(J), ":") Then ss.A 1:
         Set F = .PivotFields(mNmF)
@@ -94,5 +94,21 @@ mRowFm.Copy
 mRowTo.PasteSpecial xlPasteAll
 mRowTo.Range("B1").Value = Null
 Excel.Application.CutCopyMode = False
+End Sub
+
+Sub CellPutApDown(Cell As Range, ParamArray Ap())
+Dim Av(): Av = Ap
+CellPutAv Cell, Av, IsDown:=True
+End Sub
+
+Sub CellPutApRight(Cell As Range, ParamArray Ap())
+Dim Av(): Av = Ap
+CellPutAv Cell, Av, IsDown:=False
+End Sub
+
+Sub CellPutAv(Cell As Range, Av(), IsDown As Boolean)
+Dim Sq
+If IsDown Then Sq = AySqV(Av) Else Sq = AySqH(Av)
+SqPutCell Sq, Cell
 End Sub
 

@@ -25,7 +25,7 @@ End With
 End Sub
 
 Private Sub Cmd_AddToDmyPermit_Click_1Add_2PermitD(Sku)
-With CurrentDb.OpenRecordset(Fmt_Str("Select * from frmBchRateOH where Sku='{0}' and IsNoAssign", Sku))
+With CurrentDb.OpenRecordset(Fmt("Select * from frmBchRateOH where Sku='{0}' and IsNoAssign", Sku))
     While Not .EOF
         Cmd_AddToDmyPermit_Click_1Add_2PermitD_1Ins Sku, !BchNo, !OH
         .MoveNext
@@ -36,7 +36,7 @@ End Sub
 
 Private Sub Cmd_AddToDmyPermit_Click_1Add_2PermitD_1Ins(Sku, BchNo$, Qty&)
 Dim mSeqNo%: mSeqNo = Nz(SqlV("Select Max(SeqNo) from PermitD where Permit=1"), 0) + 10
-Dim MRate@: MRate = Nz(SqlV(Fmt_Str("Select DutyRateBott from frmBchRate where Sku='{0}'", Sku)), 0)
+Dim MRate@: MRate = Nz(SqlV(Fmt("Select DutyRateBott from frmBchRate where Sku='{0}'", Sku)), 0)
 Dim mAmt@: mAmt = Qty * MRate
 With CurrentDb.TableDefs("PermitD").OpenRecordset
     .AddNew
@@ -53,8 +53,8 @@ End With
 End Sub
 
 Private Sub Cmd_AddToDmyPermit_Click_2Reset(Sku)
-SqlRun Fmt_Str("Update frmBchRateOH set IsNoAssign=False where IsNoAssign and SKU='{0}'", Sku)
-SqlRun Fmt_Str("Update frmBchRate    set IsNoAssign=False where IsNoAssign and SKU='{0}'", Sku)
+SqlRun Fmt("Update frmBchRateOH set IsNoAssign=False where IsNoAssign and SKU='{0}'", Sku)
+SqlRun Fmt("Update frmBchRate    set IsNoAssign=False where IsNoAssign and SKU='{0}'", Sku)
 End Sub
 
 Private Sub Cmd_AddToDmyPermit_Click_3UpdPermitThreeSum()

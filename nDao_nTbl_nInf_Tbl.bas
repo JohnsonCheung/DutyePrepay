@@ -2,6 +2,14 @@ Attribute VB_Name = "nDao_nTbl_nInf_Tbl"
 Option Compare Database
 Option Explicit
 
+Sub TblAsstExist(T, Optional A As database)
+ErAsst TblChkExist(T, A)
+End Sub
+
+Function TblChkExist(T, Optional A As database) As Variant()
+
+End Function
+
 Function TblCnnStr$(T$, Optional A As database)
 TblCnnStr = DbNz(A).TableDefs(T).Connect
 End Function
@@ -26,12 +34,6 @@ Else
 End If
 TblFldAy = O
 End Function
-Function TblChkExist(T, Optional A As database) As Variant()
-
-End Function
-Sub TblAsstExist(T, Optional A As database)
-ErAsst TblChkExist(T, A)
-End Sub
 
 Function TblFldToLng&(T, F, Where$, Optional A As database)
 TblFldToLng = TblFldV(T, F, Where, A)
@@ -50,7 +52,7 @@ Dim Flds As DAO.Fields: Set Flds = DbNz(A).TableDefs(T).Fields
 TblHasFld = FldsHasFld(Flds, F)
 End Function
 
-Function TblHasIdx(T, IdxNm$, Optional A As database, Optional pSilient As Boolean = False) As Boolean
+Function TblHasIdx(T, IdxNm$, Optional A As database, Optional pSilient As Boolean) As Boolean
 On Error GoTo R
 Dim Nm$: Nm = DbNz(A).TableDefs(T).Indexes(IdxNm).Name
 TblHasIdx = True

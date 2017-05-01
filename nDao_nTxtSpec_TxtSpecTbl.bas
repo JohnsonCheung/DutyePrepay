@@ -32,14 +32,17 @@ TblCrt_ByFldDclStr "MSysIMEXColumns", _
     , 2, 2, A
 Db.Execute "Create index Index1 on MSysIMEXColumns (SpecId,Start)"
 End Sub
+
 Sub TxtSpecTblEns(Optional A As database)
 If TxtSpecTblIsExist(A) Then Exit Sub
 TxtSpecTblCrt A
 End Sub
-Function TxtSpecTblIsExist(Optional A As database) As Boolean
 
-End Function
 Function TxtSpecTblEns__Tst()
 TxtSpecTblEns
+End Function
+
+Function TxtSpecTblIsExist(Optional A As database) As Boolean
+
 End Function
 

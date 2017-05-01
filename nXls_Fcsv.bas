@@ -6,16 +6,16 @@ Sub FcsvPt(Fcsv, Cell As Range, RowFnStr$, Col$, Optional Pag$)
 
 End Sub
 
-Function FcsvWrtFx(pFfnCsv$, Optional Pfx$ = "", Optional OvrWrt As Boolean = False, Optional pKeepCsv = False) As Boolean
+Function FcsvWrtFx(pFfnCsv$, Optional Fx$ = "", Optional OvrWrt As Boolean, Optional pKeepCsv = False) As Boolean
 Const cSub$ = "Csv2Xls"
-'Aim: Cv {pFfnCsv} to {pFx}
+'Aim: Cv {pFfnCsv} to {Fx}
 If VBA.Dir(pFfnCsv) = "" Then ss.A 1, "{pFfnCsv} not exist": GoTo E
-If Pfx = "" Then Pfx = Repl_Ext(pFfnCsv, ".xls")
-If Ovr_Wrt(Pfx, OvrWrt) Then ss.A 1: GoTo E
+If Fx = "" Then Fx = Repl_Ext(pFfnCsv, ".xls")
+If Ovr_Wrt(Fx, OvrWrt) Then ss.A 1: GoTo E
 Dim mWb As Workbook: If Opn_Wb_R(mWb, pFfnCsv) Then ss.A 2: GoTo E
-mWb.SaveAs Pfx, XlFileFormat.xlWorkbookNormal
+mWb.SaveAs Fx, XlFileFormat.xlWorkbookNormal
 mWb.Close
-If Not pKeepCsv Then Dlt_Fil pFfnCsv
+If Not pKeepCsv Then FfnDlt pFfnCsv
 Exit Function
 R: ss.R
 E:

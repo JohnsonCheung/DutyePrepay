@@ -1,4 +1,4 @@
-Attribute VB_Name = "nStr_SCLy"
+Attribute VB_Name = "nStr_Scly"
 Option Compare Database
 Option Explicit
 

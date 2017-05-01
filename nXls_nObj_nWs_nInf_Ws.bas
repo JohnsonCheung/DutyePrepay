@@ -37,12 +37,18 @@ If Len(Col) = 2 Then
 End If
 End Function
 
-Function WsColNxt$(Col$, NCol%)
-WsColNxt = WsCnoCol(WsColCno(Col) + NCol)
+Function WsColNxt$(Col$, nCol%)
+WsColNxt = WsCnoCol(WsColCno(Col) + nCol)
 End Function
 
 Function WsCRR(A As Worksheet, C, R1, R2) As Range
 Set WsCRR = A.Range(A.Cells(R1, C), A.Cells(R2, C))
+End Function
+
+Function WsHasLoNm(A As Workbook, LoNm$) As Boolean
+On Error GoTo X
+WsHasLoNm = A.ListObjects(LoNm).Name = LoNm
+X:
 End Function
 
 Function WsHasXNm(A As Excel.Workbook, XNm$) As Boolean
@@ -80,12 +86,6 @@ Function WsMaxRno&(A As Worksheet)
 WsMaxRno = A.Rows.Count
 End Function
 
-Function WsHasLoNm(A As Workbook, LoNm$) As Boolean
-On Error GoTo X
-WsHasLoNm = A.ListObjects(LoNm).Name = LoNm
-X:
-End Function
-
 Function WsQt(A As Worksheet, QtNm$) As QueryTable
 Set WsQt = A.QueryTables(QtNm)
 End Function
@@ -113,6 +113,15 @@ Dim C&, R&
     C = LasCell.Column
     R = LasCell.Row
 WsSq = WsRCRC(A, 1, 1, R, C).Value
+End Function
+
+Function WsToStr$(A As Worksheet, Optional InclWbNm As Boolean)
+On Error GoTo R
+If InclWbNm Then WsToStr = "Wb=" & WbToStr(A.Parent) & ", Ws=" & A.Name: Exit Function
+WsToStr = "Ws=" & A.Name
+Exit Function
+R: ss.R
+    WsToStr = ErStr("WsToStr")
 End Function
 
 Function WsWb(A As Worksheet) As Workbook

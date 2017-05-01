@@ -39,12 +39,12 @@ On Error GoTo R
 Dim iFn$: iFn = VBA.Dir(pDir & pFspc)
 Dim mA$
 While iFn <> ""
-    If Cpy_Fil(pDir & iFn, pDir & "..\" & ToPfx & iFn) Then mA = Add_Str(mA, iFn)
+    If Cpy_Fil(pDir & iFn, pDir & "..\" & ToPfx & iFn) Then mA = Push(mA, iFn)
     iFn = VBA.Dir
 Wend
 If Len(mA) <> 0 Then ss.A 1, "Some files cannot be copied", eRunTimErr, "The Files", mA: GoTo E
 If mChk Then
-    MsgBox Fmt_Str("Check if all the of spec [{0}] the dir [{1}] is copied up 1 dir with pfx[{2}]", pFspc, pDir, ToPfx), vbInformation, "CopyFilUp1Dir"
+    MsgBox Fmt("Check if all the of spec [{0}] the dir [{1}] is copied up 1 dir with pfx[{2}]", pFspc, pDir, ToPfx), vbInformation, "CopyFilUp1Dir"
     Opn_Dir pDir
     Stop
 End If
@@ -61,6 +61,10 @@ Dim I
 For Each I In FnAy
     FfnDlt Pth & I
 Next
+End Sub
+
+Sub PthDltFilByPfx(P$, Pfx$)
+FfnAyDlt PthFfnAyByPfx(P, Pfx)
 End Sub
 
 Sub PthDltFnAy(Pth$, FnAy$())
@@ -98,6 +102,14 @@ RmDir "C:\temp\a\a\a"
 RmDir "C:\temp\a\a"
 RmDir "C:\temp\a"
 End Sub
+
+Function PthFfnAy(Pth$, Optional FSpec$ = "*.*", Optional Atr As VbFileAttribute = vbNormal) As String()
+PthFfnAy = AyAddPfx(PthFnAy(Pth, FSpec, Atr), Pth)
+End Function
+
+Function PthFfnAyByPfx(P$, Pfx$) As String()
+PthFfnAyByPfx = PthFfnAy(P, Pfx & "*.*")
+End Function
 
 Function PthFnAy(Pth$, Optional FSpec$ = "*.*", Optional Atr As VbFileAttribute = vbNormal) As String()
 PthAsst Pth

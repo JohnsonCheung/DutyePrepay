@@ -196,11 +196,11 @@ Function AppaNWrkSpc%(Optional A As Access.Application)
 AppaNWrkSpc = AppaNz(A).DBEngine.Workspaces.Count
 End Function
 
-Function AppaNz(P As Access.Application) As Access.Application
-If IsNothing(P) Then
+Function AppaNz(A As Access.Application) As Access.Application
+If IsNothing(A) Then
     Set AppaNz = Access.Application
 Else
-    Set AppaNz = P
+    Set AppaNz = A
 End If
 End Function
 
@@ -226,4 +226,8 @@ End Sub
 
 Sub AppaSavRec(Optional Appa As Access.Application)
 AppaNz(Appa).DoCmd.DoMenuItem acFormBar, acRecordsMenu, acSaveRecord, , acMenuVer70
+End Sub
+
+Sub GoRec(Optional Where As AcRecord = acNext)
+DoCmd.GoToRecord , , Where
 End Sub

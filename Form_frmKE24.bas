@@ -33,7 +33,7 @@ Dim mY As Byte: mY = Val(mA(0))
 Dim MM As Byte: MM = Val(mA(1))
 Me.xYear.Value = mY + 2000
 Me.xMth.Value = MM
-Me.RecordSource = Fmt_Str("SELECT x.*, a.*, CCur(Tot/Qty) AS Rate" & _
+Me.RecordSource = Fmt("SELECT x.*, a.*, CCur(Tot/Qty) AS Rate" & _
 " FROM KE24 x LEFT JOIN qSKU a ON x.Sku = a.Sku" & _
 " Where Yr={0} and Mth={1}" & _
 " Order by PostDate Desc, CopaNo Desc, CopaLNo Asc", mY, MM)

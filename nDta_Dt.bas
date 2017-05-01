@@ -42,7 +42,7 @@ Dim Av()
     Dim J%
     For J% = 0 To UF
         Dim I&: I = IAy(J)
-        Av(J) = DrAyCol(D, I, OCol(J))
+        Av(J) = DrAyCol_Into(D, OCol(J), I)
     Next
     
 For J = 0 To UF
@@ -145,8 +145,32 @@ End Function
 
 Function DtCol(Dt As Dt, Fld$) As Variant()
 Dim I&: I = AyIdx(Dt.Fny, Fld)
-Dim O(): O = DrAyCol(Dt.DrAy, I, O)
-DtCol = O
+DtCol = DrAyCol(Dt.DrAy, I)
+End Function
+
+Function DtCol_Bool(Dt As Dt, Fld$) As Boolean()
+Dim I&: I = AyIdx(Dt.Fny, Fld)
+DtCol_Bool = DrAyCol_Bool(Dt.DrAy, I)
+End Function
+
+Function DtCol_Dte(Dt As Dt, Fld$) As Date()
+Dim I&: I = AyIdx(Dt.Fny, Fld)
+DtCol_Dte = DrAyCol_Dte(Dt.DrAy, I)
+End Function
+
+Function DtCol_Int(Dt As Dt, Fld$) As Integer()
+Dim I&: I = AyIdx(Dt.Fny, Fld)
+DtCol_Int = DrAyCol_Int(Dt.DrAy, I)
+End Function
+
+Function DtCol_Lng(Dt As Dt, Fld$) As Long()
+Dim I&: I = AyIdx(Dt.Fny, Fld)
+DtCol_Lng = DrAyCol_Lng(Dt.DrAy, I)
+End Function
+
+Function DtCol_Str(Dt As Dt, Fld$) As String()
+Dim I&: I = AyIdx(Dt.Fny, Fld)
+DtCol_Str = DrAyCol_Str(Dt.DrAy, I)
 End Function
 
 Function DtColUB&(A As Dt)
@@ -311,7 +335,7 @@ End Sub
 
 Function DtSrt(Dt As Dt, FnStr$) As Dt
 Dim UR&: UR = DtNRec(Dt) - 1: If UR = 0 Then DtSrt = Dt: Exit Function
-Dim F$(): F = NmstrBrk(FnStr)
+Dim F$(): F = NmBrk(FnStr)
 Dim UF%: UF = UB(F)
 Dim IsDesAy() As Boolean
     Dim J%

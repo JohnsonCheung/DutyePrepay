@@ -42,24 +42,21 @@ Sub FbNew(Fb$, Optional Locale$ = dbLangGeneral)
 DbNew(Fb, Locale).Close
 End Sub
 
-Sub FbRenToBackup(pFb$, Optional pKeepBackupLvl As Byte = 3)
-Const cSub$ = "FbRenToBackup"
+Sub FbRenToBackup(Fb$, Optional pKeepBackupLvl As Byte = 3)
 If pKeepBackupLvl = 0 Then
-    If Dlt_Fil(pFb) Then ss.A 1: GoTo E
+    FfnDlt Fb
     Exit Sub
 End If
 If pKeepBackupLvl > 9 Then pKeepBackupLvl = 9
-Dim mFfnn$, mExt$: If Brk_Ffn_To2Seg(mFfnn, mExt, pFb) Then ss.A 1: GoTo E
-Dim mNxtFfnn$, mNxtBkNo As Byte: Fnd_NxtBkFfnn mFfnn, mNxtFfnn, mNxtBkNo
+Dim mFfnn$: mFfnn = FfnCutExt(Fb)
+Dim mExt$: mExt = FfnExt(Fb)
+Dim mNxtFfnn$, mNxtBkNo As Byte: mNxtFfnn = FfnNxtBackup(mFfnn)
 If mNxtBkNo >= 10 Or mNxtBkNo >= pKeepBackupLvl Then
-    If Dlt_Fil(mNxtFfnn & mExt, True) Then ss.A 1: GoTo E
-    If Ren_Fil(pFb, mNxtFfnn & mExt) Then ss.A 2: GoTo E
-    If Set_FilRO(mNxtFfnn & mExt) Then ss.A 3: GoTo E
+    FfnDlt mNxtFfnn & mExt
+    Name Fb As mNxtFfnn & mExt
+    FfnSetRO mNxtFfnn & mExt
     Exit Sub
 End If
-If VBA.Dir(mNxtFfnn & mExt) <> "" Then FbRenToBackup mNxtFfnn & mExt, pKeepBackupLvl:    Exit Sub
-If Ren_Fil(pFb, mNxtFfnn & mExt) Then ss.A 2: GoTo E
-Exit Sub
-R: ss.R
-E:
+If FfnIsExist(mNxtFfnn & mExt) Then FbRenToBackup mNxtFfnn & mExt, pKeepBackupLvl:     Exit Sub
+Name Fb As mNxtFfnn & mExt
 End Sub

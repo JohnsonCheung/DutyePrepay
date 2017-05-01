@@ -7,7 +7,7 @@ Dim O$()
     If IsMissing(TnPrm) Then
         O = DbTny(A)
     ElseIf VarIsStr(TnPrm) Then
-        O = NmstrBrk(TnPrm)
+        O = NmBrk(TnPrm)
     ElseIf VarIsSy(TnPrm) Then
         O = TnPrm
     ElseIf VarIsDic(TnPrm) Then

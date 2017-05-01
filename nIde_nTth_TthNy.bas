@@ -39,7 +39,7 @@ TthNy_Pj = TthNy_PjXXX(A)
 End Function
 
 Sub TthNy_Pj__Tst()
-DrAyBrw AyStrBrk(TthNy_Pj, ".")
+DrAyBrw AyBrk(TthNy_Pj, ".")
 End Sub
 
 Function TthNy_PjPri(Optional A As CodeModule) As String()

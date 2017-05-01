@@ -4,6 +4,6 @@ Option Explicit
 
 Function LyJn$(Ay)
 Dim A(): A = AyExpdAy(Ay)
-LyJn = AyJn(Ay, vbCrLf)
+LyJn = Jn(Ay, vbCrLf)
 End Function
 

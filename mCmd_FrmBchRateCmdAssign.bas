@@ -92,7 +92,7 @@ Private Sub RR_1CrtTmpCurrentDb()
 Dim D As YMD: D = TblOHMaxYMD
 
 TblDrp "#Assign_OH"
-SqlRun Fmt_Str("Select Distinct SKU,BchNo,Sum(Bott) as OH" & _
+SqlRun Fmt("Select Distinct SKU,BchNo,Sum(Bott) as OH" & _
 " into `#Assign_OH` from OH x" & _
 " where YY={0} and MM={1} and DD={2}" & _
 " and YpStk in (Select YpStk from YpStk where IsTaxPaid)" & _
@@ -121,15 +121,15 @@ Dim MRate@
 mAyPermitD = RR_2BchCurrentDb_3AyPermitD(pOH, aPermitD, aRate, aQty, MRate) ' Find continuous PermitD's of same rate with quantity can cover bOH(J).
 '                                                                  ' After found, return mAyPermitD, Rate, oIdx and set aQty to zero
 If Sz(mAyPermitD) > 0 Then
-    SqlRun Fmt_Str("Update PermitD set BchNo='{0}' where PermitD in ({1}) and SKU='{2}'", pBchNo, Join(mAyPermitD, ","), pSku)
-    SqlRun Fmt_Str("Insert into SkuB (Sku,BchNo,DutyRateB) values ('{0}','{1}',{2})", pSku, pBchNo, MRate)
+    SqlRun Fmt("Update PermitD set BchNo='{0}' where PermitD in ({1}) and SKU='{2}'", pBchNo, Join(mAyPermitD, ","), pSku)
+    SqlRun Fmt("Insert into SkuB (Sku,BchNo,DutyRateB) values ('{0}','{1}',{2})", pSku, pBchNo, MRate)
 End If
 End Sub
 
 Private Sub RR_2BchCurrentDb_1PermitD(pSku$, oPermitD&(), ORate@(), oQty&())
 'Aim: Obtain the o* from #Assign_PermitD in MinPermitDate Desc
 Dim mN%
-With CurrentDb.OpenRecordset(Fmt_Str("Select PermitD,Round(x.Rate,2) as Rate,x.Qty from PermitD x inner join Permit a on a.Permit=x.Permit" & _
+With CurrentDb.OpenRecordset(Fmt("Select PermitD,Round(x.Rate,2) as Rate,x.Qty from PermitD x inner join Permit a on a.Permit=x.Permit" & _
                                      " where SKU='{0}' and Nz(BchNo,'')='' order by PermitDate Desc, x.Rate Desc, x.Qty Desc", pSku))
     While Not .EOF
         ReDim Preserve oPermitD(mN)
@@ -230,12 +230,12 @@ Private Sub xx_1CrtTmpCurrentDb()
 '     Permit  = * *No | *Date ...
 Dim D As YMD: D = TblOHMaxYMD
 
-SqlRun Fmt_Str("Select Distinct SKU,BchNo,Sum(Bott) as OH into `#Assign_OH` from OH x" & _
+SqlRun Fmt("Select Distinct SKU,BchNo,Sum(Bott) as OH into `#Assign_OH` from OH x" & _
 " where YY={0} and MM={1} and DD={2}" & _
 " and YpStk in (Select YpStk from YpStk where IsTaxPaid)" & _
 " and SKU in (Select SKU from SKU_StkHld where IfTaxable='Y')" & _
 " group by SKU,BchNo order by BchNo desc ", D.Y, D.M, D.D)
-SqlRun Fmt_Str("Select Distinct SKU into `#Assign_SKU` from `#Assign_OH`")
+SqlRun Fmt("Select Distinct SKU into `#Assign_SKU` from `#Assign_OH`")
 
 xDlt.Dlt_Tbl "#Assign_Lot"
 xDlt.Dlt_Tbl "#Assign_LotD"
@@ -318,8 +318,8 @@ For J = 0 To UBound(bOH)
     mLotIdx = xx_2SKUCurrentDb_3LotIdx(bOH(J), aLot, aQty) ' Find those Lot's quantity can cover bOH(J)
     If mLotIdx >= 0 Then
         Dim mPermitD$(): mPermitD = SqlSy("Select PermitD from `#Assign_LotD` where Lot=" & aLot(mLotIdx))
-        SqlRun Fmt_Str("Update PermitD set BchNo='{0}' where PermitD in ({1}) and SKU='{2}'", bBchNo(J), Join(mPermitD, ","), pSku)
-        SqlRun Fmt_Str("Insert into SkuB (Sku,BchNo,DutyRateB) values ('{0}','{1}',{2})", pSku, bBchNo(J), aRate(mLotIdx))
+        SqlRun Fmt("Update PermitD set BchNo='{0}' where PermitD in ({1}) and SKU='{2}'", bBchNo(J), Join(mPermitD, ","), pSku)
+        SqlRun Fmt("Insert into SkuB (Sku,BchNo,DutyRateB) values ('{0}','{1}',{2})", pSku, bBchNo(J), aRate(mLotIdx))
 '    Else
 '        Stop
     End If
@@ -329,7 +329,7 @@ End Sub
 Private Sub xx_2SKUCurrentDb_1OH(pSku$, oBchNo$(), oOH&())
 Dim mN%
 mN = 0
-With CurrentDb.OpenRecordset(Fmt_Str("Select SKU,BchNo,OH from `#Assign_OH` where SKU='{0}' order by OH Desc", pSku))
+With CurrentDb.OpenRecordset(Fmt("Select SKU,BchNo,OH from `#Assign_OH` where SKU='{0}' order by OH Desc", pSku))
     While Not .EOF
         ReDim Preserve oBchNo(mN)
         ReDim Preserve oOH(mN)
@@ -346,7 +346,7 @@ Private Sub xx_2SKUCurrentDb_2Lot(pSku$, oLot%(), ORate@(), oQty&())
 'Aim: Obtain the o* from #Assign_Lot in MinPermitDate Desc
 'Ref: #Assign_Lot = Lot SKU Rate MinPermitDate | Qty
 Dim mN%
-With CurrentDb.OpenRecordset(Fmt_Str("Select Lot,Rate,Qty from `#Assign_Lot` where SKU='{0}' order by MinPermitDate Desc, Qty Desc", pSku))
+With CurrentDb.OpenRecordset(Fmt("Select Lot,Rate,Qty from `#Assign_Lot` where SKU='{0}' order by MinPermitDate Desc, Qty Desc", pSku))
     While Not .EOF
         ReDim Preserve oLot(mN)
         ReDim Preserve ORate(mN)

@@ -6,10 +6,6 @@ Sub AA3()
 TblDs__Tst
 End Sub
 
-Function Tbl(T, Optional A As database) As TableDef
-Set Tbl = DbNz(A).TableDefs(T)
-End Function
-
 Function TblDrAy(T, Optional FstNFld%, Optional A As database) As Variant()
 TblDrAy = RsDrAy(DbNz(A).TableDefs(T).OpenRecordset, FstNFld)
 End Function
